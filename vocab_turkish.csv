@@ -1,0 +1,594 @@
+Category,Focus,English,Turkish
+Airport,Main,Aeroplane,Uçak
+Airport,Main,Airline,Havayolu
+Airport,Main,Airport,Havaalan? / Havaliman?
+Airport,Main,Arrival,Var??
+Airport,Main,Customs,Gümrük
+Airport,Main,Departure,Kalk??
+Airport,Main,Domestic,Yurtiçi
+Airport,Main,Flight,Uçu?
+Airport,Main,Hand luggage,El bagaj?
+Airport,Main,International,Yurtd???
+Airport,Main,Luggage,Bagaj
+Airport,Main,Passenger,Yolcu
+Airport,Main,Passport,Pasaport
+Airport,Main,Runway,Pist
+Airport,Main,Security Control,Güvenlik Kontrolü
+Airport,Main,Terminal,Terminal
+Airport,Main,Ticket,Bilet
+Animals,Main,Animal,Hayvan
+Animals,Main,Bear,Ay?
+Animals,Main,Bird,Ku?
+Animals,Main,Camel,Deve
+Animals,Main,Cat,Kedi
+Animals,Main,Cheetah,Çita
+Animals,Main,Chicken,Tavuk
+Animals,Main,Cow,?nek
+Animals,Main,Dog,Köpek
+Animals,Main,Donkey,E?ek
+Animals,Main,Duck,Ördek
+Animals,Main,Eagle,Kartal
+Animals,Main,Elephant,Fil
+Animals,Main,Fish,Bal?k
+Animals,Main,Giraffe,Zürafa
+Animals,Main,Horse,At
+Animals,Main,Kangaroo,Kanguru
+Animals,Main,Lion,Aslan
+Animals,Main,Monkey,Maymun
+Animals,Main,Mouse,Fare
+Animals,Main,Owl,Bayku?
+Animals,Main,Penguin,Penguen
+Animals,Main,Rabbit,Tav?an
+Animals,Main,Sheep,Koyun
+Animals,Main,Snake,Y?lan
+Animals,Main,Spider,Örümcek
+At Home,General,Chair,Sandalye
+At Home,General,Clock,Saat
+At Home,General,Desk,Masa
+At Home,General,Door,Kap?
+At Home,General,House,Ev
+At Home,General,Light,I??k
+At Home,General,Room,Oda
+At Home,General,Stairs,Merdiven
+At Home,General,Window,Pencere
+At Home,Living room,Bookshelf,Kitapl?k
+At Home,Living room,Coffee table,Sehpa
+At Home,Living room,Couch,Kanepe
+At Home,Living room,Fireplace,?ömine
+At Home,Living room,Living room,Oturma odas?
+At Home,Living room,Rug,Hal?
+At Home,Living room,Vase,Vazo
+At Home,Bedroom,Alarm clock,Çalar saat
+At Home,Bedroom,Bed,Yatak
+At Home,Bedroom,Bedroom,Yatak odas?
+At Home,Bedroom,Blanket,Battaniye
+At Home,Bedroom,Computer,Bilgisayar
+At Home,Bedroom,Curtain,Perde
+At Home,Bedroom,Drawer,Çekmece
+At Home,Bedroom,Lamp,Lamba
+At Home,Bedroom,Pillow,Yast?k
+At Home,Bedroom,Wardrobe,Gard?rop
+At Home,Kitchen,Dinner Table,Yemek masas?
+At Home,Kitchen,Dishwasher,Bula??k makinesi
+At Home,Kitchen,Fridge,Buzdolab?
+At Home,Kitchen,Kitchen,Mutfak
+At Home,Kitchen,Oven,F?r?n
+At Home,Kitchen,Pot,Tencere
+At Home,Kitchen,Stove,Ocak
+At Home,Kitchen,Teapot,Çaydanl?k
+At Home,Bathroom,Bathroom,Banyo
+At Home,Bathroom,Mirror,Ayna
+At Home,Bathroom,Shower,Du?
+At Home,Bathroom,Soap,Sabun
+At Home,Bathroom,Tap,Musluk
+At Home,Bathroom,Toothbrush,Di? f?rças?
+At Home,Bathroom,Toothpaste,Di? macunu
+At Home,Bathroom,Towel,Havlu
+At Home,Clothing,Belt,Kemer
+At Home,Clothing,Blouse,Bluz
+At Home,Clothing,Gloves,Eldiven
+At Home,Clothing,Headscarf,E?arp / Ba?örtüsü
+At Home,Clothing,Jacket,Mont
+At Home,Clothing,Jeans,Kot pantolon
+At Home,Clothing,Jersey,Kazak
+At Home,Clothing,Jubbah / Thobe,Cübbe
+At Home,Clothing,Overcoat (Men's),Palto
+At Home,Clothing,Overcoat (Women's),Manto
+At Home,Clothing,Pants / Trousers,Pantolon
+At Home,Clothing,Pyjamas,Pijama
+At Home,Clothing,Shirt,Gömlek
+At Home,Clothing,Shoes,Ayakkab?
+At Home,Clothing,Skirt,Etek
+At Home,Clothing,Socks,Çorap
+At Home,Clothing,Suit,Tak?m elbise
+At Home,Clothing,Tie,Kravat
+At Home,Clothing,Tracksuit,E?ofman
+At Home,Clothing,T-shirt,Ti?ört
+At Home,Clothing,Underwear,?ç çama??r
+Colors,Main,White,Beyaz
+Colors,Main,Grey,Gri
+Colors,Main,Turquoise,Türküaz
+Colors,Main,Blue,Mavi
+Colors,Main,Navy,Lacivert
+Colors,Main,Green,Ye?il
+Colors,Main,Yellow,Sar?
+Colors,Main,Orange,Turuncu
+Colors,Main,Red,K?rm?z?
+Colors,Main,Pink,Pembe
+Colors,Main,Purple,Mor
+Colors,Main,Brown,Kahverengi
+Colors,Main,Black,Siyah
+Countries,Africa (Afrika),Algeria,Cezayir
+Countries,Africa (Afrika),Angola,Angola
+Countries,Africa (Afrika),Botswana,Botsvana
+Countries,Africa (Afrika),Cameroon,Kamerun
+Countries,Africa (Afrika),Central African Republic,Orta Afrika Cumhuriyeti
+Countries,Africa (Afrika),Democratic Republic of Congo,Demokratik Kongo Cumhuriyeti
+Countries,Africa (Afrika),Egypt,M?s?r
+Countries,Africa (Afrika),Ethiopia,Etiyopya
+Countries,Africa (Afrika),Gabon,Gabon
+Countries,Africa (Afrika),Ghana,Gana
+Countries,Africa (Afrika),Ivory Coast,Fildi?i K?y?s?
+Countries,Africa (Afrika),Kenya,Kenya
+Countries,Africa (Afrika),Libya,Libya
+Countries,Africa (Afrika),Malawi,Malavi
+Countries,Africa (Afrika),Mali,Mali
+Countries,Africa (Afrika),Mauritania,Moritanya
+Countries,Africa (Afrika),Morocco,Fas
+Countries,Africa (Afrika),Mozambique,Mozambik
+Countries,Africa (Afrika),Namibia,Namibya
+Countries,Africa (Afrika),Nigeria,Nijerya
+Countries,Africa (Afrika),Republic of the Congo,Kongo Cumhuriyeti
+Countries,Africa (Afrika),Senegal,Senegal
+Countries,Africa (Afrika),Somalia,Somali
+Countries,Africa (Afrika),South Africa,Güney Afrika
+Countries,Africa (Afrika),Sudan,Sudan
+Countries,Africa (Afrika),Tanzania,Tanzanya
+Countries,Africa (Afrika),Tunisia,Tunus
+Countries,Africa (Afrika),Uganda,Uganda
+Countries,Africa (Afrika),Zambia,Zambiya
+Countries,Africa (Afrika),Zimbabwe,Zimbabve
+Countries,Asia (Asya),Afghanistan,Afganistan
+Countries,Asia (Asya),Armenia,Ermenistan
+Countries,Asia (Asya),Azerbaijan,Azerbaycan
+Countries,Asia (Asya),Bangladesh,Banglade?
+Countries,Asia (Asya),Bahrain,Bahreyn
+Countries,Asia (Asya),Cambodia,Kamboçya
+Countries,Asia (Asya),Chechnya,Çeçenistan
+Countries,Asia (Asya),China,Çin
+Countries,Asia (Asya),Georgia,Gürcistan
+Countries,Asia (Asya),Hong Kong,Hong Kong
+Countries,Asia (Asya),India,Hindistan
+Countries,Asia (Asya),Indonesia,Endonezya
+Countries,Asia (Asya),Iran,?ran
+Countries,Asia (Asya),Iraq,Irak
+Countries,Asia (Asya),Israel,?srail
+Countries,Asia (Asya),Japan,Japonya
+Countries,Asia (Asya),Jordan,Ürdün
+Countries,Asia (Asya),Kazakhstan,Kazakistan
+Countries,Asia (Asya),Kuwait,Kuveyt
+Countries,Asia (Asya),Kyrgyzstan,K?rg?zistan
+Countries,Asia (Asya),Lebanon,Lübnan
+Countries,Asia (Asya),Malaysia,Malezya
+Countries,Asia (Asya),Mongolia,Mo?olistan
+Countries,Asia (Asya),North Korea,Kuzey Kore
+Countries,Asia (Asya),Oman,Umman
+Countries,Asia (Asya),Pakistan,Pakistan
+Countries,Asia (Asya),Palestine,Filistin
+Countries,Asia (Asya),Philippines,Filipinler
+Countries,Asia (Asya),Qatar,Katar
+Countries,Asia (Asya),Saudi Arabia,Suudi Arabistan
+Countries,Asia (Asya),South Korea,Güney Kore
+Countries,Asia (Asya),Syria,Suriye
+Countries,Asia (Asya),Tajikistan,Tacikistan
+Countries,Asia (Asya),Türkiye,Türkiye
+Countries,Asia (Asya),Turkmenistan,Türkmenistan
+Countries,Asia (Asya),United Arab Emirates,Birle?ik Arap Emirlikleri
+Countries,Asia (Asya),Uzbekistan,Özbekistan
+Countries,Asia (Asya),Vietnam,Vietnam
+Countries,Asia (Asya),Yemen,Yemen
+Countries,Europe (Avrupa),Albania,Arnavutluk
+Countries,Europe (Avrupa),Austria,Avusturya
+Countries,Europe (Avrupa),Belarus,Belarus / Beyaz Rusya
+Countries,Europe (Avrupa),Belgium,Belçika
+Countries,Europe (Avrupa),Bosnia Herzegovina,Bosna Hersek
+Countries,Europe (Avrupa),Bulgaria,Bulgaristan
+Countries,Europe (Avrupa),Croatia,H?rvatistan
+Countries,Europe (Avrupa),Cyprus,K?br?s
+Countries,Europe (Avrupa),Czech Republic,Çek Cumhuriyeti
+Countries,Europe (Avrupa),Denmark,Danimarka
+Countries,Europe (Avrupa),England,?ngiltere
+Countries,Europe (Avrupa),Estonia,Estonya
+Countries,Europe (Avrupa),Finland,Finlandiya
+Countries,Europe (Avrupa),France,Fransa
+Countries,Europe (Avrupa),Georgia,Gürcistan
+Countries,Europe (Avrupa),Germany,Almanya
+Countries,Europe (Avrupa),Greece,Yunanistan
+Countries,Europe (Avrupa),Holland,Hollanda
+Countries,Europe (Avrupa),Hungary,Macaristan
+Countries,Europe (Avrupa),Ireland,?rlanda
+Countries,Europe (Avrupa),Italy,?talya
+Countries,Europe (Avrupa),Kosovo,Kosova
+Countries,Europe (Avrupa),Latvia,Letonya
+Countries,Europe (Avrupa),Lithuania,Litvanya
+Countries,Europe (Avrupa),Luxembourg,Lüksemburg
+Countries,Europe (Avrupa),Malta,Malta
+Countries,Europe (Avrupa),Macedonia,Makedonya
+Countries,Europe (Avrupa),Moldova,Moldova
+Countries,Europe (Avrupa),Montenegro,Karada?
+Countries,Europe (Avrupa),Northern Ireland,Kuzey ?rlanda
+Countries,Europe (Avrupa),Norway,Norveç
+Countries,Europe (Avrupa),Poland,Polonya
+Countries,Europe (Avrupa),Portugal,Portekiz
+Countries,Europe (Avrupa),Romania,Romanya
+Countries,Europe (Avrupa),Russia,Rusya
+Countries,Europe (Avrupa),Scotland,?skoçya
+Countries,Europe (Avrupa),Serbia,S?rbistan
+Countries,Europe (Avrupa),Slovakia,Slovakya
+Countries,Europe (Avrupa),Slovenia,Slovenya
+Countries,Europe (Avrupa),Spain,?spanya
+Countries,Europe (Avrupa),Sweden,?sveç
+Countries,Europe (Avrupa),Switzerland,?sviçre
+Countries,Europe (Avrupa),Ukraine,Ukrayna
+Countries,Europe (Avrupa),Wales,Galler
+Countries,North America (Kuzey Amer?ka),Canada,Kanada
+Countries,North America (Kuzey Amer?ka),Costa Rica,Kosta Rika
+Countries,North America (Kuzey Amer?ka),Cuba,Küba
+Countries,North America (Kuzey Amer?ka),Haiti,Haiti
+Countries,North America (Kuzey Amer?ka),Mexico,Meksika
+Countries,North America (Kuzey Amer?ka),Panama,Panama
+Countries,North America (Kuzey Amer?ka),United States of America,Amerika Birle?ik Devletleri
+Countries,South America (Güney Amer?ka),Argentina,Arjantin
+Countries,South America (Güney Amer?ka),Bolivia,Bolivya
+Countries,South America (Güney Amer?ka),Brazil,Brezilya
+Countries,South America (Güney Amer?ka),Chile,?ili
+Countries,South America (Güney Amer?ka),Colombia,Kolombiya
+Countries,South America (Güney Amer?ka),Ecuador,Ekvador
+Countries,South America (Güney Amer?ka),Paraguay,Paraguay
+Countries,South America (Güney Amer?ka),Peru,Peru
+Countries,South America (Güney Amer?ka),Uruguay,Uruguay
+Countries,South America (Güney Amer?ka),Venezuela,Venezuela
+Countries,Oceania (Okyanusya),Australia,Avustralya
+Countries,Oceania (Okyanusya),Fiji,Fiji
+Countries,Oceania (Okyanusya),New Zealand,Yeni Zelanda
+Countries,Oceania (Okyanusya),Papua New Guinea,Papua Yeni Gine
+Countries,Oceania (Okyanusya),Samoa,Samoa
+Countries,Oceania (Okyanusya),Tonga,Tonga
+Currency,Main,Dirham,Dirhem
+Currency,Main,Dollar,Dolar
+Currency,Main,Euro,Euro / Avro
+Currency,Main,Franc,Frank
+Currency,Main,Pound,Sterlin
+Currency,Main,Rupee,Rupi
+Currency,Main,Yen,Yen
+Time,Days,Monday,Pazartesi
+Time,Days,Tuesday,Sal?
+Time,Days,Wednesday,Çar?amba
+Time,Days,Thursday,Per?embe
+Time,Days,Friday,Cuma
+Time,Days,Saturday,Cumartesi
+Time,Days,Sunday,Pazar
+Time,Days,Today,Bugün
+Time,Days,Yesterday,Dün
+Time,Days,Tomorrow,Yar?n
+Time,Days,Day before yesterday,Önceki gün / Evvelsi gün
+Time,Days,Day after tomorrow,Öbür gün
+Time,Days,Day,Gün
+Time,Days,Week,Hafta
+Time,Days,Month,Ay
+Time,Days,Year,Y?l / Sene
+Time,Days,Century,Yüzy?l
+Time,Months,January,Ocak
+Time,Months,February,?ubat
+Time,Months,March,Mart
+Time,Months,April,Nisan
+Time,Months,May,May?s
+Time,Months,June,Haziran
+Time,Months,July,Temmuz
+Time,Months,August,A?ustos
+Time,Months,September,Eylül
+Time,Months,October,Ekim
+Time,Months,November,Kas?m
+Time,Months,December,Aral?k
+Time,Seasons,Spring,?lkbahar
+Time,Seasons,Summer,Yaz
+Time,Seasons,Autumn,Sonbahar
+Time,Seasons,Winter,K??
+Time,Times of the day,Sunrise,Gündo?umu
+Time,Times of the day,Morning,Sabah
+Time,Times of the day,Midday,Ö?le / Ö?len
+Time,Times of the day,Afternoon,Ö?leden sonra
+Time,Times of the day,Evening,Ak?am
+Time,Times of the day,Sunset,Günbat?m?
+Time,Times of the day,Night,Gece
+Time,Times of the day,Midnight,Gece yar?s?
+Time,Clock Time,Second,Saniye
+Time,Clock Time,Minute,Dakika
+Time,Clock Time,Hour,Saat
+Family Members,Immediate,Father,Baba
+Family Members,Immediate,Mother,Anne
+Family Members,Immediate,Brother,Karde?
+Family Members,Immediate,Sister,K?z karde?
+Family Members,Immediate,Elder brother,Abi
+Family Members,Immediate,Elder sister,Abla
+Family Members,Immediate,Grandfather,Dede
+Family Members,Immediate,Grandmother,See below
+Family Members,Immediate,Grandchild,Torun
+Family Members,Immediate,Husband,Koca
+Family Members,Immediate,Wife,Han?m
+Family Members,Immediate,Spouse (Husband / Wife),E?
+Family Members,Immediate,Son,O?ul
+Family Members,Immediate,Daughter,K?z
+Family Members,Maternal,Aunt,Teyze
+Family Members,Maternal,Uncle,Day?
+Family Members,Maternal,Grandmother,Anneanne
+Family Members,Paternal,Aunt,Hala
+Family Members,Paternal,Uncle,Amca
+Family Members,Paternal,Grandmother,Babaanne
+Family Members,In-laws,Mother-in-law,Kaynana / Kay?nvalide
+Family Members,In-laws,Father-in-law,Kay?nbaba / Kay?npeder
+Food,Meat and Fish,Beef,S???r eti / Et
+Food,Meat and Fish,Chicken,Tavuk
+Food,Meat and Fish,Fish,Bal?k
+Food,Meat and Fish,Lamb,Kuzu
+Food,Meat and Fish,Sausage,Sosis
+Food,Meat and Fish,Steak,Biftek
+Food,Meat and Fish,Turkey,Hindi
+Food,Grains,Bread,Ekmek
+Food,Grains,Pasta,Makarna
+Food,Grains,Rice,Pirinç / Pilav
+Food,Dairy,Cheese,Peynir
+Food,Dairy,Egg,Yumurta
+Food,Dairy,Ice-cream,Dondurma
+Food,Dairy,Milk,Süt
+Food,Dairy,Yogurt,Yo?urt
+Food,Fruit,Apple,Elma
+Food,Fruit,Apricot,Kay?s?
+Food,Fruit,Banana,Muz
+Food,Fruit,Grapes,Üzüm
+Food,Fruit,Mango,Mango
+Food,Fruit,Orange,Portakal
+Food,Fruit,Peach,?eftali
+Food,Fruit,Pear,Armut
+Food,Fruit,Pineapple,Ananas
+Food,Fruit,Pomegranate,Nar
+Food,Fruit,Sour cherry,Vi?ne
+Food,Fruit,Strawberry,Çilek
+Food,Fruit,Watermelon,Karpuz
+Food,Vegetables,Cabbage,Lahana
+Food,Vegetables,Carrot,Havuç
+Food,Vegetables,Corn,M?s?r
+Food,Vegetables,Cucumber,Salatal?k
+Food,Vegetables,Eggplant,Patl?can
+Food,Vegetables,Lettuce,Marul
+Food,Vegetables,Onion,So?an
+Food,Vegetables,Peas,Bezelye
+Food,Vegetables,Potato,Patates
+Food,Vegetables,Spinach,Ispanak
+Food,Fast food,Burger,Burger
+Food,Fast food,French fries,Patates k?zartmas?
+Food,Fast food,Ketchup,Ketçap
+Food,Fast food,Mayonnaise,Mayonez
+Food,Fast food,Mustard,Hardal
+Food,Fast food,Pizza,Pizza
+Food,Fast food,Sandwich,Sandviç
+Food,Snacks,Cake,Pasta
+Food,Snacks,Candy,?eker
+Food,Snacks,Chocolate,Çikolata
+Food,Snacks,Cookies,Bisküvi
+Food,Snacks,Dessert,Tatl?
+Food,Snacks,Potato chips,Patates cipsi
+Food,Drinks,Coffee,Kahve
+Food,Drinks,Cola,Kola
+Food,Drinks,Fruit juice,Meyve suyu
+Food,Drinks,Tea,Çay
+Food,Drinks,Water,Su
+Food,Spices,Chili pepper,Pul biber
+Food,Spices,Pepper,Karabiber
+Food,Spices,Salt,Tuz
+Food,Spices,Vinegar,Sirke
+Food,Meals,Breakfast,Kahvalt?
+Food,Meals,Lunch,Ö?le yeme?i
+Food,Meals,Dinner,Ak?am yeme?i
+Islam,General,Muslim,Müslüman
+Islam,General,Islam,?slam
+Islam,General,Quran,Kur'ân
+Islam,General,Sunnah,Sünnet
+Islam,Mosque,Ablution (Wuzu),Abdest
+Islam,Mosque,Call to prayer,Ezan
+Islam,Mosque,Dome,Kubbe
+Islam,Mosque,Imam,?mam
+Islam,Mosque,Minaret,Minare
+Islam,Mosque,Mosque,Cami
+Islam,Mosque,Muazzin,Müezzin
+Islam,Mosque,Niche,Mihrap
+Islam,Mosque,Pulpit,Minber
+Islam,Mosque,Salaah (Prayer),Namaz
+Islam,Salaah (Prayer),Fajr salaah,Sabah namaz?
+Islam,Salaah (Prayer),Thuhr salaah,Ö?le namaz?
+Islam,Salaah (Prayer),Asr salaah,?kindi namaz?
+Islam,Salaah (Prayer),Maghrib salaah,Ak?am namaz?
+Islam,Salaah (Prayer),Esha salaah,Yats? namaz?
+Islam,Salaah (Prayer),To perform salaah,Namaz k?lmak
+Islam,Ramadan (Fasting Month),To Fast,Oruç tutmak
+Islam,Ramadan (Fasting Month),Iftar,?ftar
+Islam,Ramadan (Fasting Month),Laylatul Qadr,Kadir gecesi
+Islam,Ramadan (Fasting Month),Ramadan,Ramazan
+Islam,Ramadan (Fasting Month),Ramadan Mubarak,Ramazan?n?z Mübarek Olsun
+Islam,Ramadan (Fasting Month),Suhoor,Sahur
+Islam,Ramadan (Fasting Month),Taraweeh salaah,Teravih namaz?
+Islam,Special Occasions,Eid Al-Fitr,Ramazan Bayram?
+Islam,Special Occasions,Eid Al-Adha,Kurban Bayram?
+Islam,Special Occasions,Eid Mubarak,Bayram?n?z Mübarek Olsun
+Islam,Special Occasions,Jumuah,Cuma
+Islam,Special Occasions,Jumuah Mubarakah,Cuman?z Mübarek Olsun
+Islam,Special Occasions,Hajj,Hac
+Islam,Special Occasions,Umrah,Umre
+Islam,Months (Hijri),Muharram,Muharrem
+Islam,Months (Hijri),Safar,Safer
+Islam,Months (Hijri),Rabi'ul Awwal,Rebiülevvel
+Islam,Months (Hijri),Rabi'ul Akhir,Rebiülahir
+Islam,Months (Hijri),Jumadul Awwal,Cemaziyelevvel
+Islam,Months (Hijri),Jumadul Akhir,Cemaziyelahir
+Islam,Months (Hijri),Rajab,Recep
+Islam,Months (Hijri),Shabaan,?aban
+Islam,Months (Hijri),Ramadan,Ramazan
+Islam,Months (Hijri),Shawwal,?evval
+Islam,Months (Hijri),Dhul Qadah,Zilkade
+Islam,Months (Hijri),Dhul Hijjah,Zilhicce
+Islam,Clothing,Headscarf,E?arp / Ba?örtüsü
+Islam,Clothing,Niqab,Çar?af
+Islam,Clothing,Jubbah / Kurta,Cübbe
+Islam,Clothing,Turban,Sar?k
+Islam,Clothing,Taqiyah / Cap,Takke
+Languages,Main,Arabic,Arapça
+Languages,Main,Chinese,Çince
+Languages,Main,English,?ngilizce
+Languages,Main,Farsi,Farsça
+Languages,Main,French,Frans?zca
+Languages,Main,German,Almanca
+Languages,Main,Hindi,Hintçe
+Languages,Main,Kurdish,Kürtçe
+Languages,Main,Latin,Latince
+Languages,Main,Ottoman,Osmanl?ca
+Languages,Main,Portuguese,Portekizce
+Languages,Main,Russian,Rusça
+Languages,Main,Spanish,?spanyolca
+Languages,Main,Turkish,Türkçe
+Languages,Main,Urdu,Urduca
+Mobile Phone,Main,App,Uygulama
+Mobile Phone,Main,Battery,Pil
+Mobile Phone,Main,Call,Ça?r?
+Mobile Phone,Main,Charger,?arj aleti
+Mobile Phone,Main,Data,Veri
+Mobile Phone,Main,Device,Cihaz
+Mobile Phone,Main,Internet,?nternet
+Mobile Phone,Main,Message,Mesaj
+Mobile Phone,Main,Mobile phone,Cep telefonu
+Mobile Phone,Main,Network,A?
+Mobile Phone,Main,Password,?ifre
+Mobile Phone,Main,Prepaid credits / airtime,Kontör
+Mobile Phone,Main,Roaming,Dola??m
+Mobile Phone,Main,Sim card,SIM kart
+Mobile Phone,Main,Smartphone,Ak?ll? telefon
+Mobile Phone,Main,Touch screen,Dokunmatik ekran
+Occupations,Main,Accountant,Muhasebeci
+Occupations,Main,Businessman,??adam?
+Occupations,Main,Chef,A?ç?
+Occupations,Main,Dentist,Di? hekimi
+Occupations,Main,Doctor,Doktor
+Occupations,Main,Engineer,Mühendis
+Occupations,Main,Farmer,Çiftçi
+Occupations,Main,Journalist,Gazeteci
+Occupations,Main,Lawyer,Avukat
+Occupations,Main,Nurse,Hem?ire
+Occupations,Main,Researcher,Ara?t?rmac?
+Occupations,Main,Student,Ö?renci
+Occupations,Main,Teacher,Ö?retmen
+Occupations,Main,Writer,Yazar
+Parts Of The Body,Head and face,Beard,Sakal
+Parts Of The Body,Head and face,Brain,Beyin
+Parts Of The Body,Head and face,Chin,Çene
+Parts Of The Body,Head and face,Ear,Kulak
+Parts Of The Body,Head and face,Eye,Göz
+Parts Of The Body,Head and face,Face,Yüz
+Parts Of The Body,Head and face,Hair,Saç
+Parts Of The Body,Head and face,Head,Ba?
+Parts Of The Body,Head and face,Lip,Dudak
+Parts Of The Body,Head and face,Moustache,B?y?k
+Parts Of The Body,Head and face,Mouth,A??z
+Parts Of The Body,Head and face,Neck,Boyun
+Parts Of The Body,Head and face,Nose,Burun
+Parts Of The Body,Head and face,Tongue,Dil
+Parts Of The Body,Head and face,Tooth,Di?
+Parts Of The Body,Upper Body,Arm,Kol
+Parts Of The Body,Upper Body,Chest,Gö?üs
+Parts Of The Body,Upper Body,Elbow,Dirsek
+Parts Of The Body,Upper Body,Finger,Parmak
+Parts Of The Body,Upper Body,Hand,El
+Parts Of The Body,Upper Body,Heart,Kalp
+Parts Of The Body,Upper Body,Shoulder,Omuz
+Parts Of The Body,Upper Body,Stomach,Mide
+Parts Of The Body,Lower Body,Ankle,Ayak bile?i
+Parts Of The Body,Lower Body,Foot,Ayak
+Parts Of The Body,Lower Body,Heel,Topuk
+Parts Of The Body,Lower Body,Knee,Diz
+Parts Of The Body,Lower Body,Leg,Bacak
+Parts Of The Body,Lower Body,Toe,Ayak parma??
+Politics,Main,Ballot box,Sand?k
+Politics,Main,Border,S?n?r
+Politics,Main,Citizen,Vatanda?
+Politics,Main,Constitution,Anayasa
+Politics,Main,Coup,Darbe
+Politics,Main,Democracy,Demokrasi
+Politics,Main,Economy,Ekonomi
+Politics,Main,Election,Seçim
+Politics,Main,Government,Hükümet
+Politics,Main,Minister,Bakan
+Politics,Main,Parliament,Parlamento / Meclis
+Politics,Main,Party,Parti
+Politics,Main,Politician,Siyasetçi
+Politics,Main,Politics,Siyaset
+Politics,Main,President,Cumhurba?kan? / Devlet Ba?kan?
+Politics,Main,Prime Minister,Ba?bakan
+Politics,Main,Republic,Cumhuriyet
+Politics,Main,Vote,Oy
+Politics,Main,War,Sava?
+School,General,Bell,Zil
+School,General,Blackboard,Tahta
+School,General,Chair,Sandalye
+School,General,Class / Grade,S?n?f
+School,General,Desk,Masa
+School,General,Elementary School,?lkokul
+School,General,Holiday,Tatil
+School,General,Homework,Ödev
+School,General,Lesson,Ders
+School,General,Middle School,Ortaokul
+School,General,Principal,Okul müdürü
+School,General,Recess / Break,Teneffüs
+School,General,School,Okul
+School,General,Secondary School / High School,Lise
+School,General,Student,Ö?renci
+School,General,Subject,Ders
+School,General,Teacher,Ö?retmen
+School,General,Test,S?nav
+School,General,Uniform,K?yafet
+School,Stationery,Chalk,Tebe?ir
+School,Stationery,Eraser,Silgi
+School,Stationery,Glue,Tutkal
+School,Stationery,Notebook,Defter
+School,Stationery,Pen,Kalem
+School,Stationery,Pencil,Kur?un kalem
+School,Stationery,Ruler,Cetvel
+School,Stationery,Scissor,Makas
+School,Stationery,Sharpener,Kalemt?ra?
+School,Stationery,Textbook,Kitap
+School,Subjects,Biology,Biyoloji
+School,Subjects,Chemistry,Kimya
+School,Subjects,English,?ngilizce
+School,Subjects,French,Frans?zca
+School,Subjects,Geography,Co?rafya
+School,Subjects,Geometry,Geometri
+School,Subjects,German,Almanca
+School,Subjects,History,Tarih
+School,Subjects,Literature,Edebiyat
+School,Subjects,Mathematics,Matematik
+School,Subjects,Philosophy,Felsefe
+School,Subjects,Physics,Fizik
+School,Subjects,Spanish,?spanyolca
+School,Subjects,Turkish,Türkçe
+Transport,Main,Aeroplane,Uçak
+Transport,Main,Bicycle,Bisiklet
+Transport,Main,Boat,Tekne
+Transport,Main,Bus,Otobüs
+Transport,Main,Car,Araba
+Transport,Main,Ferry,Feribot / Vapur
+Transport,Main,Helicopter,Helikopter
+Transport,Main,Motorbike,Motosiklet
+Transport,Main,Scooter,Skuter
+Transport,Main,Ship,Gemi
+Transport,Main,Subway / Underground Railway,Metro
+Transport,Main,Taxi,Taksi
+Transport,Main,Train,Tren
+Transport,Main,Tram,Tramvay
+Transport,Main,Truck,Kamyon

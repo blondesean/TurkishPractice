@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where python *)",
+      "Bash(py -3 --version)",
+      "Bash(py -3 -c \"import py_compile; py_compile.compile\\('turkish_practice.py', doraise=True\\); py_compile.compile\\('graphs.py', doraise=True\\); py_compile.compile\\('recommenders/__init__.py', doraise=True\\); py_compile.compile\\('recommenders/base.py', doraise=True\\); py_compile.compile\\('recommenders/weighted.py', doraise=True\\); print\\('All files compile OK'\\)\")",
+      "Bash(py -3 -c \"from recommenders import ActiveRecommender; from graphs import show_graphs; r = ActiveRecommender\\(\\); print\\(type\\(r\\).__name__, '- imports OK'\\)\")",
+      "Bash(py -3 -c ' *)",
+      "Bash(py -3 -c \"f=open\\('vocab_turkish.csv','rb'\\);raw=f.read\\(\\);f.close\\(\\);lines=raw.split\\(b'\\\\r\\\\n'\\);qcount=sum\\(1 for l in lines if b'\\\\x3f' in l and lines.index\\(l\\)>0\\);print\\(f'{qcount} lines contain literal 0x3F \\(?\\)'\\)\")",
+      "Bash(py -3 -c \"import sys;sys.stdout.reconfigure\\(encoding='utf-8'\\);f=open\\('vocab_turkish.csv','rb'\\);raw=f.read\\(\\);f.close\\(\\);lines=raw.split\\(b'\\\\r\\\\n'\\);samples=[l.decode\\('latin-1'\\) for l in lines[1:] if b'\\\\x3f' in l][:8];[print\\(s\\) for s in samples]\")",
+      "Bash(py -3 -c \"f=open\\('vocab_turkish.txt','rb'\\);raw=f.read\\(500\\);f.close\\(\\);print\\(raw[:4].hex\\(' '\\)\\);print\\(raw[:300]\\)\")",
+      "Bash(py -3 -c \"import sys;sys.stdout.reconfigure\\(encoding='utf-8'\\);f=open\\('vocab_turkish.txt','r',encoding='utf-16'\\);lines=f.readlines\\(\\);f.close\\(\\);[print\\(l.rstrip\\(\\)\\) for l in lines[:10]]\")",
+      "Bash(py -3 -c \"import sys;sys.stdout.reconfigure\\(encoding='utf-8'\\);f=open\\('vocab_turkish.txt','r',encoding='utf-16'\\);lines=f.readlines\\(\\);f.close\\(\\);targets=['Bear','Bird','Dog','Cat'];[print\\(l.rstrip\\(\\)\\) for l in lines if any\\(t+'\\\\t' in l for t in targets\\)]\")",
+      "Bash(py -3 -c \"import sys;sys.stdout.reconfigure\\(encoding='utf-8'\\);from turkish_practice import load_csv;d=load_csv\\(\\);total=sum\\(len\\(w\\) for c in d for w in d[c].values\\(\\)\\);print\\(f'{len\\(d\\)} categories, {total} words, all Turkish chars intact'\\)\")",
+      "Bash(py -3 -c \"import py_compile;py_compile.compile\\('graphs.py',doraise=True\\);py_compile.compile\\('turkish_practice.py',doraise=True\\);print\\('OK'\\)\")",
+      "Bash(py -3 -c \"import py_compile;py_compile.compile\\('graphs.py',doraise=True\\);print\\('OK'\\)\")",
+      "Bash(py -3 -c \"import py_compile;py_compile.compile\\('turkish_practice.py',doraise=True\\);py_compile.compile\\('graphs.py',doraise=True\\);print\\('OK'\\)\")",
+      "Bash(py -3 -c \"from graphs import _mastery_change; h=[False,False,False,False,True,True,True,True,True,True]; acc,old_h,new_h=_mastery_change\\(h\\); print\\(f'old_half={old_h:.0%} new_half={new_h:.0%} delta={round\\(\\(new_h-old_h\\)*100\\):+d}pts'\\); base=min\\(old_h,new_h\\); change=abs\\(new_h-old_h\\); empty=1-base-change; print\\(f'bar: {base:.0%} grey + {change:.0%} green + {empty:.0%} empty = {base+change+empty:.0%}'\\)\")",
+      "Bash(py -3 -c \"from graphs import _mastery_change; h=[True,True,True,True,False,False,True,False]; acc,old_h,new_h=_mastery_change\\(h\\); print\\(f'old_half={old_h:.0%} new_half={new_h:.0%} delta={round\\(\\(new_h-old_h\\)*100\\):+d}pts'\\); base=min\\(old_h,new_h\\); change=abs\\(new_h-old_h\\); empty=1-base-change; print\\(f'bar: {base:.0%} grey + {change:.0%} red + {empty:.0%} empty = {base+change+empty:.0%}'\\)\")",
+      "Bash(py -3 -c \"old_s,old_c=10,8; new_s,new_c=old_s+1,old_c+1; old_m=old_c/old_s; new_m=new_c/new_s; print\\(f'Was 8/10=80%%, got 1 right -> 9/11={new_m:.1%}, change={round\\(\\(new_m-old_m\\)*100\\):+d}pts'\\); old_s,old_c=10,8; new_s,new_c=old_s+1,old_c; old_m=old_c/old_s; new_m=new_c/new_s; print\\(f'Was 8/10=80%%, got 1 wrong -> 8/11={new_m:.1%}, change={round\\(\\(new_m-old_m\\)*100\\):+d}pts'\\); old_s,old_c=1,0; new_s,new_c=old_s+1,old_c+1; old_m=old_c/old_s; new_m=new_c/new_s; print\\(f'Was 0/1=0%%, got 1 right -> 1/2={new_m:.1%}, change={round\\(\\(new_m-old_m\\)*100\\):+d}pts'\\)\")",
+      "Bash(py -3 -c \"import sys;sys.stdout.reconfigure\\(encoding='utf-8'\\);G='\\\\033[90m';LG='\\\\033[37m';GR='\\\\033[0;32m';R='\\\\033[0;31m';NC='\\\\033[0m';B=chr\\(9608\\);E=chr\\(9617\\);bw=40;print\\('Word Mastery \\(by current accuracy\\)'\\);print\\(\\);m=82;old=80;gc=int\\(old/100*bw\\);grc=int\\(\\(m-old\\)/100*bw\\) or 1;ec=bw-gc-grc;print\\(f'  Cat              {G}{B*gc}{NC}{GR}{B*grc}{NC}{LG}{E*ec}{NC}  82 {GR}+2{NC}'\\);m=73;old=80;gc=int\\(m/100*bw\\);rc=int\\(\\(old-m\\)/100*bw\\) or 1;ec=bw-gc-rc;print\\(f'  Dog              {G}{B*gc}{NC}{R}{B*rc}{NC}{LG}{E*ec}{NC}  73 {R}-7{NC}'\\);m=50;gc=int\\(m/100*bw\\);ec=bw-gc;print\\(f'  Elephant         {G}{B*gc}{NC}{LG}{E*ec}{NC}  50'\\);m=100;old=80;gc=int\\(old/100*bw\\);grc=int\\(\\(m-old\\)/100*bw\\);ec=bw-gc-grc;print\\(f'  Fish             {G}{B*gc}{NC}{GR}{B*grc}{NC}{LG}{E*ec}{NC} 100 {GR}+20{NC}'\\)\")",
+      "Bash(py *)"
+    ]
+  }
+}

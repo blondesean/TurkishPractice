@@ -1,8 +1,12 @@
 import os
 import sys
 import json
+import csv
 import random
 from datetime import datetime
+
+from recommenders import ActiveRecommender
+from graphs import show_graphs
 
 # Enable ANSI colors on Windows
 os.system("")
@@ -17,7 +21,7 @@ DIM = "\033[2m"
 NC = "\033[0m"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-VOCAB_DIR = os.path.join(BASE_DIR, "vocab")
+VOCAB_FILE = os.path.join(BASE_DIR, "vocab_turkish.txt")
 STATS_FILE = os.path.join(BASE_DIR, "stats.json")
 NUM_QUESTIONS = 5
 NUM_CHOICES = 6
@@ -28,8 +32,44 @@ NUM_CHOICES = 6
 def load_stats():
     if os.path.exists(STATS_FILE):
         with open(STATS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            stats = json.load(f)
+        _migrate_module_names(stats)
+        return stats
     return {"words": {}, "modules": {}, "sessions": 0}
+
+
+def _migrate_module_names(stats):
+    """Normalize module names to title case (e.g. 'animals' -> 'Animals')."""
+    # Migrate word entries
+    new_words = {}
+    for key, w in list(stats.get("words", {}).items()):
+        old_mod = w["module"]
+        new_mod = old_mod.title()
+        if old_mod != new_mod:
+            w["module"] = new_mod
+            new_key = key.replace(old_mod + "|", new_mod + "|", 1)
+            new_words[new_key] = w
+        else:
+            new_words[key] = w
+    stats["words"] = new_words
+
+    # Migrate module-level stats
+    new_modules = {}
+    for mod, data in list(stats.get("modules", {}).items()):
+        new_mod = mod.title()
+        if new_mod in new_modules:
+            # Merge into existing
+            for d in ("en_to_tr", "tr_to_en"):
+                new_modules[new_mod][d]["asked"] += data[d]["asked"]
+                new_modules[new_mod][d]["correct"] += data[d]["correct"]
+            new_modules[new_mod]["sessions"] += data["sessions"]
+        else:
+            new_modules[new_mod] = data
+    stats["modules"] = new_modules
+
+    # Migrate session history
+    for s in stats.get("session_history", []):
+        s["module"] = s["module"].title()
 
 
 def save_stats(stats):
@@ -56,6 +96,9 @@ def record_answer(stats, module, eng, tur, direction, correct):
     w[direction]["seen"] += 1
     if correct:
         w[direction]["correct"] += 1
+    if "history" not in w[direction]:
+        w[direction]["history"] = []
+    w[direction]["history"].append(correct)
     w["last_seen"] = datetime.now().isoformat()
 
 
@@ -71,6 +114,16 @@ def record_session(stats, module, direction, score, total):
     m[direction]["asked"] += total
     m[direction]["correct"] += score
     stats["sessions"] += 1
+
+    if "session_history" not in stats:
+        stats["session_history"] = []
+    stats["session_history"].append({
+        "timestamp": datetime.now().isoformat(),
+        "module": module,
+        "direction": direction,
+        "score": score,
+        "total": total,
+    })
 
 
 def get_word_accuracy(stats, module, eng, tur, direction):
@@ -134,48 +187,62 @@ def show_weak_words(stats, module, direction, top_n=5):
 
 # --- Vocab ---
 
-def load_vocab(filepath):
-    pairs = []
-    with open(filepath, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if "|" in line:
-                eng, tur = line.split("|", 1)
-                pairs.append((eng.strip(), tur.strip()))
-    return pairs
-
-
-def module_name(filepath):
-    return os.path.basename(filepath).replace(".txt", "")
+def load_csv():
+    """Load vocab_turkish.txt (UTF-16, tab-delimited) and return {category: {subcategory: [(eng, tur), ...]}}."""
+    data = {}
+    with open(VOCAB_FILE, "r", encoding="utf-16") as f:
+        reader = csv.reader(f, delimiter="\t")
+        next(reader)  # skip header
+        for row in reader:
+            if len(row) < 4:
+                continue
+            cat, sub, eng, tur = row[0].strip(), row[1].strip(), row[2].strip(), row[3].strip()
+            if cat not in data:
+                data[cat] = {}
+            if sub not in data[cat]:
+                data[cat][sub] = []
+            data[cat][sub].append((eng, tur))
+    return data
 
 
 # --- UI ---
 
-def select_module():
-    files = sorted(f for f in os.listdir(VOCAB_DIR) if f.endswith(".txt"))
-    if not files:
-        print("No vocab files found.")
-        sys.exit(1)
-
-    if len(files) == 1:
-        name = files[0].replace(".txt", "")
-        print(f"{CYAN}Module: {BOLD}{name}{NC}")
-        return os.path.join(VOCAB_DIR, files[0])
-
-    print(f"{CYAN}{BOLD}Select a module:{NC}")
-    for i, f in enumerate(files):
-        name = f.replace(".txt", "")
-        print(f"  {BOLD}{i + 1}){NC} {name}")
+def pick_from_list(prompt_text, options):
+    """Show a numbered list and return the chosen item."""
+    print(f"{CYAN}{BOLD}{prompt_text}{NC}")
+    for i, opt in enumerate(options):
+        print(f"  {BOLD}{i + 1}){NC} {opt}")
     print()
 
     while True:
         try:
             choice = int(input("> "))
-            if 1 <= choice <= len(files):
-                return os.path.join(VOCAB_DIR, files[choice - 1])
+            if 1 <= choice <= len(options):
+                return options[choice - 1]
         except (ValueError, EOFError):
             pass
-        print(f"Pick a number between 1 and {len(files)}")
+        print(f"Pick a number between 1 and {len(options)}")
+
+
+def select_module(vocab_data):
+    """Let user pick category then subcategory. Returns (module_name, word_pairs)."""
+    categories = sorted(vocab_data.keys())
+    category = pick_from_list("Select a category:", categories)
+
+    subcategories = sorted(vocab_data[category].keys())
+
+    if len(subcategories) == 1 and subcategories[0] == "Main":
+        # Only "Main" — skip subcategory selection
+        mod_name = category
+        words = vocab_data[category]["Main"]
+    else:
+        print()
+        subcategory = pick_from_list(f"Select a topic in {BOLD}{category}{NC}:", subcategories)
+        mod_name = f"{category}/{subcategory}"
+        words = vocab_data[category][subcategory]
+
+    print(f"{CYAN}Module: {BOLD}{mod_name}{NC} ({len(words)} words)")
+    return mod_name, words
 
 
 def select_direction():
@@ -197,10 +264,11 @@ def select_direction():
         print("Pick 1 or 2")
 
 
-def run_quiz(vocab, direction, stats, mod_name):
+def run_quiz(vocab, direction, stats, mod_name, session_scores):
     total = len(vocab)
     q_count = min(NUM_QUESTIONS, total)
-    questions = random.sample(range(total), q_count)
+    recommender = ActiveRecommender()
+    questions = recommender.select_questions(vocab, stats, mod_name, direction, q_count)
     score = 0
     results = []
 
@@ -268,8 +336,10 @@ def run_quiz(vocab, direction, stats, mod_name):
     record_session(stats, mod_name, direction, score, q_count)
     save_stats(stats)
 
-    show_session_stats(stats, mod_name, direction, results)
+    session_scores.append({"module": mod_name, "direction": direction, "score": score, "total": q_count})
+
     show_weak_words(stats, mod_name, direction)
+    show_graphs(stats, mod_name, direction, session_scores, results)
 
 
 def main():
@@ -280,13 +350,13 @@ def main():
     print()
 
     stats = load_stats()
+    vocab_data = load_csv()
+    session_scores = []  # this sitting only, resets when app closes
 
     while True:
-        filepath = select_module()
-        vocab = load_vocab(filepath)
-        mod = module_name(filepath)
+        mod, vocab = select_module(vocab_data)
         direction = select_direction()
-        run_quiz(vocab, direction, stats, mod)
+        run_quiz(vocab, direction, stats, mod, session_scores)
 
         print(f"{CYAN}{BOLD}Go again? (y/n){NC}")
         try:
