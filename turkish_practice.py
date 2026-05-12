@@ -264,9 +264,28 @@ def select_direction():
         print("Pick 1 or 2")
 
 
-def run_quiz(vocab, direction, stats, mod_name, session_scores):
-    total = len(vocab)
-    q_count = min(NUM_QUESTIONS, total)
+def select_question_count(max_q):
+    default = min(NUM_QUESTIONS, max_q)
+    print()
+    print(f"{CYAN}{BOLD}How many questions? {DIM}[Enter = {default}, max = {max_q}]{NC}")
+
+    while True:
+        try:
+            raw = input("> ").strip()
+        except EOFError:
+            sys.exit(0)
+        if raw == "":
+            return default
+        try:
+            n = int(raw)
+            if 1 <= n <= max_q:
+                return n
+        except ValueError:
+            pass
+        print(f"Pick a number between 1 and {max_q}")
+
+
+def run_quiz(vocab, direction, stats, mod_name, session_scores, q_count):
     recommender = ActiveRecommender()
     questions = recommender.select_questions(vocab, stats, mod_name, direction, q_count)
     score = 0
@@ -353,19 +372,26 @@ def main():
     vocab_data = load_csv()
     session_scores = []  # this sitting only, resets when app closes
 
+    mod, vocab, direction, q_count = None, None, None, None
     while True:
-        mod, vocab = select_module(vocab_data)
-        direction = select_direction()
-        run_quiz(vocab, direction, stats, mod, session_scores)
+        if mod is None:
+            mod, vocab = select_module(vocab_data)
+            direction = select_direction()
+            q_count = select_question_count(len(vocab))
+        run_quiz(vocab, direction, stats, mod, session_scores, q_count)
 
-        print(f"{CYAN}{BOLD}Go again? (y/n){NC}")
+        print(f"{CYAN}{BOLD}Go again? (y = new, r = retry same, n = quit){NC}")
         try:
             again = input("> ").strip().lower()
         except EOFError:
             break
+        if again == "r":
+            print()
+            continue
         if again != "y":
             print(f"{CYAN}Görüşürüz! (See you!){NC}")
             break
+        mod, vocab, direction, q_count = None, None, None, None
         print()
 
 
