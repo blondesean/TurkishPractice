@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from mastery import compute_mastery
+
 # Colors (matching main app)
 GREEN = "\033[0;32m"
 RED = "\033[0;31m"
@@ -35,55 +37,71 @@ def _pad(text, width):
 
 
 def _bucket_average(values, max_slots):
-    """Reduce a list of values to fit max_slots by averaging consecutive groups."""
+    """Reduce a list of values to fit max_slots by averaging consecutive groups.
+
+    None values are skipped within each bucket; a bucket of only Nones stays None.
+    """
     if len(values) <= max_slots:
-        return values
+        return list(values)
     bucket_size = len(values) / max_slots
     result = []
     i = 0.0
     while i < len(values):
         end = min(i + bucket_size, len(values))
-        bucket = values[int(i):int(end)]
+        bucket = [v for v in values[int(i):int(end)] if v is not None]
         if bucket:
             result.append(sum(bucket) / len(bucket))
+        else:
+            result.append(None)
         i = end
     return result[:max_slots]
 
 
-def _render_line_chart(pcts, title_text, color, width, height):
-    """Shared line chart renderer with moving-average bucketing."""
-    lines = []
-    lines.append(f"{BOLD}{title_text}{NC}")
+def _render_line_chart(series, title_text, width, height):
+    """Render one or more series on shared axes.
 
-    if not pcts:
+    `series` is a list of (pcts, color, marker, legend_label) tuples sharing the
+    same x-axis. None values inside a pcts list are treated as missing data
+    (no marker drawn). Pass legend_label=None to omit from the legend.
+    """
+    lines = [f"{BOLD}{title_text}{NC}"]
+
+    if not any(s[0] for s in series):
         lines.append(f"{DIM}  No session history yet.{NC}")
-        for _ in range(height):
+        for _ in range(height + 2):
             lines.append("")
         return lines
 
     chart_width = width - 7
-    pcts = _bucket_average(pcts, chart_width)
+    bucketed = [(_bucket_average(s[0], chart_width), s[1], s[2], s[3]) for s in series]
+    max_cols = max(len(b[0]) for b in bucketed)
 
     for row in range(height, -1, -1):
         threshold = row * (100 / height)
         label = f"{int(threshold):>3}%{DIM}|{NC}"
         cells = ""
-        for p in pcts:
-            if abs(p - threshold) <= (100 / height / 2):
-                cells += f"{color}*{NC}"
-            elif row == 0:
-                cells += f"{DIM}-{NC}"
-            else:
-                cells += " "
+        for col in range(max_cols):
+            cell = " " if row > 0 else f"{DIM}-{NC}"
+            for pcts, color, marker, _ in bucketed:
+                if col >= len(pcts) or pcts[col] is None:
+                    continue
+                if abs(pcts[col] - threshold) <= (100 / height / 2):
+                    cell = f"{color}{marker}{NC}"
+            cells += cell
         lines.append(label + cells)
 
     axis_pad = "     " + f"{DIM}+{NC}"
-    lines.append(axis_pad + f"{DIM}{'-' * len(pcts)}{NC}")
-    if len(pcts) <= 10:
-        nums = "".join(str(i + 1) for i in range(len(pcts)))
+    lines.append(axis_pad + f"{DIM}{'-' * max_cols}{NC}")
+    if max_cols <= 10:
+        nums = "".join(str(i + 1) for i in range(max_cols))
     else:
-        nums = "1" + " " * (len(pcts) - 2) + str(len(pcts))
+        nums = "1" + " " * (max_cols - 2) + str(max_cols)
     lines.append("      " + f"{DIM}{nums}{NC}")
+
+    legend = [(c, m, l) for _, c, m, l in bucketed if l]
+    if legend:
+        parts = [f"{c}{m}{NC} {l}" for c, m, l in legend]
+        lines.append("      " + "  ".join(parts))
 
     return lines
 
@@ -188,28 +206,20 @@ def render_mastery_change(stats, module, direction, quiz_results, width=None):
         if w["module"] != module:
             continue
         d = w[direction]
-        if d["seen"] == 0:
+        history = d.get("history", [])
+        if not history:
             continue
-        current_mastery = d["correct"] / d["seen"]
+        current_mastery = compute_mastery(history)
 
-        # Check if quizzed this round
         q_key = (w["english"], w["turkish"])
         change_pts = None
         if q_key in quizzed:
-            round_seen, round_correct = quizzed[q_key]
-            old_seen = d["seen"] - round_seen
-            old_correct = d["correct"] - round_correct
-            if old_seen > 0:
-                old_mastery = old_correct / old_seen
-                change_pts = round((current_mastery - old_mastery) * 100)
-            else:
-                # First time seeing this word -- treat whole mastery as new
-                change_pts = round(current_mastery * 100)
+            round_seen, _ = quizzed[q_key]
+            old_history = history[:-round_seen] if round_seen else history
+            old_mastery = compute_mastery(old_history)
+            change_pts = round((current_mastery - old_mastery) * 100)
 
-        if direction == "en_to_tr":
-            label = w["english"]
-        else:
-            label = w["turkish"]
+        label = w["english"] if direction == "en_to_tr" else w["turkish"]
         words.append((current_mastery, d["seen"], label, change_pts))
 
     if not words:
@@ -256,59 +266,94 @@ def render_mastery_change(stats, module, direction, quiz_results, width=None):
     return lines
 
 
-def render_module_mastery_over_time(session_history, module, width=60, height=GRAPH_HEIGHT):
-    """Render a line chart of cumulative module mastery over time with moving averages."""
+def render_module_progress_over_time(session_history, module, width=60, height=GRAPH_HEIGHT):
+    """Two lines per module across past sessions:
+
+    - Test Accuracy: cumulative correct/asked. Long-run record of how often the
+      user got questions right.
+    - Mastery: snapshot of module mastery taken when each session was recorded
+      (None for sessions logged before snapshots were added).
+    """
     sessions = [s for s in session_history if s["module"] == module]
     cum_correct = 0
     cum_total = 0
-    pcts = []
+    acc_pcts = []
+    mast_pcts = []
     for s in sessions:
         cum_correct += s["score"]
         cum_total += s["total"]
-        pcts.append(cum_correct / cum_total * 100 if cum_total > 0 else 0)
-    title = f"Module Mastery Over Time ({module})"
-    return _render_line_chart(pcts, title, CYAN, width, height)
+        acc_pcts.append(cum_correct / cum_total * 100 if cum_total > 0 else 0)
+        m = s.get("mastery")
+        mast_pcts.append(m * 100 if m is not None else None)
+    title = f"Module Progress Over Time ({module})"
+    series = [
+        (acc_pcts, CYAN, "*", "Test Accuracy"),
+        (mast_pcts, YELLOW, "o", "Mastery"),
+    ]
+    return _render_line_chart(series, title, width, height)
 
 
-def render_module_ranking(stats, current_module, quiz_results, width=None):
-    """Render all modules ranked by overall mastery, with change shown for the current module."""
+def render_module_ranking(stats, current_module, current_direction, quiz_results, module_index, width=None):
+    """Render all modules ranked by average word mastery.
+
+    Mastery is averaged over every (word, direction) pair in the module. Untested
+    pairs count as 0, so a module can never exceed (tested_pairs / total_pairs)
+    in mastery, even with perfect test results.
+    """
     term_width = width or shutil.get_terminal_size((80, 24)).columns - 4
     lines = []
     title = f"{BOLD}All Modules Ranked by Mastery{NC}"
     lines.append(title)
 
-    modules = {}
-    for key, w in stats.get("words", {}).items():
-        mod = w["module"]
-        if mod not in modules:
-            modules[mod] = {"seen": 0, "correct": 0}
-        for d in ("en_to_tr", "tr_to_en"):
-            modules[mod]["seen"] += w[d]["seen"]
-            modules[mod]["correct"] += w[d]["correct"]
-
-    if not modules:
-        lines.append(f"{GREY}  No data yet.{NC}")
+    if not module_index:
+        lines.append(f"{GREY}  No modules.{NC}")
         return lines
 
-    # Compute how many answers this round contributed to the current module
-    round_seen = len(quiz_results)
-    round_correct = sum(1 for _, _, c in quiz_results if c)
+    # Per-word delta lookup for the active direction this round
+    quizzed = {}
+    for eng, tur, _ in quiz_results:
+        quizzed[(eng, tur)] = quizzed.get((eng, tur), 0) + 1
+
+    words_dict = stats.get("words", {})
 
     ranked = []
-    for mod, counts in modules.items():
-        if counts["seen"] == 0:
+    for mod, mod_words in module_index.items():
+        if not mod_words:
             continue
-        acc = counts["correct"] / counts["seen"]
+        total_now = 0.0
+        total_old = 0.0
+        for eng, tur in mod_words:
+            w = words_dict.get(f"{mod}|{eng}|{tur}")
+            h_en = w["en_to_tr"].get("history", []) if w else []
+            h_tr = w["tr_to_en"].get("history", []) if w else []
+            m_en = compute_mastery(h_en)
+            m_tr = compute_mastery(h_tr)
+            total_now += m_en + m_tr
+
+            if mod == current_module:
+                round_n = quizzed.get((eng, tur), 0)
+                if current_direction == "en_to_tr":
+                    old_h = h_en[:-round_n] if round_n else h_en
+                    total_old += compute_mastery(old_h) + m_tr
+                else:
+                    old_h = h_tr[:-round_n] if round_n else h_tr
+                    total_old += m_en + compute_mastery(old_h)
+
+        denom = len(mod_words) * 2
+        mastery = total_now / denom
         change_pts = None
-        if mod == current_module and round_seen > 0:
-            old_seen = counts["seen"] - round_seen
-            old_correct = counts["correct"] - round_correct
-            if old_seen > 0:
-                old_acc = old_correct / old_seen
-                change_pts = round((acc - old_acc) * 100)
-            else:
-                change_pts = round(acc * 100)
-        ranked.append((acc, counts["seen"], mod, change_pts))
+        if mod == current_module and quizzed:
+            old_mastery = total_old / denom
+            change_pts = round((mastery - old_mastery) * 100)
+
+        # Hide untouched modules to avoid a wall of 0%s; always show current
+        if mastery == 0 and mod != current_module:
+            continue
+        ranked.append((mastery, len(mod_words), mod, change_pts))
+
+    if not ranked:
+        lines.append(f"{GREY}  No data yet.{NC}")
+        return lines
 
     ranked.sort(reverse=True)  # best first
 
@@ -346,7 +391,7 @@ def render_module_ranking(stats, current_module, quiz_results, width=None):
     return lines
 
 
-def show_graphs(stats, module, direction, session_scores, quiz_results):
+def show_graphs(stats, module, direction, session_scores, quiz_results, module_index):
     """Print all four charts stacked vertically."""
     term_width = shutil.get_terminal_size((80, 24)).columns
     chart_width = min(term_width - 4, 60)
@@ -361,8 +406,8 @@ def show_graphs(stats, module, direction, session_scores, quiz_results):
         print(f"  {line}")
     print()
 
-    # 2. All-time module mastery over time (persisted)
-    for line in render_module_mastery_over_time(session_history, module, width=chart_width):
+    # 2. Test accuracy + mastery over time for this module
+    for line in render_module_progress_over_time(session_history, module, width=chart_width):
         print(f"  {line}")
     print()
 
@@ -371,7 +416,7 @@ def show_graphs(stats, module, direction, session_scores, quiz_results):
         print(f"  {line}")
     print()
 
-    # 4. All modules ranked
-    for line in render_module_ranking(stats, module, quiz_results, width=term_width - 4):
+    # 4. All modules ranked by mastery (untested words count as 0%)
+    for line in render_module_ranking(stats, module, direction, quiz_results, module_index, width=term_width - 4):
         print(f"  {line}")
     print()

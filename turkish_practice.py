@@ -7,6 +7,7 @@ from datetime import datetime
 
 from recommenders import ActiveRecommender
 from graphs import show_graphs
+from mastery import compute_mastery
 
 # Enable ANSI colors on Windows
 os.system("")
@@ -102,7 +103,7 @@ def record_answer(stats, module, eng, tur, direction, correct):
     w["last_seen"] = datetime.now().isoformat()
 
 
-def record_session(stats, module, direction, score, total):
+def record_session(stats, module, direction, score, total, module_words):
     if module not in stats["modules"]:
         stats["modules"][module] = {
             "sessions": 0,
@@ -115,6 +116,18 @@ def record_session(stats, module, direction, score, total):
     m[direction]["correct"] += score
     stats["sessions"] += 1
 
+    # Snapshot module mastery (mean across all words × both directions) so the
+    # progress chart can plot it over time.
+    mastery_snapshot = None
+    if module_words:
+        total_m = 0.0
+        for eng, tur in module_words:
+            w = stats["words"].get(word_key(module, eng, tur))
+            for d in ("en_to_tr", "tr_to_en"):
+                h = w[d].get("history", []) if w else []
+                total_m += compute_mastery(h)
+        mastery_snapshot = total_m / (len(module_words) * 2)
+
     if "session_history" not in stats:
         stats["session_history"] = []
     stats["session_history"].append({
@@ -123,6 +136,7 @@ def record_session(stats, module, direction, score, total):
         "direction": direction,
         "score": score,
         "total": total,
+        "mastery": mastery_snapshot,
     })
 
 
@@ -161,27 +175,29 @@ def show_session_stats(stats, module, direction, results):
 
 
 def show_weak_words(stats, module, direction, top_n=5):
-    """Show worst-performing words for this module/direction."""
+    """Show lowest-mastery words for this module/direction."""
     weak = []
     for key, w in stats["words"].items():
         if w["module"] != module:
             continue
         d = w[direction]
-        if d["seen"] < 1:
+        history = d.get("history", [])
+        if not history:
             continue
-        acc = d["correct"] / d["seen"]
-        if acc < 1.0:
-            weak.append((acc, d["seen"], w["english"], w["turkish"]))
+        mastery = compute_mastery(history)
+        if mastery < 1.0:
+            weak.append((mastery, d["seen"], w["english"], w["turkish"]))
 
     if not weak:
         return
 
-    weak.sort()  # lowest accuracy first
+    # Lowest mastery first; ties broken by most-seen first
+    weak.sort(key=lambda x: (x[0], -x[1]))
     weak = weak[:top_n]
 
-    print(f"{YELLOW}{BOLD}Weak spots:{NC}")
-    for acc, seen, eng, tur in weak:
-        print(f"  {RED}{acc:.0%}{NC} ({seen} seen)  {eng} / {tur}")
+    print(f"{YELLOW}{BOLD}Lowest Mastery:{NC}")
+    for mastery, seen, eng, tur in weak:
+        print(f"  {RED}{mastery:.0%}{NC} seen {seen} times  {eng} / {tur}")
     print()
 
 
@@ -205,13 +221,26 @@ def load_csv():
     return data
 
 
+def build_module_index(vocab_data):
+    """Return {module_name: [(eng, tur), ...]} using the same naming as select_module."""
+    index = {}
+    for cat, subs in vocab_data.items():
+        if len(subs) == 1 and "Main" in subs:
+            index[cat] = subs["Main"]
+        else:
+            for sub, words in subs.items():
+                index[f"{cat}/{sub}"] = words
+    return index
+
+
 # --- UI ---
 
-def pick_from_list(prompt_text, options):
-    """Show a numbered list and return the chosen item."""
+def pick_from_list(prompt_text, options, labels=None):
+    """Show a numbered list and return the chosen item. `labels` overrides display text."""
+    display = labels if labels is not None else options
     print(f"{CYAN}{BOLD}{prompt_text}{NC}")
-    for i, opt in enumerate(options):
-        print(f"  {BOLD}{i + 1}){NC} {opt}")
+    for i, label in enumerate(display):
+        print(f"  {BOLD}{i + 1}){NC} {label}")
     print()
 
     while True:
@@ -227,7 +256,11 @@ def pick_from_list(prompt_text, options):
 def select_module(vocab_data):
     """Let user pick category then subcategory. Returns (module_name, word_pairs)."""
     categories = sorted(vocab_data.keys())
-    category = pick_from_list("Select a category:", categories)
+    cat_labels = [
+        f"{c} {DIM}({sum(len(w) for w in vocab_data[c].values())} words){NC}"
+        for c in categories
+    ]
+    category = pick_from_list("Select a category:", categories, cat_labels)
 
     subcategories = sorted(vocab_data[category].keys())
 
@@ -237,7 +270,13 @@ def select_module(vocab_data):
         words = vocab_data[category]["Main"]
     else:
         print()
-        subcategory = pick_from_list(f"Select a topic in {BOLD}{category}{NC}:", subcategories)
+        sub_labels = [
+            f"{s} {DIM}({len(vocab_data[category][s])} words){NC}"
+            for s in subcategories
+        ]
+        subcategory = pick_from_list(
+            f"Select a topic in {BOLD}{category}{NC}:", subcategories, sub_labels
+        )
         mod_name = f"{category}/{subcategory}"
         words = vocab_data[category][subcategory]
 
@@ -285,7 +324,7 @@ def select_question_count(max_q):
         print(f"Pick a number between 1 and {max_q}")
 
 
-def run_quiz(vocab, direction, stats, mod_name, session_scores, q_count):
+def run_quiz(vocab, direction, stats, mod_name, session_scores, q_count, module_index):
     recommender = ActiveRecommender()
     questions = recommender.select_questions(vocab, stats, mod_name, direction, q_count)
     score = 0
@@ -352,13 +391,13 @@ def run_quiz(vocab, direction, stats, mod_name, session_scores, q_count):
         print(f"{RED}{BOLD}Keep at it! Practice makes perfect.{NC}")
     print()
 
-    record_session(stats, mod_name, direction, score, q_count)
+    record_session(stats, mod_name, direction, score, q_count, vocab)
     save_stats(stats)
 
     session_scores.append({"module": mod_name, "direction": direction, "score": score, "total": q_count})
 
     show_weak_words(stats, mod_name, direction)
-    show_graphs(stats, mod_name, direction, session_scores, results)
+    show_graphs(stats, mod_name, direction, session_scores, results, module_index)
 
 
 def main():
@@ -370,6 +409,7 @@ def main():
 
     stats = load_stats()
     vocab_data = load_csv()
+    module_index = build_module_index(vocab_data)
     session_scores = []  # this sitting only, resets when app closes
 
     mod, vocab, direction, q_count = None, None, None, None
@@ -378,7 +418,7 @@ def main():
             mod, vocab = select_module(vocab_data)
             direction = select_direction()
             q_count = select_question_count(len(vocab))
-        run_quiz(vocab, direction, stats, mod, session_scores, q_count)
+        run_quiz(vocab, direction, stats, mod, session_scores, q_count, module_index)
 
         print(f"{CYAN}{BOLD}Go again? (y = new, r = retry same, n = quit){NC}")
         try:
