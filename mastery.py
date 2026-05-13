@@ -2,7 +2,7 @@
 
 # Weight for each of the last WINDOW answers, most-recent first.
 # Sum = 1.0 so the result is a fraction in [0, 1].
-MASTERY_WEIGHTS = [0.20, 0.15, 0.15, 0.10, 0.10, 0.08, 0.08, 0.08, 0.03, 0.03]
+MASTERY_WEIGHTS = [0.30, 0.25, 0.20, 0.10, 0.05, 0.02, 0.02, 0.02, 0.02, 0.02]
 WINDOW = len(MASTERY_WEIGHTS)
 
 

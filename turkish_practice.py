@@ -148,6 +148,49 @@ def get_word_accuracy(stats, module, eng, tur, direction):
     return w[direction]["correct"] / w[direction]["seen"]
 
 
+def compute_module_mastery(stats, module, word_pairs):
+    """Mean mastery (0-1) across all words x both directions in a module."""
+    if not word_pairs:
+        return 0.0
+    total = 0.0
+    for eng, tur in word_pairs:
+        w = stats["words"].get(word_key(module, eng, tur))
+        for d in ("en_to_tr", "tr_to_en"):
+            h = w[d].get("history", []) if w else []
+            total += compute_mastery(h)
+    return total / (len(word_pairs) * 2)
+
+
+def find_lowest_mastery_module(vocab_data, stats):
+    """Return (module_name, word_pairs) for the module with the most room
+    for improvement (lowest mean mastery across both directions)."""
+    best = None  # (mastery, module_name, words)
+    for cat, subs in vocab_data.items():
+        flat = len(subs) == 1 and "Main" in subs
+        for sub, words in subs.items():
+            module = cat if flat else f"{cat}/{sub}"
+            m = compute_module_mastery(stats, module, words)
+            if best is None or (m, module) < (best[0], best[1]):
+                best = (m, module, words)
+    return best[1], best[2]
+
+
+def compute_category_mastery(stats, cat, subs):
+    """Mean mastery across all words in all subcategories of a category."""
+    total = 0.0
+    count = 0
+    flat = len(subs) == 1 and "Main" in subs
+    for sub, words in subs.items():
+        module = cat if flat else f"{cat}/{sub}"
+        for eng, tur in words:
+            w = stats["words"].get(word_key(module, eng, tur))
+            for d in ("en_to_tr", "tr_to_en"):
+                h = w[d].get("history", []) if w else []
+                total += compute_mastery(h)
+            count += 2
+    return total / count if count else 0.0
+
+
 def show_session_stats(stats, module, direction, results):
     """Show per-word breakdown after a round. results = [(eng, tur, correct), ...]"""
     print(f"{CYAN}{BOLD}--- Word Breakdown ---{NC}")
@@ -204,9 +247,9 @@ def show_weak_words(stats, module, direction, top_n=5):
 # --- Vocab ---
 
 def load_csv():
-    """Load vocab_turkish.txt (UTF-16, tab-delimited) and return {category: {subcategory: [(eng, tur), ...]}}."""
+    """Load vocab_turkish.txt (UTF-8, tab-delimited) and return {category: {subcategory: [(eng, tur), ...]}}."""
     data = {}
-    with open(VOCAB_FILE, "r", encoding="utf-16") as f:
+    with open(VOCAB_FILE, "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t")
         next(reader)  # skip header
         for row in reader:
@@ -253,14 +296,37 @@ def pick_from_list(prompt_text, options, labels=None):
         print(f"Pick a number between 1 and {len(options)}")
 
 
-def select_module(vocab_data):
+def select_module(vocab_data, stats):
     """Let user pick category then subcategory. Returns (module_name, word_pairs)."""
     categories = sorted(vocab_data.keys())
     cat_labels = [
-        f"{c} {DIM}({sum(len(w) for w in vocab_data[c].values())} words){NC}"
+        f"{c} {YELLOW}{int(round(compute_category_mastery(stats, c, vocab_data[c]) * 100))}{NC}"
+        f" {DIM}({sum(len(w) for w in vocab_data[c].values())} words){NC}"
         for c in categories
     ]
-    category = pick_from_list("Select a category:", categories, cat_labels)
+
+    low_mod, low_words = find_lowest_mastery_module(vocab_data, stats)
+    low_mast = int(round(compute_module_mastery(stats, low_mod, low_words) * 100))
+
+    print(f"{CYAN}{BOLD}Select a category:{NC}")
+    print(f"  {BOLD}0){NC} {BOLD}Most room for improvement{NC}"
+          f" {DIM}->{NC} {low_mod} {YELLOW}{low_mast}{NC}")
+    for i, label in enumerate(cat_labels):
+        print(f"  {BOLD}{i + 1}){NC} {label}")
+    print()
+
+    while True:
+        try:
+            choice = int(input("> "))
+            if choice == 0:
+                print(f"{CYAN}Module: {BOLD}{low_mod}{NC} ({len(low_words)} words)")
+                return low_mod, low_words
+            if 1 <= choice <= len(categories):
+                category = categories[choice - 1]
+                break
+        except (ValueError, EOFError):
+            pass
+        print(f"Pick a number between 0 and {len(categories)}")
 
     subcategories = sorted(vocab_data[category].keys())
 
@@ -271,7 +337,8 @@ def select_module(vocab_data):
     else:
         print()
         sub_labels = [
-            f"{s} {DIM}({len(vocab_data[category][s])} words){NC}"
+            f"{s} {YELLOW}{int(round(compute_module_mastery(stats, f'{category}/{s}', vocab_data[category][s]) * 100))}{NC}"
+            f" {DIM}({len(vocab_data[category][s])} words){NC}"
             for s in subcategories
         ]
         subcategory = pick_from_list(
@@ -415,7 +482,7 @@ def main():
     mod, vocab, direction, q_count = None, None, None, None
     while True:
         if mod is None:
-            mod, vocab = select_module(vocab_data)
+            mod, vocab = select_module(vocab_data, stats)
             direction = select_direction()
             q_count = select_question_count(len(vocab))
         run_quiz(vocab, direction, stats, mod, session_scores, q_count, module_index)
