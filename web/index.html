@@ -1,0 +1,1295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Türkçe">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#EAEEF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C1624" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<title>Türkçe Practice</title>
+<style>
+/* ---------------------------------------------------------------------------
+   İznik palette: Ottoman tile cobalt + turquoise + Armenian bole red, on cool
+   blue-biased paper. Every colour is declared here in the bare :root first so
+   the un-stamped (system-theme) document always resolves.
+--------------------------------------------------------------------------- */
+:root{
+  --paper:#E9EDF2;
+  --surface:#FFFFFF;
+  --sunken:#F1F4F8;
+  --line:#D2DAE4;
+  --line-soft:#E2E8EF;
+  --ink:#132A42;
+  --muted:#5C7288;
+  --faint:#8496A8;
+  --cobalt:#17539B;
+  --cobalt-ink:#FFFFFF;
+  --cobalt-wash:#DEE8F6;
+  --turquoise:#1A8F8A;
+  --bole:#BC3E2C;
+  --good:#1A7F5E;
+  --good-wash:#DCEFE7;
+  --bad:#BC3E2C;
+  --bad-wash:#F6E1DD;
+  --gold:#A8762A;
+  --plum:#7A4A86;
+  --shadow:0 1px 2px rgba(19,42,66,.06), 0 6px 20px -12px rgba(19,42,66,.28);
+  --r:14px;
+  --sans:"Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1624;
+    --surface:#14212F;
+    --sunken:#1A2939;
+    --line:#27394E;
+    --line-soft:#1F3043;
+    --ink:#E2EAF3;
+    --muted:#8CA2B9;
+    --faint:#6B8199;
+    --cobalt:#6AA8E6;
+    --cobalt-ink:#06121F;
+    --cobalt-wash:#1A3149;
+    --turquoise:#3FC2BA;
+    --bole:#E4715D;
+    --good:#3DB88C;
+    --good-wash:#14332A;
+    --bad:#E4715D;
+    --bad-wash:#37201C;
+    --gold:#D8A441;
+    --plum:#B98ACB;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1624;
+  --surface:#14212F;
+  --sunken:#1A2939;
+  --line:#27394E;
+  --line-soft:#1F3043;
+  --ink:#E2EAF3;
+  --muted:#8CA2B9;
+  --faint:#6B8199;
+  --cobalt:#6AA8E6;
+  --cobalt-ink:#06121F;
+  --cobalt-wash:#1A3149;
+  --turquoise:#3FC2BA;
+  --bole:#E4715D;
+  --good:#3DB88C;
+  --good-wash:#14332A;
+  --bad:#E4715D;
+  --bad-wash:#37201C;
+  --gold:#D8A441;
+  --plum:#B98ACB;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px;border-radius:6px}
+
+#app{
+  max-width:640px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;
+  padding:max(12px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
+          max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  gap:14px;
+}
+
+/* --- shared bits ------------------------------------------------------- */
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+.topbar{display:flex;align-items:center;gap:12px;min-height:34px}
+.topbar .grow{flex:1;min-width:0}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);
+  font-size:14px;font-weight:600;padding:6px 10px 6px 4px;margin-left:-4px}
+.back:hover{color:var(--cobalt)}
+.screen-title{font-family:var(--serif);font-size:26px;font-weight:600;
+  line-height:1.1;letter-spacing:-.01em;text-wrap:balance;margin:0}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.sheet{background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--r);box-shadow:var(--shadow)}
+
+/* --- home -------------------------------------------------------------- */
+.masthead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.masthead h1{font-family:var(--serif);font-size:34px;font-weight:600;margin:2px 0 0;
+  line-height:1;letter-spacing:-.02em}
+.overall{text-align:right;flex:none}
+.overall b{font-family:var(--mono);font-size:24px;font-weight:600;display:block;
+  line-height:1.1;color:var(--cobalt)}
+
+.rows{display:flex;flex-direction:column;gap:1px;background:var(--line-soft);
+  border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:var(--surface);padding:13px 14px;transition:background .12s}
+.row:hover{background:var(--sunken)}
+.row .label{flex:1;min-width:0}
+.row .name{font-weight:600;font-size:15px;display:block;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.row .sub{font-size:12.5px;color:var(--faint)}
+.row .pct{font-family:var(--mono);font-size:14px;font-weight:500;
+  font-variant-numeric:tabular-nums;color:var(--muted);flex:none;width:38px;text-align:right}
+.row .chev{color:var(--faint);flex:none;font-size:15px}
+
+.bar{height:5px;border-radius:99px;background:var(--sunken);overflow:hidden;
+  margin-top:6px;border:1px solid var(--line-soft)}
+.bar i{display:block;height:100%;background:var(--turquoise);border-radius:99px}
+
+.suggest{display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  padding:14px;border-radius:var(--r);background:var(--cobalt-wash);
+  border:1px solid transparent}
+.suggest:hover{border-color:var(--cobalt)}
+.suggest .mark{width:34px;height:34px;flex:none;border-radius:9px;background:var(--cobalt);
+  color:var(--cobalt-ink);display:grid;place-items:center;font-family:var(--serif);
+  font-size:18px;font-weight:700}
+.suggest .name{font-weight:700;font-size:15.5px;display:block}
+.suggest .sub{font-size:12.5px;color:var(--muted)}
+.suggest .pct{font-family:var(--mono);font-weight:600;color:var(--cobalt);flex:none}
+
+/* --- setup ------------------------------------------------------------- */
+.field{display:flex;flex-direction:column;gap:8px}
+.seg{display:flex;gap:6px;background:var(--sunken);padding:5px;border-radius:12px;
+  border:1px solid var(--line-soft)}
+.seg button{flex:1;padding:11px 8px;border-radius:8px;font-size:14.5px;font-weight:600;
+  color:var(--muted);text-align:center;transition:background .12s,color .12s}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);
+  box-shadow:0 1px 2px rgba(19,42,66,.12)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{padding:10px 16px;border-radius:99px;border:1px solid var(--line);
+  font-family:var(--mono);font-size:14px;font-weight:500;color:var(--muted)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);
+  border-color:var(--ink)}
+.primary{display:block;width:100%;padding:16px;border-radius:12px;background:var(--cobalt);
+  color:var(--cobalt-ink);font-size:16px;font-weight:700;letter-spacing:.01em;
+  text-align:center;box-shadow:var(--shadow)}
+.primary:hover{filter:brightness(1.08)}
+.ghost{display:block;width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);
+  font-size:15px;font-weight:600;color:var(--muted);text-align:center}
+.ghost:hover{color:var(--ink);border-color:var(--muted)}
+
+/* --- quiz -------------------------------------------------------------- */
+.pips{display:flex;gap:4px;flex:1}
+.pips i{height:4px;flex:1;border-radius:99px;background:var(--line)}
+.pips i.ok{background:var(--good)}
+.pips i.no{background:var(--bad)}
+.pips i.now{background:var(--cobalt)}
+
+.prompt{padding:26px 20px;text-align:center;display:flex;flex-direction:column;
+  gap:10px;align-items:center}
+.prompt .ask{font-size:13px;color:var(--faint);font-weight:500}
+.prompt .word{font-family:var(--serif);font-size:clamp(30px,8.5vw,46px);font-weight:600;
+  line-height:1.08;letter-spacing:-.02em;text-wrap:balance}
+/* Always two columns: three answers under the left thumb, three under the right. */
+.choices{display:grid;gap:8px;grid-template-columns:1fr 1fr;align-items:stretch}
+.choice{display:flex;align-items:center;gap:9px;padding:13px 11px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--line);text-align:left;font-size:15.5px;
+  font-weight:500;min-height:64px;transition:border-color .12s, background .12s}
+.choice:hover:not(:disabled){border-color:var(--cobalt)}
+.choice .k{font-family:var(--mono);font-size:12px;color:var(--faint);flex:none;
+  width:20px;height:20px;border-radius:5px;background:var(--sunken);display:grid;
+  place-items:center;font-weight:500}
+.choice .t{flex:1;min-width:0;overflow-wrap:anywhere}
+.choice.right{background:var(--good-wash);border-color:var(--good);color:var(--good)}
+.choice.right .k{background:var(--good);color:var(--surface)}
+.choice.wrong{background:var(--bad-wash);border-color:var(--bad);color:var(--bad)}
+.choice.wrong .k{background:var(--bad);color:var(--surface)}
+.choice:disabled{cursor:default}
+.choice.dim{opacity:.42}
+
+.verdict{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 15px;border-radius:12px;font-weight:600;font-size:15px}
+.verdict.right{background:var(--good-wash);color:var(--good)}
+.verdict.wrong{background:var(--bad-wash);color:var(--bad)}
+.verdict button{font-weight:700;font-size:14px;text-decoration:underline;
+  text-underline-offset:3px}
+
+/* --- results ----------------------------------------------------------- */
+.score{display:flex;align-items:center;gap:18px;padding:18px}
+.score .big{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1;
+  letter-spacing:-.03em}
+.score .big small{font-size:22px;color:var(--faint);font-weight:400}
+.score .say{font-size:14.5px;color:var(--muted);flex:1}
+
+.wordrow{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--surface)}
+.wordrow .tick{width:18px;flex:none;font-weight:700;font-family:var(--mono);font-size:14px}
+.wordrow .pair{flex:1;min-width:0;font-size:14.5px}
+.wordrow .pair b{font-weight:600}
+.wordrow .pair span{color:var(--faint)}
+.wordrow .delta{font-family:var(--mono);font-size:12.5px;font-weight:500;flex:none;
+  font-variant-numeric:tabular-nums}
+
+/* the 10 weighted slots of compute_mastery(), most recent on the left */
+.meter{display:flex;gap:2px;height:8px;margin-top:5px}
+.meter i{border-radius:2px;background:var(--line)}
+.meter i.y{background:var(--turquoise)}
+.meter i.n{background:var(--bole)}
+
+/* render_mastery_change(): grey base bar with this round's gain/loss overlaid */
+.dbar{display:flex;height:7px;margin-top:3px;border-radius:99px;overflow:hidden;
+  background:var(--sunken);border:1px solid var(--line-soft)}
+.dbar i{display:block;height:100%}
+.dbar .base{background:var(--muted)}
+.dbar .up{background:var(--good)}
+.dbar .down{background:var(--bad)}
+
+.chart{padding:14px 14px 10px}
+.chart h3{font-size:13px;font-weight:700;margin:0 0 2px;letter-spacing:.01em}
+.chart p{font-size:12px;color:var(--faint);margin:0 0 10px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:8px;
+  flex-wrap:wrap}
+.legend b{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+
+/* --- data screen ------------------------------------------------------- */
+select{width:100%;font-family:var(--sans);font-size:16px;font-weight:600;padding:13px 12px;
+  border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
+  linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 19px) 21px, calc(100% - 14px) 21px;
+  background-size:5px 5px, 5px 5px;background-repeat:no-repeat}
+textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:13px;
+  padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--sunken);
+  color:var(--ink);resize:vertical}
+.note{font-size:13px;color:var(--muted);line-height:1.5}
+.note code{font-family:var(--mono);font-size:12px;background:var(--sunken);
+  padding:1px 5px;border-radius:4px}
+.stack{display:flex;flex-direction:column;gap:10px;padding:14px}
+.split{display:flex;gap:9px}
+.split>*{flex:1}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:11px 18px;
+  border-radius:99px;font-size:14px;font-weight:600;box-shadow:var(--shadow);z-index:9}
+.foot{margin-top:auto;padding-top:6px;display:flex;justify-content:center;gap:18px}
+.foot button{font-size:13px;color:var(--faint);font-weight:600}
+.foot button:hover{color:var(--cobalt)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script id="vocab-data" type="application/json">{"Airport":{"Main":[["Aeroplane","Uçak"],["Airline","Havayolu"],["Airport","Havaalanı / Havalimanı"],["Arrival","Varış"],["Customs","Gümrük"],["Departure","Kalkış"],["Domestic","Yurtiçi"],["Flight","Uçuş"],["Hand luggage","El bagajı"],["International","Yurtdışı"],["Luggage","Bagaj"],["Passenger","Yolcu"],["Passport","Pasaport"],["Runway","Pist"],["Security Control","Güvenlik Kontrolü"],["Terminal","Terminal"],["Ticket","Bilet"]]},"Animals":{"Main":[["Animal","Hayvan"],["Bear","Ayı"],["Bird","Kuş"],["Camel","Deve"],["Cat","Kedi"],["Cheetah","Çita"],["Chicken","Tavuk"],["Cow","İnek"],["Dog","Köpek"],["Donkey","Eşek"],["Duck","Ördek"],["Eagle","Kartal"],["Elephant","Fil"],["Fish","Balık"],["Giraffe","Zürafa"],["Horse","At"],["Kangaroo","Kanguru"],["Lion","Aslan"],["Monkey","Maymun"],["Mouse","Fare"],["Owl","Baykuş"],["Penguin","Penguen"],["Rabbit","Tavşan"],["Sheep","Koyun"],["Snake","Yılan"],["Spider","Örümcek"]]},"At Home":{"General":[["Chair","Sandalye"],["Clock","Saat"],["Desk","Masa"],["Door","Kapı"],["House","Ev"],["Light","Işık"],["Room","Oda"],["Stairs","Merdiven"],["Window","Pencere"]],"Living room":[["Bookshelf","Kitaplık"],["Coffee table","Sehpa"],["Couch","Kanepe"],["Fireplace","Şömine"],["Living room","Oturma odası"],["Rug","Halı"],["Vase","Vazo"]],"Bedroom":[["Alarm clock","Çalar saat"],["Bed","Yatak"],["Bedroom","Yatak odası"],["Blanket","Battaniye"],["Computer","Bilgisayar"],["Curtain","Perde"],["Drawer","Çekmece"],["Lamp","Lamba"],["Pillow","Yastık"],["Wardrobe","Gardırop"]],"Kitchen":[["Dinner Table","Yemek masası"],["Dishwasher","Bulaşık makinesi"],["Fridge","Buzdolabı"],["Kitchen","Mutfak"],["Oven","Fırın"],["Pot","Tencere"],["Stove","Ocak"],["Teapot","Çaydanlık"]],"Bathroom":[["Bathroom","Banyo"],["Mirror","Ayna"],["Shower","Duş"],["Soap","Sabun"],["Tap","Musluk"],["Toothbrush","Diş fırçası"],["Toothpaste","Diş macunu"],["Towel","Havlu"]],"Clothing":[["Belt","Kemer"],["Blouse","Bluz"],["Gloves","Eldiven"],["Headscarf","Eşarp / Başörtüsü"],["Jacket","Mont"],["Jeans","Kot pantolon"],["Jersey","Kazak"],["Jubbah / Thobe","Cübbe"],["Overcoat (Men's)","Palto"],["Overcoat (Women's)","Manto"],["Pants / Trousers","Pantolon"],["Pyjamas","Pijama"],["Shirt","Gömlek"],["Shoes","Ayakkabı"],["Skirt","Etek"],["Socks","Çorap"],["Suit","Takım elbise"],["Tie","Kravat"],["Tracksuit","Eşofman"],["T-shirt","Tişört"],["Underwear","İç çamaşır"]]},"Colors":{"Main":[["White","Beyaz"],["Grey","Gri"],["Turquoise","Türküaz"],["Blue","Mavi"],["Navy","Lacivert"],["Green","Yeşil"],["Yellow","Sarı"],["Orange","Turuncu"],["Red","Kırmızı"],["Pink","Pembe"],["Purple","Mor"],["Brown","Kahverengi"],["Black","Siyah"]]},"Countries":{"Africa (Afrika)":[["Algeria","Cezayir"],["Angola","Angola"],["Botswana","Botsvana"],["Cameroon","Kamerun"],["Central African Republic","Orta Afrika Cumhuriyeti"],["Democratic Republic of Congo","Demokratik Kongo Cumhuriyeti"],["Egypt","Mısır"],["Ethiopia","Etiyopya"],["Gabon","Gabon"],["Ghana","Gana"],["Ivory Coast","Fildişi Kıyısı"],["Kenya","Kenya"],["Libya","Libya"],["Malawi","Malavi"],["Mali","Mali"],["Mauritania","Moritanya"],["Morocco","Fas"],["Mozambique","Mozambik"],["Namibia","Namibya"],["Nigeria","Nijerya"],["Republic of the Congo","Kongo Cumhuriyeti"],["Senegal","Senegal"],["Somalia","Somali"],["South Africa","Güney Afrika"],["Sudan","Sudan"],["Tanzania","Tanzanya"],["Tunisia","Tunus"],["Uganda","Uganda"],["Zambia","Zambiya"],["Zimbabwe","Zimbabve"]],"Asia (Asya)":[["Afghanistan","Afganistan"],["Armenia","Ermenistan"],["Azerbaijan","Azerbaycan"],["Bangladesh","Bangladeş"],["Bahrain","Bahreyn"],["Cambodia","Kamboçya"],["Chechnya","Çeçenistan"],["China","Çin"],["Georgia","Gürcistan"],["Hong Kong","Hong Kong"],["India","Hindistan"],["Indonesia","Endonezya"],["Iran","İran"],["Iraq","Irak"],["Israel","İsrail"],["Japan","Japonya"],["Jordan","Ürdün"],["Kazakhstan","Kazakistan"],["Kuwait","Kuveyt"],["Kyrgyzstan","Kırgızistan"],["Lebanon","Lübnan"],["Malaysia","Malezya"],["Mongolia","Moğolistan"],["North Korea","Kuzey Kore"],["Oman","Umman"],["Pakistan","Pakistan"],["Palestine","Filistin"],["Philippines","Filipinler"],["Qatar","Katar"],["Saudi Arabia","Suudi Arabistan"],["South Korea","Güney Kore"],["Syria","Suriye"],["Tajikistan","Tacikistan"],["Türkiye","Türkiye"],["Turkmenistan","Türkmenistan"],["United Arab Emirates","Birleşik Arap Emirlikleri"],["Uzbekistan","Özbekistan"],["Vietnam","Vietnam"],["Yemen","Yemen"]],"Europe (Avrupa)":[["Albania","Arnavutluk"],["Austria","Avusturya"],["Belarus","Belarus / Beyaz Rusya"],["Belgium","Belçika"],["Bosnia Herzegovina","Bosna Hersek"],["Bulgaria","Bulgaristan"],["Croatia","Hırvatistan"],["Cyprus","Kıbrıs"],["Czech Republic","Çek Cumhuriyeti"],["Denmark","Danimarka"],["England","İngiltere"],["Estonia","Estonya"],["Finland","Finlandiya"],["France","Fransa"],["Georgia","Gürcistan"],["Germany","Almanya"],["Greece","Yunanistan"],["Holland","Hollanda"],["Hungary","Macaristan"],["Ireland","İrlanda"],["Italy","İtalya"],["Kosovo","Kosova"],["Latvia","Letonya"],["Lithuania","Litvanya"],["Luxembourg","Lüksemburg"],["Malta","Malta"],["Macedonia","Makedonya"],["Moldova","Moldova"],["Montenegro","Karadağ"],["Northern Ireland","Kuzey İrlanda"],["Norway","Norveç"],["Poland","Polonya"],["Portugal","Portekiz"],["Romania","Romanya"],["Russia","Rusya"],["Scotland","İskoçya"],["Serbia","Sırbistan"],["Slovakia","Slovakya"],["Slovenia","Slovenya"],["Spain","İspanya"],["Sweden","İsveç"],["Switzerland","İsviçre"],["Ukraine","Ukrayna"],["Wales","Galler"]],"North America (Kuzey Amerİka)":[["Canada","Kanada"],["Costa Rica","Kosta Rika"],["Cuba","Küba"],["Haiti","Haiti"],["Mexico","Meksika"],["Panama","Panama"],["United States of America","Amerika Birleşik Devletleri"]],"South America (Güney Amerİka)":[["Argentina","Arjantin"],["Bolivia","Bolivya"],["Brazil","Brezilya"],["Chile","Şili"],["Colombia","Kolombiya"],["Ecuador","Ekvador"],["Paraguay","Paraguay"],["Peru","Peru"],["Uruguay","Uruguay"],["Venezuela","Venezuela"]],"Oceania (Okyanusya)":[["Australia","Avustralya"],["Fiji","Fiji"],["New Zealand","Yeni Zelanda"],["Papua New Guinea","Papua Yeni Gine"],["Samoa","Samoa"],["Tonga","Tonga"]]},"Currency":{"Main":[["Dirham","Dirhem"],["Dollar","Dolar"],["Euro","Euro / Avro"],["Franc","Frank"],["Pound","Sterlin"],["Rupee","Rupi"],["Yen","Yen"]]},"Time":{"Days":[["Monday","Pazartesi"],["Tuesday","Salı"],["Wednesday","Çarşamba"],["Thursday","Perşembe"],["Friday","Cuma"],["Saturday","Cumartesi"],["Sunday","Pazar"],["Today","Bugün"],["Yesterday","Dün"],["Tomorrow","Yarın"],["Day before yesterday","Önceki gün / Evvelsi gün"],["Day after tomorrow","Öbür gün"],["Day","Gün"],["Week","Hafta"],["Month","Ay"],["Year","Yıl / Sene"],["Century","Yüzyıl"]],"Months":[["January","Ocak"],["February","Şubat"],["March","Mart"],["April","Nisan"],["May","Mayıs"],["June","Haziran"],["July","Temmuz"],["August","Ağustos"],["September","Eylül"],["October","Ekim"],["November","Kasım"],["December","Aralık"]],"Seasons":[["Spring","İlkbahar"],["Summer","Yaz"],["Autumn","Sonbahar"],["Winter","Kış"]],"Times of the day":[["Sunrise","Gündoğumu"],["Morning","Sabah"],["Midday","Öğle / Öğlen"],["Afternoon","Öğleden sonra"],["Evening","Akşam"],["Sunset","Günbatımı"],["Night","Gece"],["Midnight","Gece yarısı"]],"Clock Time":[["Second","Saniye"],["Minute","Dakika"],["Hour","Saat"]]},"Family Members":{"Immediate":[["Father","Baba"],["Mother","Anne"],["Brother","Kardeş"],["Sister","Kız kardeş"],["Elder brother","Abi"],["Elder sister","Abla"],["Grandfather","Dede"],["Grandmother","See below"],["Grandchild","Torun"],["Husband","Koca"],["Wife","Hanım"],["Spouse (Husband / Wife)","Eş"],["Son","Oğul"],["Daughter","Kız"]],"Maternal":[["Aunt","Teyze"],["Uncle","Dayı"],["Grandmother","Anneanne"]],"Paternal":[["Aunt","Hala"],["Uncle","Amca"],["Grandmother","Babaanne"]],"In-laws":[["Mother-in-law","Kaynana / Kayınvalide"],["Father-in-law","Kayınbaba / Kayınpeder"]]},"Food":{"Meat and Fish":[["Beef","Sığır eti / Et"],["Chicken","Tavuk"],["Fish","Balık"],["Lamb","Kuzu"],["Sausage","Sosis"],["Steak","Biftek"],["Turkey","Hindi"]],"Grains":[["Bread","Ekmek"],["Pasta","Makarna"],["Rice","Pirinç / Pilav"]],"Dairy":[["Cheese","Peynir"],["Egg","Yumurta"],["Ice-cream","Dondurma"],["Milk","Süt"],["Yogurt","Yoğurt"]],"Fruit":[["Apple","Elma"],["Apricot","Kayısı"],["Banana","Muz"],["Grapes","Üzüm"],["Mango","Mango"],["Orange","Portakal"],["Peach","Şeftali"],["Pear","Armut"],["Pineapple","Ananas"],["Pomegranate","Nar"],["Sour cherry","Vişne"],["Strawberry","Çilek"],["Watermelon","Karpuz"]],"Vegetables":[["Cabbage","Lahana"],["Carrot","Havuç"],["Corn","Mısır"],["Cucumber","Salatalık"],["Eggplant","Patlıcan"],["Lettuce","Marul"],["Onion","Soğan"],["Peas","Bezelye"],["Potato","Patates"],["Spinach","Ispanak"]],"Fast food":[["Burger","Burger"],["French fries","Patates kızartması"],["Ketchup","Ketçap"],["Mayonnaise","Mayonez"],["Mustard","Hardal"],["Pizza","Pizza"],["Sandwich","Sandviç"]],"Snacks":[["Cake","Pasta"],["Candy","Şeker"],["Chocolate","Çikolata"],["Cookies","Bisküvi"],["Dessert","Tatlı"],["Potato chips","Patates cipsi"]],"Drinks":[["Coffee","Kahve"],["Cola","Kola"],["Fruit juice","Meyve suyu"],["Tea","Çay"],["Water","Su"]],"Spices":[["Chili pepper","Pul biber"],["Pepper","Karabiber"],["Salt","Tuz"],["Vinegar","Sirke"]],"Meals":[["Breakfast","Kahvaltı"],["Lunch","Öğle yemeği"],["Dinner","Akşam yemeği"]],"Main":[["Water","Su"],["Bread","Ekmek"],["Meat","Et"],["Chicken","Tavuk"],["Fish","Balık"],["Egg","Yumurta"],["Cheese","Peynir"],["Milk","Süt"],["Apple","Elma"],["Tomato","Domates"],["Potato","Patates"],["Onion","Soğan"],["Rice","Pirinç"],["Pasta","Makarna"],["Soup","Çorba"],["Salad","Salata"],["Fruit","Meyve"],["Vegetable","Sebze"],["Salt","Tuz"],["Sugar","Şeker"]]},"Islam":{"General":[["Muslim","Müslüman"],["Islam","İslam"],["Quran","Kur'ân"],["Sunnah","Sünnet"]],"Mosque":[["Ablution (Wuzu)","Abdest"],["Call to prayer","Ezan"],["Dome","Kubbe"],["Imam","İmam"],["Minaret","Minare"],["Mosque","Cami"],["Muazzin","Müezzin"],["Niche","Mihrap"],["Pulpit","Minber"],["Salaah (Prayer)","Namaz"]],"Salaah (Prayer)":[["Fajr salaah","Sabah namazı"],["Thuhr salaah","Öğle namazı"],["Asr salaah","İkindi namazı"],["Maghrib salaah","Akşam namazı"],["Esha salaah","Yatsı namazı"],["To perform salaah","Namaz kılmak"]],"Ramadan (Fasting Month)":[["To Fast","Oruç tutmak"],["Iftar","İftar"],["Laylatul Qadr","Kadir gecesi"],["Ramadan","Ramazan"],["Ramadan Mubarak","Ramazanınız Mübarek Olsun"],["Suhoor","Sahur"],["Taraweeh salaah","Teravih namazı"]],"Special Occasions":[["Eid Al-Fitr","Ramazan Bayramı"],["Eid Al-Adha","Kurban Bayramı"],["Eid Mubarak","Bayramınız Mübarek Olsun"],["Jumuah","Cuma"],["Jumuah Mubarakah","Cumanız Mübarek Olsun"],["Hajj","Hac"],["Umrah","Umre"]],"Months (Hijri)":[["Muharram","Muharrem"],["Safar","Safer"],["Rabi'ul Awwal","Rebiülevvel"],["Rabi'ul Akhir","Rebiülahir"],["Jumadul Awwal","Cemaziyelevvel"],["Jumadul Akhir","Cemaziyelahir"],["Rajab","Recep"],["Shabaan","Şaban"],["Ramadan","Ramazan"],["Shawwal","Şevval"],["Dhul Qadah","Zilkade"],["Dhul Hijjah","Zilhicce"]],"Clothing":[["Headscarf","Eşarp / Başörtüsü"],["Niqab","Çarşaf"],["Jubbah / Kurta","Cübbe"],["Turban","Sarık"],["Taqiyah / Cap","Takke"]]},"Languages":{"Main":[["Arabic","Arapça"],["Chinese","Çince"],["English","İngilizce"],["Farsi","Farsça"],["French","Fransızca"],["German","Almanca"],["Hindi","Hintçe"],["Kurdish","Kürtçe"],["Latin","Latince"],["Ottoman","Osmanlıca"],["Portuguese","Portekizce"],["Russian","Rusça"],["Spanish","İspanyolca"],["Turkish","Türkçe"],["Urdu","Urduca"]]},"Mobile Phone":{"Main":[["App","Uygulama"],["Battery","Pil"],["Call","Çağrı"],["Charger","Şarj aleti"],["Data","Veri"],["Device","Cihaz"],["Internet","İnternet"],["Message","Mesaj"],["Mobile phone","Cep telefonu"],["Network","Ağ"],["Password","Şifre"],["Prepaid credits / airtime","Kontör"],["Roaming","Dolaşım"],["Sim card","SIM kart"],["Smartphone","Akıllı telefon"],["Touch screen","Dokunmatik ekran"]]},"Occupations":{"Main":[["Accountant","Muhasebeci"],["Businessman","İşadamı"],["Chef","Aşçı"],["Dentist","Diş hekimi"],["Doctor","Doktor"],["Engineer","Mühendis"],["Farmer","Çiftçi"],["Journalist","Gazeteci"],["Lawyer","Avukat"],["Nurse","Hemşire"],["Researcher","Araştırmacı"],["Student","Öğrenci"],["Teacher","Öğretmen"],["Writer","Yazar"],["Teacher","Öğretmen"],["Doctor","Doktor"],["Engineer","Mühendis"],["Nurse","Hemşire"],["Lawyer","Avukat"],["Police Officer","Polis"],["Chef / Cook","Aşçı"],["Waiter","Garson"],["Student","Öğrenci"],["Manager","Müdür"],["Accountant","Muhasebeci"],["Driver","Şoför"],["Farmer","Çiftçi"],["Writer","Yazar"],["Artist","Sanatçı"],["Musician","Müzisyen"],["Actor","Oyuncu"],["Secretary","Sekreter"],["Architect","Mimar"],["Businessman","İş adamı"]]},"Parts Of The Body":{"Head and face":[["Beard","Sakal"],["Brain","Beyin"],["Chin","Çene"],["Ear","Kulak"],["Eye","Göz"],["Face","Yüz"],["Hair","Saç"],["Head","Baş"],["Lip","Dudak"],["Moustache","Bıyık"],["Mouth","Ağız"],["Neck","Boyun"],["Nose","Burun"],["Tongue","Dil"],["Tooth","Diş"]],"Upper Body":[["Arm","Kol"],["Chest","Göğüs"],["Elbow","Dirsek"],["Finger","Parmak"],["Hand","El"],["Heart","Kalp"],["Shoulder","Omuz"],["Stomach","Mide"]],"Lower Body":[["Ankle","Ayak bileği"],["Foot","Ayak"],["Heel","Topuk"],["Knee","Diz"],["Leg","Bacak"],["Toe","Ayak parmağı"]]},"Politics":{"Main":[["Ballot box","Sandık"],["Border","Sınır"],["Citizen","Vatandaş"],["Constitution","Anayasa"],["Coup","Darbe"],["Democracy","Demokrasi"],["Economy","Ekonomi"],["Election","Seçim"],["Government","Hükümet"],["Minister","Bakan"],["Parliament","Parlamento / Meclis"],["Party","Parti"],["Politician","Siyasetçi"],["Politics","Siyaset"],["President","Cumhurbaşkanı / Devlet Başkanı"],["Prime Minister","Başbakan"],["Republic","Cumhuriyet"],["Vote","Oy"],["War","Savaş"]]},"School":{"General":[["Bell","Zil"],["Blackboard","Tahta"],["Chair","Sandalye"],["Class / Grade","Sınıf"],["Desk","Masa"],["Elementary School","İlkokul"],["Holiday","Tatil"],["Homework","Ödev"],["Lesson","Ders"],["Middle School","Ortaokul"],["Principal","Okul müdürü"],["Recess / Break","Teneffüs"],["School","Okul"],["Secondary School / High School","Lise"],["Student","Öğrenci"],["Subject","Ders"],["Teacher","Öğretmen"],["Test","Sınav"],["Uniform","Kıyafet"]],"Stationery":[["Chalk","Tebeşir"],["Eraser","Silgi"],["Glue","Tutkal"],["Notebook","Defter"],["Pen","Kalem"],["Pencil","Kurşun kalem"],["Ruler","Cetvel"],["Scissor","Makas"],["Sharpener","Kalemtıraş"],["Textbook","Kitap"]],"Subjects":[["Biology","Biyoloji"],["Chemistry","Kimya"],["English","İngilizce"],["French","Fransızca"],["Geography","Coğrafya"],["Geometry","Geometri"],["German","Almanca"],["History","Tarih"],["Literature","Edebiyat"],["Mathematics","Matematik"],["Philosophy","Felsefe"],["Physics","Fizik"],["Spanish","İspanyolca"],["Turkish","Türkçe"]]},"Transport":{"Main":[["Aeroplane","Uçak"],["Bicycle","Bisiklet"],["Boat","Tekne"],["Bus","Otobüs"],["Car","Araba"],["Ferry","Feribot / Vapur"],["Helicopter","Helikopter"],["Motorbike","Motosiklet"],["Scooter","Skuter"],["Ship","Gemi"],["Subway / Underground Railway","Metro"],["Taxi","Taksi"],["Train","Tren"],["Tram","Tramvay"],["Truck","Kamyon"]]},"Numbers":{"Main":[["1","Bir"],["2","İki"],["3","Üç"],["4","Dört"],["5","Beş"],["6","Altı"],["7","Yedi"],["8","Sekiz"],["9","Dokuz"],["10","On"],["20","Yirmi"],["30","Otuz"],["40","Kırk"],["50","Elli"],["60","Altmış"],["70","Yetmiş"],["80","Seksen"],["90","Doksan"],["100","Yüz"]]},"Verbs":{"Main":[["To be","Olmak"],["To do / To make","Yapmak"],["To go","Gitmek"],["To come","Gelmek"],["To say","Demek"],["To see","Görmek"],["To take / To buy","Almak"],["To give","Vermek"],["To want","İstemek"],["To know","Bilmek"],["To think","Düşünmek"],["To find","Bulmak"],["To understand","Anlamak"],["To work / To study","Çalışmak"],["To look","Bakmak"],["To use","Kullanmak"],["To ask","Sormak"],["To tell / To explain","Anlatmak"],["To try","Denemek"],["To wait","Beklemek"]]},"Emotions":{"Main":[["Happy","Mutlu"],["Sad","Üzgün"],["Angry","Kızgın"],["Tired","Yorgun"],["Surprised","Şaşkın"],["Scared","Korkmuş"],["Excited","Heyecanlı"],["Bored","Sıkılmış"],["Confused","Kafası karışık"],["Anxious","Endişeli"],["Calm","Sakin"],["Nervous","Gergin"],["Proud","Gururlu"],["Disappointed","Hayal kırıklığına uğramış"],["Jealous","Kıskanç"],["Hopeful","Umutlu"],["Lonely","Yalnız"],["Shy","Utangaç"],["Relieved","Rahatlamış"],["Guilty","Suçlu"]]},"Phrases":{"Greetings":[["Hello","Merhaba"],["My name is _____","Benim adım _____"],["How are you?","Nasılsınız?"],["I am fine thank you","Teşekkür ederim iyiyim"],["Pleased to meet you","Memnun oldum"],["Pleased to meet you too","Ben de memnun oldum"],["The weather is really nice today","Bugün hava çok güzel"],["I speak English","Ben İngilizce konuşuyorum"],["I am learning Turkish","Ben Türkçe öğreniyorum"],["See you","Görüşürüz"],["Good morning","Günaydın"],["Good day","İyi günler"],["Good evening","İyi akşamlar"],["What's up? (Informal)","Ne var ne yok?"],["Welcome","Hoş geldiniz"],["Thank you (Reply to \"Welcome\")","Hoş bulduk"],["What is your name?","Adınız ne?"],["How old are you?","Kaç yaşındasınız?"],["I am 20 years old","Ben yirmi yaşındayım"],["Where are you from?","Nerelisiniz?"]],"Questions":[["What's this?","Bu ne?"],["This is a _______","Bu _______"],["Can you help me?","Bana yardımcı olabilir misiniz?"],["What does this mean?","Bu ne demek?"],["I understand","Anladım"],["I don't understand","Anlamadım"],["Do you have a _______?","_______ var mı?"],["I'm lost","Kayboldum"],["Where is __________ ?","__________ neresi?"],["I am looking for a __________","Ben bir __________ arıyorum"],["How far is it from here?","Ne kadar uzaklıkta?"],["Do you have a map?","Haritanız var mı?"],["Where does this road go to?","Bu yol nereye gidiyor?"],["Is this [place name] ?","Burası ____________ mı?"]],"Basic":[["Yes","Evet"],["No","Hayır"],["Please","Lütfen"],["Thank you","Teşekkür ederim"],["You're welcome","Rica ederim"],["Thank you very much","Çok teşekkür ederim"]],"Wishes":[["Congratulations","Tebrikler"],["Get well soon","Geçmiş olsun"],["Bon voyage","Hayırlı yolculuklar"],["Enjoy your meal","Afiyet olsun"],["Ramadan Mubarak","Ramazanınız Mübarek Olsun"],["Eid Mubarak","Bayramınız Mübarek Olsun"],["Happy Eid","Hayırlı Bayramlar"],["Jumuah Mubarakah","Cumanız Mübarek Olsun"],["May Allah have mercy on his/her soul (when someone dies)","Allah rahmet eylesin"]]},"Directions":{"Main":[["Go straight","Düz git"],["Turn right","Sağa dön"],["Turn left","Sola dön"],["Traffic lights","Trafik ışıkları"],["Map","Harita"]]},"Restaurant":{"Phrases":[["Could we have the menu please?","Bize menüyü getirir misin?"],["What would you like to eat?","Ne yemek istiyorsunuz?"],["I'll have the ___________ and the ___________.","___________ ve ___________ alayım."],["I'll have one/two portions of the __________.","Ben bir/iki porsiyon __________ alayım."],["Could I have the bill please?","Hesap lütfen."],["Enjoy your meal.","Afiyet olsun."]],"Main":[["Restaurant","Lokanta"],["Waiter","Garson"],["Menu","Menü"],["Bill","Hesap"],["Food","Yemek"],["Soup","Çorba"],["Salad","Salata"],["Bread","Ekmek"],["Meat","Et"],["Beef","Sığır eti"],["Chicken","Tavuk"],["Fish","Balık"],["Rice","Pilav"],["Dessert","Tatlı"],["Drink","İçecek"],["Water","Su"],["Cola","Kola"],["Tea","Çay"],["Coffee","Kahve"]]},"Shopping":{"Phrases":[["What is your size? (Clothing)","Kaç beden giyiyorsunuz?"],["My size is ___","___ beden giyiyorum"],["What color would you like?","Ne renk istiyorsunuz?"],["I would like [color]","_______ renk istiyorum"],["I would like to buy a __________","_________ almak istiyorum"],["Do you have _________?","_________ var mı?"],["How much is this?","Bunun fiyatı ne?"],["Ok, I'll take it","Tamam alacağım"]]}}</script>
+
+<script>
+"use strict";
+
+/* ===========================================================================
+   Mastery -- a direct port of mastery.py. Keep the weights in sync with it.
+   =========================================================================== */
+const MASTERY_WEIGHTS = [0.30, 0.25, 0.20, 0.10, 0.05, 0.02, 0.02, 0.02, 0.02, 0.02];
+const WINDOW = MASTERY_WEIGHTS.length;
+
+function computeMastery(history){
+  if(!history || !history.length) return 0;
+  const recent = history.slice(-WINDOW);
+  let score = 0;
+  for(let i = 0; i < recent.length; i++){
+    if(recent[recent.length - 1 - i]) score += MASTERY_WEIGHTS[i];
+  }
+  return score;
+}
+
+/* ===========================================================================
+   Stats -- identical shape to stats.json so the CLI and the app can trade
+   files through the Data screen. See CLAUDE.md for the schema.
+   =========================================================================== */
+const STORE_KEY = "turkishPracticeStats";
+const PREFS_KEY = "turkishPracticePrefs";
+const DIRS = ["en_to_tr", "tr_to_en"];
+
+const VOCAB = JSON.parse(document.getElementById("vocab-data").textContent);
+
+function emptyStats(){
+  return {words:{}, modules:{}, sessions:0, session_history:[]};
+}
+function loadStats(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return normalize(JSON.parse(raw));
+  }catch(e){ /* private mode, blocked storage -- run from memory */ }
+  return emptyStats();
+}
+function saveStats(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(stats)); }catch(e){}
+}
+function normalize(s){
+  s.words = s.words || {};
+  s.modules = s.modules || {};
+  s.sessions = s.sessions || 0;
+  s.session_history = s.session_history || [];
+  // Mirror _migrate_module_names(), but only for the all-lowercase legacy names
+  // it was written for -- title-casing a name that already has capitals risks
+  // mangling Turkish dotted capitals (İ) and breaking the word key.
+  const fix = m => (m === m.toLowerCase()
+    ? m.replace(/([a-zçğıöşü])([a-zçğıöşü]*)/gi, (_, a, b) => a.toUpperCase() + b)
+    : m);
+  const words = {};
+  for(const [key, w] of Object.entries(s.words)){
+    const nm = fix(w.module);
+    if(nm !== w.module){
+      words[key.replace(w.module + "|", nm + "|")] = Object.assign(w, {module:nm});
+    } else words[key] = w;
+  }
+  s.words = words;
+  const mods = {};
+  for(const [m, d] of Object.entries(s.modules)){
+    const nm = fix(m);
+    if(mods[nm]){
+      for(const dir of DIRS){
+        mods[nm][dir].asked += d[dir].asked;
+        mods[nm][dir].correct += d[dir].correct;
+      }
+      mods[nm].sessions += d.sessions;
+    } else mods[nm] = d;
+  }
+  s.modules = mods;
+  for(const e of s.session_history) e.module = fix(e.module);
+  return s;
+}
+
+const wordKey = (module, eng, tur) => `${module}|${eng}|${tur}`;
+
+/* datetime.now().isoformat() -- local time, no timezone suffix, as Python writes it */
+function localISO(){
+  const d = new Date(), p = (n, w = 2) => String(n).padStart(w, "0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T` +
+         `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.` +
+         `${p(d.getMilliseconds(),3)}000`;
+}
+
+function historyOf(module, eng, tur, dir){
+  const w = stats.words[wordKey(module, eng, tur)];
+  return (w && w[dir] && w[dir].history) || [];
+}
+
+function recordAnswer(module, eng, tur, dir, correct){
+  const key = wordKey(module, eng, tur);
+  if(!stats.words[key]){
+    stats.words[key] = {
+      module, english:eng, turkish:tur,
+      en_to_tr:{seen:0, correct:0, history:[]},
+      tr_to_en:{seen:0, correct:0, history:[]},
+      last_seen:null
+    };
+  }
+  const w = stats.words[key];
+  if(!w[dir].history) w[dir].history = [];
+  w[dir].seen += 1;
+  if(correct) w[dir].correct += 1;
+  w[dir].history.push(correct);
+  w.last_seen = localISO();
+}
+
+function recordSession(module, dir, score, total, moduleWords){
+  if(!stats.modules[module]){
+    stats.modules[module] = {sessions:0, en_to_tr:{asked:0,correct:0}, tr_to_en:{asked:0,correct:0}};
+  }
+  const m = stats.modules[module];
+  m.sessions += 1;
+  m[dir].asked += total;
+  m[dir].correct += score;
+  stats.sessions += 1;
+  stats.session_history.push({
+    timestamp: localISO(), module, direction:dir, score, total,
+    mastery: moduleMastery(module, moduleWords)
+  });
+}
+
+/* --- aggregates ---------------------------------------------------------- */
+function moduleMastery(module, words){
+  if(!words || !words.length) return 0;
+  let total = 0;
+  for(const [eng, tur] of words){
+    for(const dir of DIRS) total += computeMastery(historyOf(module, eng, tur, dir));
+  }
+  return total / (words.length * 2);
+}
+function categoryMastery(cat){
+  const subs = VOCAB[cat];
+  let total = 0, count = 0;
+  for(const [sub, words] of Object.entries(subs)){
+    const module = moduleName(cat, sub);
+    for(const [eng, tur] of words){
+      for(const dir of DIRS) total += computeMastery(historyOf(module, eng, tur, dir));
+      count += 2;
+    }
+  }
+  return count ? total / count : 0;
+}
+/* Categories whose only focus is "Main" flatten to the category name. */
+const isFlat = cat => {const k = Object.keys(VOCAB[cat]); return k.length === 1 && k[0] === "Main";};
+const moduleName = (cat, sub) => isFlat(cat) ? cat : `${cat}/${sub}`;
+const wordsOf = (cat, sub) => VOCAB[cat][sub];
+const countWords = cat => Object.values(VOCAB[cat]).reduce((n, w) => n + w.length, 0);
+
+function allModules(){
+  const out = [];
+  for(const cat of Object.keys(VOCAB)){
+    for(const sub of Object.keys(VOCAB[cat])) out.push([moduleName(cat, sub), wordsOf(cat, sub)]);
+  }
+  return out;
+}
+function lowestMasteryModule(){
+  let best = null;
+  for(const [module, words] of allModules()){
+    const m = moduleMastery(module, words);
+    if(!best || m < best.m || (m === best.m && module < best.module)) best = {m, module, words};
+  }
+  return best;
+}
+function overallMastery(){
+  let total = 0, count = 0;
+  for(const [module, words] of allModules()){
+    for(const [eng, tur] of words){
+      for(const dir of DIRS) total += computeMastery(historyOf(module, eng, tur, dir));
+      count += 2;
+    }
+  }
+  return count ? total / count : 0;
+}
+
+/* ===========================================================================
+   Recommender -- port of recommenders/weighted.py. Weight each word by
+   (1 - mastery) with a floor so mastered words still resurface.
+   =========================================================================== */
+const MIN_WEIGHT = 0.005;
+function selectQuestions(words, module, dir, n){
+  n = Math.min(n, words.length);
+  const weights = words.map(([eng, tur]) =>
+    Math.max(1 - computeMastery(historyOf(module, eng, tur, dir)), MIN_WEIGHT));
+  const pool = words.map((_, i) => i);
+  const picked = [];
+  for(let k = 0; k < n && pool.length; k++){
+    let total = 0;
+    for(const i of pool) total += weights[i];
+    let r = Math.random() * total, cum = 0;
+    for(let p = 0; p < pool.length; p++){
+      cum += weights[pool[p]];
+      if(cum >= r){ picked.push(pool[p]); pool.splice(p, 1); break; }
+    }
+  }
+  return picked;
+}
+
+/* ===========================================================================
+   State
+   =========================================================================== */
+const NUM_CHOICES = 6;   // six answers on screen, always -- three per thumb
+
+let stats = loadStats();
+let prefs = Object.assign({count:5, autoAdvance:true}, (() => {
+  try{ return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }catch(e){ return {}; }
+})());
+function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){} }
+
+const view = {
+  screen:"home",
+  cat:null, module:null, words:null,
+  dir:"en_to_tr", count:prefs.count,
+  quiz:null, last:null, filter:"",
+  sitting:[]        // this sitting only -- the CLI's session_scores
+};
+try{ view.sitting = JSON.parse(sessionStorage.getItem("sitting")) || []; }catch(e){}
+function saveSitting(){ try{ sessionStorage.setItem("sitting", JSON.stringify(view.sitting)); }catch(e){} }
+
+/* ===========================================================================
+   Rendering helpers
+   =========================================================================== */
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct = v => Math.round(v * 100);
+
+function bar(v){ return `<div class="bar"><i style="width:${Math.max(pct(v),0)}%"></i></div>`; }
+
+/* The ten weighted slots of compute_mastery(), widest = most recent answer. */
+function meter(history){
+  let out = '<span class="meter">';
+  for(let i = 0; i < WINDOW; i++){
+    const h = history.length - 1 - i;
+    const cls = h < 0 ? "" : (history[h] ? "y" : "n");
+    out += `<i class="${cls}" style="flex:${MASTERY_WEIGHTS[i]}"></i>`;
+  }
+  return out + "</span>";
+}
+
+/* Total mastery as one bar, with this round's movement picked out:
+   a gain is green appended to the old level, a loss is red beyond the new one. */
+function deltaBar(mastery, delta){
+  const d = delta || 0;
+  const base = d > 0 ? Math.max(mastery - d, 0) : mastery;
+  return `<span class="dbar"><i class="base" style="width:${pct(base)}%"></i>` +
+         `<i class="${d > 0 ? "up" : "down"}" style="width:${pct(Math.abs(d))}%"></i></span>`;
+}
+
+/* Both readings stacked: the ten weighted answers, then the resulting total. */
+function wordBars(history, delta){
+  return meter(history) + deltaBar(computeMastery(history), delta);
+}
+
+function toast(msg){
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 1900);
+}
+
+function topbar(title, onBack){
+  return `<div class="topbar">
+    ${onBack ? `<button class="back" data-act="${onBack}">&larr; Back</button>` : ""}
+    <div class="grow"><h2 class="screen-title">${esc(title)}</h2></div>
+  </div>`;
+}
+
+/* ===========================================================================
+   Screens
+   =========================================================================== */
+function renderHome(){
+  const low = lowestMasteryModule();
+  const cats = Object.keys(VOCAB).sort();
+  const total = cats.reduce((n, c) => n + countWords(c), 0);
+
+  app.innerHTML = `
+    <div class="masthead">
+      <div>
+        <div class="eyebrow">Türkçe pratik</div>
+        <h1>Turkish Practice</h1>
+      </div>
+      <div class="overall">
+        <b class="num">${pct(overallMastery())}%</b>
+        <span class="eyebrow">${total} words</span>
+      </div>
+    </div>
+
+    <button class="suggest" data-act="quick">
+      <span class="mark">↗</span>
+      <span class="label" style="flex:1;min-width:0">
+        <span class="name">${esc(low.module)}</span>
+        <span class="sub">Most room for improvement · ${low.words.length} words</span>
+      </span>
+      <span class="pct num">${pct(low.m)}%</span>
+    </button>
+
+    <div class="rows">
+      ${cats.map(c => {
+        const m = categoryMastery(c);
+        const subs = Object.keys(VOCAB[c]).length;
+        return `<button class="row" data-act="cat" data-cat="${esc(c)}">
+          <span class="label">
+            <span class="name">${esc(c)}</span>
+            <span class="sub">${countWords(c)} words${isFlat(c) ? "" : ` · ${subs} topics`}</span>
+            ${bar(m)}
+          </span>
+          <span class="pct">${pct(m)}%</span>
+          <span class="chev">›</span>
+        </button>`;
+      }).join("")}
+    </div>
+
+    <div class="foot">
+      <button data-act="progress">Progress</button>
+      <button data-act="data">Data &amp; settings</button>
+    </div>`;
+}
+
+function renderCategory(){
+  const cat = view.cat;
+  const subs = Object.keys(VOCAB[cat]).sort();
+  app.innerHTML = `
+    ${topbar(cat, "home")}
+    <div class="rows">
+      ${subs.map(s => {
+        const module = moduleName(cat, s), words = wordsOf(cat, s);
+        const m = moduleMastery(module, words);
+        return `<button class="row" data-act="pick" data-sub="${esc(s)}">
+          <span class="label">
+            <span class="name">${esc(s)}</span>
+            <span class="sub">${words.length} words</span>
+            ${bar(m)}
+          </span>
+          <span class="pct">${pct(m)}%</span>
+          <span class="chev">›</span>
+        </button>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderSetup(){
+  const max = view.words.length;
+  const counts = [5, 10, 20, max].filter((n, i, a) => n <= max && a.indexOf(n) === i);
+  if(view.count > max) view.count = max;
+  const [eng, tur] = view.words[0];
+  app.innerHTML = `
+    ${topbar(view.module, isFlat(view.cat) ? "home" : "tocat")}
+    <div class="sheet stack">
+      <div class="field">
+        <span class="eyebrow">Direction</span>
+        <div class="seg" data-act="dir">
+          <button data-dir="en_to_tr" aria-pressed="${view.dir === "en_to_tr"}">English → Türkçe</button>
+          <button data-dir="tr_to_en" aria-pressed="${view.dir === "tr_to_en"}">Türkçe → English</button>
+        </div>
+        <span class="note">${view.dir === "en_to_tr"
+          ? `You'll see <b>${esc(eng)}</b> and pick <b>${esc(tur)}</b>.`
+          : `You'll see <b>${esc(tur)}</b> and pick <b>${esc(eng)}</b>.`}</span>
+      </div>
+      <div class="field">
+        <span class="eyebrow">Questions · ${max} available</span>
+        <div class="chips" data-act="count">
+          ${counts.map(n => `<button data-n="${n}" aria-pressed="${view.count === n}">${n === max ? `All ${n}` : n}</button>`).join("")}
+        </div>
+      </div>
+    </div>
+    <button class="primary" data-act="start">Start</button>
+    <p class="note" style="text-align:center;margin:0">
+      Words you know least come up most often.
+    </p>`;
+}
+
+function startQuiz(){
+  const idx = selectQuestions(view.words, view.module, view.dir, view.count);
+  const nChoices = Math.min(NUM_CHOICES, view.words.length);
+  const questions = idx.map(i => {
+    const [eng, tur] = view.words[i];
+    const prompt = view.dir === "en_to_tr" ? eng : tur;
+    const answer = view.dir === "en_to_tr" ? tur : eng;
+    const pool = view.words
+      .map(p => view.dir === "en_to_tr" ? p[1] : p[0])
+      .filter(a => a !== answer);
+    for(let k = pool.length - 1; k > 0; k--){
+      const j = Math.floor(Math.random() * (k + 1));
+      [pool[k], pool[j]] = [pool[j], pool[k]];
+    }
+    const choices = [answer, ...pool.slice(0, nChoices - 1)];
+    for(let k = choices.length - 1; k > 0; k--){
+      const j = Math.floor(Math.random() * (k + 1));
+      [choices[k], choices[j]] = [choices[j], choices[k]];
+    }
+    return {eng, tur, prompt, answer, choices, before:computeMastery(historyOf(view.module, eng, tur, view.dir))};
+  });
+  view.quiz = {questions, i:0, score:0, results:[], picked:null};
+  view.screen = "quiz";
+  render();
+}
+
+function renderQuiz(){
+  const q = view.quiz, cur = q.questions[q.i];
+  const answered = q.picked !== null;
+  const right = answered && q.picked === cur.answer;
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back" data-act="abandon">✕</button>
+      <div class="pips">
+        ${q.questions.map((_, i) => {
+          if(i < q.results.length) return `<i class="${q.results[i].correct ? "ok" : "no"}"></i>`;
+          return `<i class="${i === q.i ? "now" : ""}"></i>`;
+        }).join("")}
+      </div>
+      <span class="num eyebrow">${q.i + 1}/${q.questions.length}</span>
+    </div>
+
+    <div class="sheet prompt">
+      <span class="ask">${view.dir === "en_to_tr" ? "How do you say" : "What does this mean"}</span>
+      <span class="word">${esc(cur.prompt)}</span>
+    </div>
+
+    <div class="choices">
+      ${cur.choices.map((c, i) => {
+        let cls = "";
+        if(answered){
+          if(c === cur.answer) cls = "right";
+          else if(c === q.picked) cls = "wrong";
+          else cls = "dim";
+        }
+        return `<button class="choice ${cls}" data-act="answer" data-choice="${esc(c)}" ${answered ? "disabled" : ""}>
+          <span class="k">${i + 1}</span><span class="t">${esc(c)}</span>
+        </button>`;
+      }).join("")}
+    </div>
+
+    ${answered ? `<div class="verdict ${right ? "right" : "wrong"}">
+      <span>${right ? "Doğru — correct" : `Answer: ${esc(cur.answer)}`}</span>
+      <button data-act="next">${q.i + 1 === q.questions.length ? "See results" : "Next"} →</button>
+    </div>` : ""}`;
+}
+
+function answerQuiz(choice){
+  const q = view.quiz;
+  if(q.picked !== null) return;
+  const cur = q.questions[q.i];
+  const correct = choice === cur.answer;
+  q.picked = choice;
+  if(correct) q.score += 1;
+  recordAnswer(view.module, cur.eng, cur.tur, view.dir, correct);
+  q.results.push({eng:cur.eng, tur:cur.tur, correct, before:cur.before});
+  saveStats();
+  render();
+  if(correct && prefs.autoAdvance) setTimeout(() => { if(view.quiz === q && q.picked !== null) nextQuestion(); }, 750);
+}
+
+function nextQuestion(){
+  const q = view.quiz;
+  if(q.picked === null) return;
+  q.picked = null;
+  if(q.i + 1 < q.questions.length){ q.i += 1; render(); return; }
+  recordSession(view.module, view.dir, q.score, q.questions.length, view.words);
+  saveStats();
+  view.sitting.push({module:view.module, direction:view.dir, score:q.score, total:q.questions.length});
+  saveSitting();
+  view.last = q;
+  view.quiz = null;
+  view.screen = "results";
+  render();
+}
+
+/* --- charts -------------------------------------------------------------- */
+/* Rotating per-module colours, mirroring MODULE_COLORS in graphs.py */
+const MODULE_COLORS = ["var(--cobalt)", "var(--turquoise)", "var(--bole)",
+                       "var(--good)", "var(--gold)", "var(--plum)"];
+
+function lineChart(series, labels){
+  const W = 320, H = 96, L = 26, R = 6, T = 8, B = 16;
+  const n = Math.max(...series.map(s => s.points.length));
+  if(n < 1) return "";
+  const x = i => n === 1 ? (L + W - R) / 2 : L + i * (W - L - R) / (n - 1);
+  const y = v => T + (1 - v) * (H - T - B);
+  let out = `<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  for(const g of [0, 0.5, 1]){
+    out += `<line x1="${L}" y1="${y(g)}" x2="${W - R}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"/>` +
+           `<text x="${L - 5}" y="${y(g) + 3.5}" text-anchor="end" fill="var(--faint)" ` +
+           `font-family="var(--mono)" font-size="9">${pct(g)}</text>`;
+  }
+  for(const s of series){
+    let d = "", open = false;
+    s.points.forEach((v, i) => {
+      if(v === null || v === undefined){ open = false; return; }   // gap, as in _render_line_chart
+      d += (open ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1) + " ";
+      open = true;
+    });
+    if(d && !s.noLine) out += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2"
+             stroke-linejoin="round" stroke-linecap="round"/>`;
+    const dots = s.dots || [];
+    s.points.forEach((v, i) => {
+      if(v === null || v === undefined) return;
+      const last = i === s.points.length - 1;
+      if(!last && !s.markEvery && n > 14) return;
+      out += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${last ? 3.4 : 2.4}"
+               fill="${dots[i] || s.color}"/>`;
+    });
+  }
+  if(labels){
+    out += `<text x="${L}" y="${H - 3}" fill="var(--faint)" font-family="var(--mono)" font-size="9">${esc(labels[0])}</text>`;
+    out += `<text x="${W - R}" y="${H - 3}" text-anchor="end" fill="var(--faint)" font-family="var(--mono)" font-size="9">${esc(labels[1])}</text>`;
+  }
+  return out + "</svg>";
+}
+
+/* render_session_accuracy(): this sitting's rounds, one colour per module. */
+function sittingChart(){
+  if(!view.sitting.length) return "";
+  const mods = [];
+  for(const s of view.sitting) if(!mods.includes(s.module)) mods.push(s.module);
+  const colorOf = m => MODULE_COLORS[mods.indexOf(m) % MODULE_COLORS.length];
+  const pts = view.sitting.map(s => s.total ? s.score / s.total : 0);
+  const dots = view.sitting.map(s => colorOf(s.module));
+  return `<div class="sheet chart">
+    <h3>This sitting</h3>
+    <p>${view.sitting.length} round${view.sitting.length === 1 ? "" : "s"} since you opened the app. Resets when you close it.</p>
+    ${lineChart([{points:pts, color:"var(--line)", dots, markEvery:true}], ["first", "latest"])}
+    <div class="legend">
+      ${mods.map(m => `<span><b style="background:${colorOf(m)}"></b>${esc(m)}</span>`).join("")}
+    </div>
+  </div>`;
+}
+
+/* Per-round scores for this module, oldest to newest. */
+function moduleRoundsChart(){
+  const hist = stats.session_history.filter(s => s.module === view.module);
+  if(!hist.length) return "";
+  const pts = hist.map(s => s.total ? s.score / s.total : 0);
+  return `<div class="sheet chart">
+    <h3>${esc(view.module)} over time</h3>
+    <p>What you scored in each of the last ${hist.length} round${hist.length === 1 ? "" : "s"} of this module, both directions.</p>
+    ${lineChart([{points:pts, color:"var(--cobalt)"}], [`${hist.length} rounds ago`, "now"])}
+  </div>`;
+}
+
+/* render_module_progress_over_time(): cumulative test accuracy against the
+   mastery snapshot recorded with each session. Sessions logged before snapshots
+   existed have no mastery value and leave a gap in the line. */
+function cumulativeChart(){
+  const hist = stats.session_history.filter(s => s.module === view.module);
+  if(!hist.length) return "";
+  let cumCorrect = 0, cumTotal = 0;
+  const acc = [], mast = [];
+  for(const s of hist){
+    cumCorrect += s.score;
+    cumTotal += s.total;
+    acc.push(cumTotal > 0 ? cumCorrect / cumTotal : 0);
+    mast.push(s.mastery === null || s.mastery === undefined ? null : s.mastery);
+  }
+  const gaps = mast.some(m => m === null);
+  return `<div class="sheet chart">
+    <h3>Accuracy against mastery</h3>
+    <p>Lifetime accuracy in ${esc(view.module)} — every question ever asked — against
+       the module's mastery at each round.${gaps ? " Gaps are rounds recorded before mastery was tracked." : ""}</p>
+    ${lineChart([
+      {points:acc, color:"var(--cobalt)"},
+      {points:mast, color:"var(--gold)"}
+    ], [`${hist.length} rounds ago`, "now"])}
+    <div class="legend">
+      <span><b style="background:var(--cobalt)"></b>Test accuracy — ${pct(acc[acc.length-1])}%</span>
+      <span><b style="background:var(--gold)"></b>Mastery — ${pct(moduleMastery(view.module, view.words))}%</span>
+    </div>
+  </div>`;
+}
+
+/* render_module_ranking(): every module averaged over both directions, best
+   first. Untested word/direction pairs count as 0, so a module can't exceed
+   tested/total. Untouched modules are hidden to avoid a wall of zeroes, except
+   the one just practised. */
+function rankingChart(){
+  const quizzed = {};
+  if(view.last) for(const r of view.last.results){
+    const k = r.eng + "|" + r.tur;
+    quizzed[k] = (quizzed[k] || 0) + 1;
+  }
+  const ranked = [];
+  for(const [mod, words] of allModules()){
+    if(!words.length) continue;
+    let now = 0, old = 0;
+    for(const [eng, tur] of words){
+      const hEn = historyOf(mod, eng, tur, "en_to_tr");
+      const hTr = historyOf(mod, eng, tur, "tr_to_en");
+      const mEn = computeMastery(hEn), mTr = computeMastery(hTr);
+      now += mEn + mTr;
+      if(mod === view.module){
+        const k = quizzed[eng + "|" + tur] || 0;
+        old += view.dir === "en_to_tr"
+          ? computeMastery(k ? hEn.slice(0, -k) : hEn) + mTr
+          : mEn + computeMastery(k ? hTr.slice(0, -k) : hTr);
+      }
+    }
+    const denom = words.length * 2;
+    const mastery = now / denom;
+    if(mastery === 0 && mod !== view.module) continue;
+    ranked.push({
+      mod, mastery, n:words.length,
+      delta: (mod === view.module && Object.keys(quizzed).length) ? mastery - old / denom : null
+    });
+  }
+  if(!ranked.length) return "";
+  ranked.sort((a, b) => b.mastery - a.mastery);
+
+  return `<div class="sheet" style="overflow:hidden">
+    <div class="chart" style="padding-bottom:4px">
+      <h3>All modules ranked</h3>
+      <p>Averaged over both directions. Words you've never been asked count as zero,
+         so a module only fills up once you've covered all of it.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">
+      ${ranked.map((r, i) => {
+        const d = r.delta || 0;
+        const dc = d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
+        const here = r.mod === view.module;
+        return `<div class="wordrow"${here ? ' style="background:var(--cobalt-wash)"' : ""}>
+          <span class="tick" style="color:var(--faint);font-size:12px">${i + 1}</span>
+          <span class="pair">
+            <b${here ? ' style="color:var(--cobalt)"' : ""}>${esc(r.mod)}</b>
+            <span>${r.n} words</span>
+            ${deltaBar(r.mastery, d)}
+          </span>
+          <span class="delta">${pct(r.mastery)}%<br>
+            <span style="color:${dc}">${r.delta === null ? "&nbsp;" : (d >= 0 ? "+" : "") + pct(d)}</span></span>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+function renderResults(){
+  const q = view.last;
+  const n = q.questions.length;
+  const say = q.score === n ? "Harika! Perfect round."
+    : q.score >= n / 2 ? "Not bad — keep going."
+    : "Keep at it, these will stick.";
+
+  const rows = q.results.map(r => {
+    const hist = historyOf(view.module, r.eng, r.tur, view.dir);
+    const after = computeMastery(hist);
+    const d = after - r.before;
+    const dc = d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
+    const pair = view.dir === "en_to_tr"
+      ? `<b>${esc(r.eng)}</b> <span>→</span> ${esc(r.tur)}`
+      : `<b>${esc(r.tur)}</b> <span>→</span> ${esc(r.eng)}`;
+    return `<div class="wordrow">
+      <span class="tick" style="color:${r.correct ? "var(--good)" : "var(--bad)"}">${r.correct ? "✓" : "✕"}</span>
+      <span class="pair">${pair}${wordBars(hist, d)}</span>
+      <span class="delta">${pct(after)}%<br>
+        <span style="color:${dc}">${d >= 0 ? "+" : ""}${pct(d)}</span></span>
+    </div>`;
+  }).join("");
+
+  app.innerHTML = `
+    <div class="topbar"><div class="grow"><span class="eyebrow">${esc(view.module)} · ${view.dir === "en_to_tr" ? "EN → TR" : "TR → EN"}</span></div></div>
+    <div class="sheet score">
+      <span class="big num">${q.score}<small>/${n}</small></span>
+      <span class="say">${say}</span>
+    </div>
+
+    <button class="primary" data-act="again">Same again — ${n} more</button>
+    <div class="split">
+      <button class="ghost" data-act="setup">Change direction or length</button>
+      <button class="ghost" data-act="home">Different module</button>
+    </div>
+
+    <div class="sheet" style="overflow:hidden">
+      <div class="chart" style="padding-bottom:4px">
+        <h3>This round</h3>
+        <p>Segments are the last ten answers, widest = most recent.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">${rows}</div>
+    </div>
+
+    ${sittingChart()}
+    ${moduleRoundsChart()}
+    ${weakWords()}
+    ${cumulativeChart()}
+    ${rankingChart()}
+
+    <button class="ghost" data-act="progress">All progress over time →</button>`;
+}
+
+/* render_mastery_change(): every word in this module that's been tested in this
+   direction, weakest first, with this round's gain or loss overlaid on the bar. */
+function weakWords(){
+  const q = view.last;
+  const quizzed = {};
+  for(const r of q.results){
+    const k = r.eng + "|" + r.tur;
+    quizzed[k] = (quizzed[k] || 0) + 1;
+  }
+
+  const out = [];
+  for(const w of Object.values(stats.words)){
+    if(w.module !== view.module) continue;
+    const h = (w[view.dir] && w[view.dir].history) || [];
+    if(!h.length) continue;
+    const m = computeMastery(h);
+    const seen = quizzed[w.english + "|" + w.turkish] || 0;
+    const delta = seen ? m - computeMastery(h.slice(0, -seen)) : null;
+    out.push({m, delta, h, eng:w.english, tur:w.turkish, seen:w[view.dir].seen});
+  }
+  if(!out.length) return "";
+  out.sort((a, b) => a.m - b.m || b.seen - a.seen);
+
+  const rows = out.map(w => {
+    const d = w.delta || 0;
+    const dc = d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
+    return `<div class="wordrow">
+      <span class="pair">
+        <b>${esc(view.dir === "en_to_tr" ? w.eng : w.tur)}</b>
+        <span>${esc(view.dir === "en_to_tr" ? w.tur : w.eng)}</span>
+        ${wordBars(w.h, d)}
+      </span>
+      <span class="delta">${pct(w.m)}%<br>
+        <span style="color:${dc}">${w.delta === null ? "&nbsp;" : (d >= 0 ? "+" : "") + pct(d)}</span></span>
+    </div>`;
+  }).join("");
+
+  return `<div class="sheet" style="overflow:hidden">
+    <div class="chart" style="padding-bottom:4px">
+      <h3>Weakest words</h3>
+      <p>Every ${view.dir === "en_to_tr" ? "English → Türkçe" : "Türkçe → English"} word
+         you've been tested on here, weakest first. These come up most often.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">${rows}</div>
+  </div>`;
+}
+
+/* Progress across everything, or narrowed to one module. */
+function renderProgress(){
+  const all = stats.session_history;
+  const mods = [...new Set(all.map(s => s.module))].sort();
+  const f = view.filter;
+  const hist = f ? all.filter(s => s.module === f) : all;
+
+  let body;
+  if(!hist.length){
+    body = `<div class="sheet chart"><h3>Nothing recorded yet</h3>
+      <p>Finish a round and it shows up here.</p></div>`;
+  }else{
+    const shown = f ? hist : hist.slice(-40);
+    let cc = 0, ct = 0;
+    const acc = [], mast = [], dots = [], scores = [];
+    const colorOf = m => MODULE_COLORS[mods.indexOf(m) % MODULE_COLORS.length];
+    for(const s of shown){
+      cc += s.score; ct += s.total;
+      acc.push(ct ? cc / ct : 0);
+      scores.push(s.total ? s.score / s.total : 0);
+      dots.push(colorOf(s.module));
+      mast.push(s.mastery === null || s.mastery === undefined ? null : s.mastery);
+    }
+    const series = f
+      ? [{points:acc, color:"var(--cobalt)"}, {points:mast, color:"var(--gold)"}]
+      : [{points:scores, color:"var(--line)", dots, noLine:true, markEvery:true},
+         {points:acc, color:"var(--cobalt)"}];
+    const questions = hist.reduce((n, s) => n + s.total, 0);
+    const correct = hist.reduce((n, s) => n + s.score, 0);
+
+    body = `
+      <div class="sheet chart">
+        <h3>${f ? esc(f) : "Every module"}</h3>
+        <p>${f
+          ? "Lifetime accuracy against the module's mastery at each round."
+          : `Each dot is one round, coloured by module; the line is lifetime accuracy.${
+              hist.length > 40 ? ` Showing the last 40 of ${hist.length} rounds.` : ""}`}</p>
+        ${lineChart(series, [`${shown.length} rounds ago`, "now"])}
+        <div class="legend">
+          ${f
+            ? `<span><b style="background:var(--cobalt)"></b>Test accuracy</span>
+               <span><b style="background:var(--gold)"></b>Mastery</span>`
+            : mods.map(m => `<span><b style="background:${colorOf(m)}"></b>${esc(m)}</span>`).join("")}
+        </div>
+      </div>
+      <div class="sheet stack">
+        <span class="eyebrow">${f ? esc(f) : "All modules"}</span>
+        <p class="note" style="margin:0">
+          <b class="num">${hist.length}</b> rounds · <b class="num">${correct}/${questions}</b>
+          questions right (<b class="num">${questions ? Math.round(correct / questions * 100) : 0}%</b>) ·
+          mastery now <b class="num">${f ? pct(moduleMastery(f, moduleWordsFor(f))) : pct(overallMastery())}%</b>
+        </p>
+      </div>`;
+  }
+
+  app.innerHTML = `
+    ${topbar("Progress", "home")}
+    <div class="field">
+      <select id="filter">
+        <option value=""${f ? "" : " selected"}>All modules</option>
+        ${mods.map(m => `<option value="${esc(m)}"${f === m ? " selected" : ""}>${esc(m)}</option>`).join("")}
+      </select>
+    </div>
+    ${body}
+    ${rankingChart()}`;
+
+  const sel = document.getElementById("filter");
+  if(sel) sel.addEventListener("change", e => { view.filter = e.target.value; render(); });
+}
+
+function moduleWordsFor(module){
+  for(const [mod, words] of allModules()) if(mod === module) return words;
+  return [];
+}
+
+function renderData(){
+  const json = JSON.stringify(stats, null, 2);
+  const words = Object.keys(stats.words).length;
+  app.innerHTML = `
+    ${topbar("Data & settings", "home")}
+    <div class="sheet stack">
+      <div class="field">
+        <span class="eyebrow">Progress stored on this device</span>
+        <p class="note" style="margin:0">
+          <b class="num">${stats.sessions}</b> rounds · <b class="num">${words}</b> words touched ·
+          <b class="num">${stats.session_history.length}</b> entries in history.
+          Same format as <code>stats.json</code>, so it moves between the app and the
+          Python CLI. Each browser keeps its own copy — use these to sync them.
+        </p>
+      </div>
+      <div class="split">
+        <button class="ghost" data-act="copy">Copy stats.json</button>
+        <button class="ghost" data-act="pickfile">Load a file…</button>
+      </div>
+      <input type="file" id="file" accept=".json,application/json" style="display:none">
+      <div class="field">
+        <span class="eyebrow">Or paste stats.json here</span>
+        <textarea id="paste" placeholder='{"words": { … }, "modules": { … }}'></textarea>
+        <div class="split">
+          <button class="ghost" data-act="import">Replace my progress</button>
+          <button class="ghost" data-act="merge">Merge into mine</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet stack">
+      <div class="field">
+        <span class="eyebrow">Answer feedback</span>
+        <div class="seg" data-act="auto">
+          <button data-v="1" aria-pressed="${prefs.autoAdvance}">Advance automatically</button>
+          <button data-v="0" aria-pressed="${!prefs.autoAdvance}">Wait for a tap</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet stack">
+      <span class="eyebrow">Current export</span>
+      <textarea id="dump" readonly>${esc(json.length > 40000 ? json.slice(0, 40000) + "\n… use Copy stats.json for the whole file" : json)}</textarea>
+      <button class="ghost" data-act="reset" style="color:var(--bad);border-color:var(--bad)">Erase all progress</button>
+    </div>`;
+
+  document.getElementById("file").addEventListener("change", ev => {
+    const f = ev.target.files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = () => { document.getElementById("paste").value = r.result; toast("Loaded — now choose Replace or Merge"); };
+    r.readAsText(f, "utf-8");
+  });
+}
+
+function importStats(mode){
+  const raw = document.getElementById("paste").value.trim();
+  if(!raw) return toast("Nothing to import");
+  let incoming;
+  try{ incoming = JSON.parse(raw); }
+  catch(e){ return toast("That isn't valid JSON"); }
+  if(!incoming || typeof incoming !== "object" || !incoming.words)
+    return toast("No \"words\" key — is that a stats.json?");
+  incoming = normalize(incoming);
+  if(mode === "replace"){
+    stats = incoming;
+  }else{
+    // Merge: append unseen history, keep the longer record per word/direction.
+    for(const [key, w] of Object.entries(incoming.words)){
+      const mine = stats.words[key];
+      if(!mine){ stats.words[key] = w; continue; }
+      for(const dir of DIRS){
+        const a = (mine[dir].history || []), b = (w[dir].history || []);
+        if(b.length > a.length){
+          mine[dir].history = b;
+          mine[dir].seen = Math.max(mine[dir].seen, w[dir].seen);
+          mine[dir].correct = Math.max(mine[dir].correct, w[dir].correct);
+        }
+      }
+    }
+    for(const [m, d] of Object.entries(incoming.modules)){
+      if(!stats.modules[m]) stats.modules[m] = d;
+    }
+    const seen = new Set(stats.session_history.map(s => s.timestamp));
+    for(const s of incoming.session_history){
+      if(!seen.has(s.timestamp)) stats.session_history.push(s);
+    }
+    stats.session_history.sort((a, b) => a.timestamp < b.timestamp ? -1 : 1);
+    stats.sessions = stats.session_history.length;
+  }
+  saveStats();
+  toast(mode === "replace" ? "Progress replaced" : "Progress merged");
+  render();
+}
+
+/* ===========================================================================
+   Router + events
+   =========================================================================== */
+function render(){
+  const s = view.screen;
+  if(s === "home") renderHome();
+  else if(s === "cat") renderCategory();
+  else if(s === "setup") renderSetup();
+  else if(s === "quiz") renderQuiz();
+  else if(s === "results") renderResults();
+  else if(s === "progress") renderProgress();
+  else if(s === "data") renderData();
+  window.scrollTo(0, 0);
+}
+
+function go(screen){ view.screen = screen; render(); }
+
+function pickModule(cat, sub){
+  view.cat = cat;
+  view.module = moduleName(cat, sub);
+  view.words = wordsOf(cat, sub);
+  if(view.count > view.words.length) view.count = view.words.length;
+  go("setup");
+}
+
+app.addEventListener("click", ev => {
+  const el = ev.target.closest("[data-act]");
+  if(!el) return;
+  const act = el.dataset.act;
+
+  if(act === "home"){ go("home"); }
+  else if(act === "tocat"){ go("cat"); }          // back out of setup, keeping view.cat
+  else if(act === "cat"){
+    const cat = el.dataset.cat;
+    if(!cat || !VOCAB[cat]) return;
+    if(isFlat(cat)) pickModule(cat, "Main");
+    else { view.cat = cat; go("cat"); }
+  }
+  else if(act === "pick"){ pickModule(view.cat, el.dataset.sub); }
+  else if(act === "quick"){
+    const low = lowestMasteryModule();
+    const cat = Object.keys(VOCAB).find(c =>
+      Object.keys(VOCAB[c]).some(s => moduleName(c, s) === low.module));
+    const sub = Object.keys(VOCAB[cat]).find(s => moduleName(cat, s) === low.module);
+    pickModule(cat, sub);
+  }
+  else if(act === "dir"){
+    const b = ev.target.closest("[data-dir]");
+    if(b){ view.dir = b.dataset.dir; render(); }
+  }
+  else if(act === "count"){
+    const b = ev.target.closest("[data-n]");
+    if(b){ view.count = +b.dataset.n; prefs.count = view.count; savePrefs(); render(); }
+  }
+  else if(act === "auto"){
+    const b = ev.target.closest("[data-v]");
+    if(b){ prefs.autoAdvance = b.dataset.v === "1"; savePrefs(); render(); }
+  }
+  else if(act === "start"){ startQuiz(); }
+  else if(act === "answer"){ answerQuiz(el.dataset.choice); }
+  else if(act === "next"){ nextQuestion(); }
+  else if(act === "abandon"){ view.quiz = null; go("home"); }
+  else if(act === "again"){ view.count = Math.min(view.count, view.words.length); startQuiz(); }
+  else if(act === "setup"){ go("setup"); }
+  else if(act === "data"){ go("data"); }
+  else if(act === "progress"){ go("progress"); }
+  else if(act === "copy"){
+    const text = JSON.stringify(stats, null, 2);
+    navigator.clipboard.writeText(text)
+      .then(() => toast("stats.json copied"))
+      .catch(() => { document.getElementById("dump").select(); toast("Press ⌘C / Ctrl+C to copy"); });
+  }
+  else if(act === "pickfile"){ document.getElementById("file").click(); }
+  else if(act === "import"){ importStats("replace"); }
+  else if(act === "merge"){ importStats("merge"); }
+  else if(act === "reset"){
+    if(confirm("Erase all progress on this device? Copy stats.json first if you want a backup.")){
+      stats = emptyStats(); view.sitting = []; saveSitting(); saveStats(); go("home");
+    }
+  }
+});
+
+/* Number keys answer, Enter advances -- handy on a laptop, ignored on a phone. */
+document.addEventListener("keydown", ev => {
+  if(view.screen !== "quiz" || !view.quiz) return;
+  const q = view.quiz;
+  if(q.picked === null){
+    const n = parseInt(ev.key, 10);
+    const cur = q.questions[q.i];
+    if(n >= 1 && n <= cur.choices.length) answerQuiz(cur.choices[n - 1]);
+  }else if(ev.key === "Enter" || ev.key === " "){
+    ev.preventDefault(); nextQuestion();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
