@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#EAEEF2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C1624" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <title>Türkçe Practice</title>
 <style>
@@ -163,6 +166,23 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 .suggest .name{font-weight:700;font-size:15.5px;display:block}
 .suggest .sub{font-size:12.5px;color:var(--muted)}
 .suggest .pct{font-family:var(--mono);font-weight:600;color:var(--cobalt);flex:none}
+.suggest.check{background:transparent;border-color:var(--line)}
+.suggest.check:hover{border-color:var(--turquoise)}
+.suggest.check .mark{background:var(--turquoise);color:var(--surface)}
+.suggest.check .pct{color:var(--turquoise)}
+
+.search{width:100%;font-family:var(--sans);font-size:16px;padding:14px 14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.search::placeholder{color:var(--faint)}
+.hit{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--surface)}
+.hit .w{flex:1;min-width:0}
+.hit .w b{font-weight:600;font-size:15px}
+.hit .w span{color:var(--faint);font-size:13.5px}
+.hit .w .mod{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  letter-spacing:.04em;margin-top:2px}
+.hit .dirs{flex:none;display:flex;gap:10px;text-align:right}
+.hit .dirs div{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.hit .dirs small{display:block;font-size:9.5px;color:var(--faint);letter-spacing:.06em}
 
 /* --- setup ------------------------------------------------------------- */
 .field{display:flex;flex-direction:column;gap:8px}
@@ -235,6 +255,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 .wordrow .pair span{color:var(--faint)}
 .wordrow .delta{font-family:var(--mono);font-size:12.5px;font-weight:500;flex:none;
   font-variant-numeric:tabular-nums}
+.wordrow .from{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  letter-spacing:.04em;margin-top:2px}
 
 /* the 10 weighted slots of compute_mastery(), most recent on the left */
 .meter{display:flex;gap:2px;height:8px;margin-top:5px}
@@ -399,7 +421,9 @@ function recordAnswer(module, eng, tur, dir, correct){
   w.last_seen = localISO();
 }
 
-function recordSession(module, dir, score, total, moduleWords){
+/* `snapshot` is the mastery figure stored with the session: mean module mastery
+   for a normal round, mean mastery of the qualifying pool for a Mastery Check. */
+function recordSession(module, dir, score, total, snapshot){
   if(!stats.modules[module]){
     stats.modules[module] = {sessions:0, en_to_tr:{asked:0,correct:0}, tr_to_en:{asked:0,correct:0}};
   }
@@ -410,7 +434,7 @@ function recordSession(module, dir, score, total, moduleWords){
   stats.sessions += 1;
   stats.session_history.push({
     timestamp: localISO(), module, direction:dir, score, total,
-    mastery: moduleMastery(module, moduleWords)
+    mastery: snapshot
   });
 }
 
@@ -491,12 +515,106 @@ function selectQuestions(words, module, dir, n){
 }
 
 /* ===========================================================================
+   Distractors -- a question is the answer, 2 competitive near-misses and the
+   rest random, so the six buttons discriminate without becoming predictable.
+   =========================================================================== */
+const COMPETITIVE = 2;   // near-misses per question
+const NEAR_POOL = 8;     // how many of the closest words those 2 are drawn from
+
+const FOLD = {"ı":"i","İ":"i","I":"i","ş":"s","Ş":"s","ğ":"g","Ğ":"g","ç":"c","Ç":"c",
+              "ö":"o","Ö":"o","ü":"u","Ü":"u","â":"a","Â":"a","î":"i","Î":"i","û":"u","Û":"u"};
+/* Fold Turkish letters before lowercasing -- "İ".toLowerCase() grows a combining dot. */
+function fold(s){
+  return String(s).replace(/[ıİIşŞğĞçÇöÖüÜâÂîÎûÛ]/g, c => FOLD[c] || c)
+                  .toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+function levenshtein(a, b){
+  if(a === b) return 0;
+  if(!a.length || !b.length) return Math.max(a.length, b.length);
+  let prev = Array.from({length:b.length + 1}, (_, i) => i);
+  for(let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for(let j = 1; j <= b.length; j++){
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i-1] === b[j-1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/* How easily two words could be mistaken for each other: edit distance, with a
+   push for a shared opening (kapı/kapalı) and for matching length. */
+function similarity(a, b){
+  const x = fold(a), y = fold(b);
+  if(!x || !y || x === y) return 0;
+  const max = Math.max(x.length, y.length);
+  let sim = 1 - levenshtein(x, y) / max;
+  let p = 0;
+  while(p < x.length && p < y.length && x[p] === y[p]) p++;
+  sim += 0.18 * (p / max);
+  if(Math.abs(x.length - y.length) <= 1) sim += 0.06;
+  return sim;
+}
+
+function shuffle(a){
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildChoices(answer, pool, n){
+  const others = [...new Set(pool)].filter(a => a !== answer);
+  const near = others.map(a => ({a, s:similarity(answer, a)}))
+                     .filter(o => o.s > 0.25)
+                     .sort((p, q) => q.s - p.s)
+                     .slice(0, NEAR_POOL);
+  // Draw the near-misses from a shuffled shortlist, not the top 2, so a word
+  // doesn't come with the same six buttons every time.
+  const picked = shuffle(near).slice(0, COMPETITIVE).map(o => o.a);
+  const rest = shuffle(others.filter(a => !picked.includes(a)));
+  for(const a of rest){
+    if(picked.length >= n - 1) break;
+    picked.push(a);
+  }
+  return shuffle([answer, ...picked.slice(0, n - 1)]);
+}
+
+/* ===========================================================================
+   Mastery Check -- an audit drawn from modules you've already got to 90%.
+   Answers land in each word's real history, so a module can lose its place.
+   =========================================================================== */
+const CHECK = "Mastery Check";
+
+function qualifyingModules(threshold){
+  return allModules().filter(([mod, words]) => moduleMastery(mod, words) >= threshold);
+}
+function checkPool(threshold){
+  const out = [];
+  for(const [mod, words] of qualifyingModules(threshold)){
+    for(const [eng, tur] of words) out.push({eng, tur, module:mod});
+  }
+  return out;
+}
+/* Mean mastery across every word in the qualifying modules, both directions. */
+function poolMastery(entries){
+  if(!entries.length) return 0;
+  let total = 0;
+  for(const e of entries){
+    for(const dir of DIRS) total += computeMastery(historyOf(e.module, e.eng, e.tur, dir));
+  }
+  return total / (entries.length * 2);
+}
+
+/* ===========================================================================
    State
    =========================================================================== */
 const NUM_CHOICES = 6;   // six answers on screen, always -- three per thumb
 
 let stats = loadStats();
-let prefs = Object.assign({count:5, autoAdvance:true}, (() => {
+let prefs = Object.assign({count:5, autoAdvance:true, threshold:0.8}, (() => {
   try{ return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }catch(e){ return {}; }
 })());
 function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){} }
@@ -504,8 +622,10 @@ function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)
 const view = {
   screen:"home",
   cat:null, module:null, words:null,
+  mode:"module",            // "module" | "check"
+  threshold:prefs.threshold,   // Mastery Check floor, remembered between sittings
   dir:"en_to_tr", count:prefs.count,
-  quiz:null, last:null, filter:"",
+  quiz:null, last:null, filter:"", query:"",
   sitting:[]        // this sitting only -- the CLI's session_scores
 };
 try{ view.sitting = JSON.parse(sessionStorage.getItem("sitting")) || []; }catch(e){}
@@ -566,6 +686,8 @@ function renderHome(){
   const low = lowestMasteryModule();
   const cats = Object.keys(VOCAB).sort();
   const total = cats.reduce((n, c) => n + countWords(c), 0);
+  const qualify = qualifyingModules(view.threshold);
+  const qualifyWords = qualify.reduce((n, [, w]) => n + w.length, 0);
 
   app.innerHTML = `
     <div class="masthead">
@@ -588,6 +710,17 @@ function renderHome(){
       <span class="pct num">${pct(low.m)}%</span>
     </button>
 
+    <button class="suggest check" data-act="checkstart">
+      <span class="mark">✓</span>
+      <span class="label" style="flex:1;min-width:0">
+        <span class="name">Mastery Check</span>
+        <span class="sub">${qualify.length
+          ? `${qualify.length} module${qualify.length === 1 ? "" : "s"} at ${pct(view.threshold)}% · ${qualifyWords} words`
+          : `Nothing at ${pct(view.threshold)}% yet`}</span>
+      </span>
+      <span class="pct num">${qualify.length ? pct(poolMastery(checkPool(view.threshold))) + "%" : "—"}</span>
+    </button>
+
     <div class="rows">
       ${cats.map(c => {
         const m = categoryMastery(c);
@@ -605,6 +738,7 @@ function renderHome(){
     </div>
 
     <div class="foot">
+      <button data-act="search">Look up a word</button>
       <button data-act="progress">Progress</button>
       <button data-act="data">Data &amp; settings</button>
     </div>`;
@@ -632,13 +766,56 @@ function renderCategory(){
     </div>`;
 }
 
+function thresholdField(){
+  return `<div class="field">
+    <span class="eyebrow">Draw from modules at or above</span>
+    <div class="chips" data-act="threshold">
+      ${[0.9, 0.8, 0.6].map(t => {
+        const n = qualifyingModules(t).length;
+        return `<button data-t="${t}" aria-pressed="${view.threshold === t}">${pct(t)}%
+          <span style="opacity:.6">· ${n}</span></button>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
 function renderSetup(){
+  const check = view.mode === "check";
+  if(check) view.words = checkPool(view.threshold).map(e => [e.eng, e.tur]);
   const max = view.words.length;
   const counts = [5, 10, 20, max].filter((n, i, a) => n <= max && a.indexOf(n) === i);
   if(view.count > max) view.count = max;
-  const [eng, tur] = view.words[0];
+  const [eng, tur] = view.words[0] || ["—", "—"];
+  const qualifying = check ? qualifyingModules(view.threshold) : [];
+
+  if(check && !max){
+    const best = allModules()
+      .map(([mod, words]) => ({mod, m:moduleMastery(mod, words)}))
+      .sort((a, b) => b.m - a.m)[0];
+    app.innerHTML = `
+      ${topbar(CHECK, "home")}
+      ${thresholdField()}
+      <div class="sheet stack">
+        <p class="note" style="margin:0">
+          Nothing is at <b>${pct(view.threshold)}%</b> yet, so there's nothing to check.
+          Your strongest module is <b>${esc(best.mod)}</b> at <b class="num">${pct(best.m)}%</b> —
+          keep going, or lower the bar above.
+        </p>
+      </div>
+      <p class="note" style="text-align:center;margin:0">
+        Remember a word needs ten correct answers in a row to reach 100%, in each direction.
+      </p>`;
+    return;
+  }
+
   app.innerHTML = `
-    ${topbar(view.module, isFlat(view.cat) ? "home" : "tocat")}
+    ${topbar(check ? CHECK : view.module, check ? "home" : (isFlat(view.cat) ? "home" : "tocat"))}
+    ${check ? `<p class="note" style="margin:0">
+      Drawn evenly from the <b>${qualifying.length}</b> module${qualifying.length === 1 ? "" : "s"}
+      you've taken to ${pct(view.threshold)}% — <b class="num">${max}</b> words.
+      Every answer counts as that word's newest result, so a module can lose its place here.
+    </p>` : ""}
+    ${check ? thresholdField() : ""}
     <div class="sheet stack">
       <div class="field">
         <span class="eyebrow">Direction</span>
@@ -659,30 +836,36 @@ function renderSetup(){
     </div>
     <button class="primary" data-act="start">Start</button>
     <p class="note" style="text-align:center;margin:0">
-      Words you know least come up most often.
+      ${check
+        ? "Sampled evenly, not weighted — it's an audit, not a drill."
+        : "Words you know least come up most often."}
     </p>`;
 }
 
 function startQuiz(){
-  const idx = selectQuestions(view.words, view.module, view.dir, view.count);
-  const nChoices = Math.min(NUM_CHOICES, view.words.length);
-  const questions = idx.map(i => {
-    const [eng, tur] = view.words[i];
-    const prompt = view.dir === "en_to_tr" ? eng : tur;
-    const answer = view.dir === "en_to_tr" ? tur : eng;
-    const pool = view.words
-      .map(p => view.dir === "en_to_tr" ? p[1] : p[0])
-      .filter(a => a !== answer);
-    for(let k = pool.length - 1; k > 0; k--){
-      const j = Math.floor(Math.random() * (k + 1));
-      [pool[k], pool[j]] = [pool[j], pool[k]];
-    }
-    const choices = [answer, ...pool.slice(0, nChoices - 1)];
-    for(let k = choices.length - 1; k > 0; k--){
-      const j = Math.floor(Math.random() * (k + 1));
-      [choices[k], choices[j]] = [choices[j], choices[k]];
-    }
-    return {eng, tur, prompt, answer, choices, before:computeMastery(historyOf(view.module, eng, tur, view.dir))};
+  let entries, pool;
+  if(view.mode === "check"){
+    // An audit: sample the qualifying vocabulary evenly rather than leaning on
+    // the weakest words, and freeze the pool so the snapshot compares like with like.
+    pool = checkPool(view.threshold);
+    view.checkPool = pool;
+    entries = shuffle(pool.slice()).slice(0, Math.min(view.count, pool.length));
+  }else{
+    pool = view.words.map(([eng, tur]) => ({eng, tur, module:view.module}));
+    entries = selectQuestions(view.words, view.module, view.dir, view.count)
+      .map(i => ({eng:view.words[i][0], tur:view.words[i][1], module:view.module}));
+  }
+
+  const answers = pool.map(e => view.dir === "en_to_tr" ? e.tur : e.eng);
+  const nChoices = Math.min(NUM_CHOICES, new Set(answers).size);
+  const questions = entries.map(e => {
+    const prompt = view.dir === "en_to_tr" ? e.eng : e.tur;
+    const answer = view.dir === "en_to_tr" ? e.tur : e.eng;
+    return {
+      eng:e.eng, tur:e.tur, module:e.module, prompt, answer,
+      choices: buildChoices(answer, answers, nChoices),
+      before: computeMastery(historyOf(e.module, e.eng, e.tur, view.dir))
+    };
   });
   view.quiz = {questions, i:0, score:0, results:[], picked:null};
   view.screen = "quiz";
@@ -737,8 +920,10 @@ function answerQuiz(choice){
   const correct = choice === cur.answer;
   q.picked = choice;
   if(correct) q.score += 1;
-  recordAnswer(view.module, cur.eng, cur.tur, view.dir, correct);
-  q.results.push({eng:cur.eng, tur:cur.tur, correct, before:cur.before});
+  // Always recorded against the word's own module, so a Mastery Check moves the
+  // mastery of whichever module the word actually belongs to.
+  recordAnswer(cur.module, cur.eng, cur.tur, view.dir, correct);
+  q.results.push({eng:cur.eng, tur:cur.tur, module:cur.module, correct, before:cur.before});
   saveStats();
   render();
   if(correct && prefs.autoAdvance) setTimeout(() => { if(view.quiz === q && q.picked !== null) nextQuestion(); }, 750);
@@ -749,9 +934,13 @@ function nextQuestion(){
   if(q.picked === null) return;
   q.picked = null;
   if(q.i + 1 < q.questions.length){ q.i += 1; render(); return; }
-  recordSession(view.module, view.dir, q.score, q.questions.length, view.words);
+  const label = view.mode === "check" ? CHECK : view.module;
+  const snapshot = view.mode === "check"
+    ? poolMastery(view.checkPool || [])
+    : moduleMastery(view.module, view.words);
+  recordSession(label, view.dir, q.score, q.questions.length, snapshot);
   saveStats();
-  view.sitting.push({module:view.module, direction:view.dir, score:q.score, total:q.questions.length});
+  view.sitting.push({module:label, direction:view.dir, score:q.score, total:q.questions.length});
   saveSitting();
   view.last = q;
   view.quiz = null;
@@ -819,14 +1008,19 @@ function sittingChart(){
   </div>`;
 }
 
+/* The label a round is filed under: a Mastery Check spans modules. */
+function roundLabel(){ return view.mode === "check" ? CHECK : view.module; }
+
 /* Per-round scores for this module, oldest to newest. */
 function moduleRoundsChart(){
-  const hist = stats.session_history.filter(s => s.module === view.module);
+  const mod = roundLabel();
+  const hist = stats.session_history.filter(s => s.module === mod);
   if(!hist.length) return "";
   const pts = hist.map(s => s.total ? s.score / s.total : 0);
   return `<div class="sheet chart">
-    <h3>${esc(view.module)} over time</h3>
-    <p>What you scored in each of the last ${hist.length} round${hist.length === 1 ? "" : "s"} of this module, both directions.</p>
+    <h3>${esc(mod)} over time</h3>
+    <p>What you scored in each of the last ${hist.length} round${hist.length === 1 ? "" : "s"} of
+       ${view.mode === "check" ? "the check" : "this module"}, both directions.</p>
     ${lineChart([{points:pts, color:"var(--cobalt)"}], [`${hist.length} rounds ago`, "now"])}
   </div>`;
 }
@@ -835,7 +1029,8 @@ function moduleRoundsChart(){
    mastery snapshot recorded with each session. Sessions logged before snapshots
    existed have no mastery value and leave a gap in the line. */
 function cumulativeChart(){
-  const hist = stats.session_history.filter(s => s.module === view.module);
+  const mod = roundLabel();
+  const hist = stats.session_history.filter(s => s.module === mod);
   if(!hist.length) return "";
   let cumCorrect = 0, cumTotal = 0;
   const acc = [], mast = [];
@@ -848,15 +1043,17 @@ function cumulativeChart(){
   const gaps = mast.some(m => m === null);
   return `<div class="sheet chart">
     <h3>Accuracy against mastery</h3>
-    <p>Lifetime accuracy in ${esc(view.module)} — every question ever asked — against
-       the module's mastery at each round.${gaps ? " Gaps are rounds recorded before mastery was tracked." : ""}</p>
+    <p>Lifetime accuracy in ${esc(mod)} — every question ever asked — against
+       ${view.mode === "check" ? "the mastery of everything the check draws from" : "the module's mastery"}
+       at each round.${gaps ? " Gaps are rounds recorded before mastery was tracked." : ""}</p>
     ${lineChart([
       {points:acc, color:"var(--cobalt)"},
       {points:mast, color:"var(--gold)"}
     ], [`${hist.length} rounds ago`, "now"])}
     <div class="legend">
       <span><b style="background:var(--cobalt)"></b>Test accuracy — ${pct(acc[acc.length-1])}%</span>
-      <span><b style="background:var(--gold)"></b>Mastery — ${pct(moduleMastery(view.module, view.words))}%</span>
+      <span><b style="background:var(--gold)"></b>Mastery — ${pct(view.mode === "check"
+        ? poolMastery(view.checkPool || []) : moduleMastery(view.module, view.words))}%</span>
     </div>
   </div>`;
 }
@@ -866,22 +1063,26 @@ function cumulativeChart(){
    tested/total. Untouched modules are hidden to avoid a wall of zeroes, except
    the one just practised. */
 function rankingChart(){
-  const quizzed = {};
+  // Keyed by the word's own module, so a Mastery Check shows a delta against
+  // every module it happened to pull from.
+  const quizzed = {}, touched = new Set();
   if(view.last) for(const r of view.last.results){
-    const k = r.eng + "|" + r.tur;
+    const k = (r.module || view.module) + "|" + r.eng + "|" + r.tur;
     quizzed[k] = (quizzed[k] || 0) + 1;
+    touched.add(r.module || view.module);
   }
   const ranked = [];
   for(const [mod, words] of allModules()){
     if(!words.length) continue;
+    const live = touched.has(mod);
     let now = 0, old = 0;
     for(const [eng, tur] of words){
       const hEn = historyOf(mod, eng, tur, "en_to_tr");
       const hTr = historyOf(mod, eng, tur, "tr_to_en");
       const mEn = computeMastery(hEn), mTr = computeMastery(hTr);
       now += mEn + mTr;
-      if(mod === view.module){
-        const k = quizzed[eng + "|" + tur] || 0;
+      if(live){
+        const k = quizzed[mod + "|" + eng + "|" + tur] || 0;
         old += view.dir === "en_to_tr"
           ? computeMastery(k ? hEn.slice(0, -k) : hEn) + mTr
           : mEn + computeMastery(k ? hTr.slice(0, -k) : hTr);
@@ -889,11 +1090,8 @@ function rankingChart(){
     }
     const denom = words.length * 2;
     const mastery = now / denom;
-    if(mastery === 0 && mod !== view.module) continue;
-    ranked.push({
-      mod, mastery, n:words.length,
-      delta: (mod === view.module && Object.keys(quizzed).length) ? mastery - old / denom : null
-    });
+    if(mastery === 0 && !live) continue;
+    ranked.push({mod, mastery, n:words.length, live, delta: live ? mastery - old / denom : null});
   }
   if(!ranked.length) return "";
   ranked.sort((a, b) => b.mastery - a.mastery);
@@ -908,7 +1106,7 @@ function rankingChart(){
       ${ranked.map((r, i) => {
         const d = r.delta || 0;
         const dc = d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
-        const here = r.mod === view.module;
+        const here = r.live;
         return `<div class="wordrow"${here ? ' style="background:var(--cobalt-wash)"' : ""}>
           <span class="tick" style="color:var(--faint);font-size:12px">${i + 1}</span>
           <span class="pair">
@@ -931,8 +1129,10 @@ function renderResults(){
     : q.score >= n / 2 ? "Not bad — keep going."
     : "Keep at it, these will stick.";
 
+  const check = view.mode === "check";
   const rows = q.results.map(r => {
-    const hist = historyOf(view.module, r.eng, r.tur, view.dir);
+    const mod = r.module || view.module;
+    const hist = historyOf(mod, r.eng, r.tur, view.dir);
     const after = computeMastery(hist);
     const d = after - r.before;
     const dc = d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
@@ -941,14 +1141,14 @@ function renderResults(){
       : `<b>${esc(r.tur)}</b> <span>→</span> ${esc(r.eng)}`;
     return `<div class="wordrow">
       <span class="tick" style="color:${r.correct ? "var(--good)" : "var(--bad)"}">${r.correct ? "✓" : "✕"}</span>
-      <span class="pair">${pair}${wordBars(hist, d)}</span>
+      <span class="pair">${pair}${check ? `<span class="from">${esc(mod)}</span>` : ""}${wordBars(hist, d)}</span>
       <span class="delta">${pct(after)}%<br>
         <span style="color:${dc}">${d >= 0 ? "+" : ""}${pct(d)}</span></span>
     </div>`;
   }).join("");
 
   app.innerHTML = `
-    <div class="topbar"><div class="grow"><span class="eyebrow">${esc(view.module)} · ${view.dir === "en_to_tr" ? "EN → TR" : "TR → EN"}</span></div></div>
+    <div class="topbar"><div class="grow"><span class="eyebrow">${esc(roundLabel())} · ${view.dir === "en_to_tr" ? "EN → TR" : "TR → EN"}</span></div></div>
     <div class="sheet score">
       <span class="big num">${q.score}<small>/${n}</small></span>
       <span class="say">${say}</span>
@@ -957,13 +1157,14 @@ function renderResults(){
     <button class="primary" data-act="again">Same again — ${n} more</button>
     <div class="split">
       <button class="ghost" data-act="setup">Change direction or length</button>
-      <button class="ghost" data-act="home">Different module</button>
+      <button class="ghost" data-act="home">${check ? "Back to modules" : "Different module"}</button>
     </div>
 
     <div class="sheet" style="overflow:hidden">
       <div class="chart" style="padding-bottom:4px">
         <h3>This round</h3>
-        <p>Segments are the last ten answers, widest = most recent.</p>
+        <p>Segments are the last ten answers, widest = most recent.${
+          check ? " Each answer counts as that word's newest result, so its module moves with it." : ""}</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">${rows}</div>
     </div>
@@ -980,6 +1181,7 @@ function renderResults(){
 /* render_mastery_change(): every word in this module that's been tested in this
    direction, weakest first, with this round's gain or loss overlaid on the bar. */
 function weakWords(){
+  if(view.mode === "check") return "";   // a check spans modules; "this round" covers it
   const q = view.last;
   const quizzed = {};
   for(const r of q.results){
@@ -1022,6 +1224,77 @@ function weakWords(){
     </div>
     <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">${rows}</div>
   </div>`;
+}
+
+/* Look up any word in the vocabulary and see where it stands. */
+let SEARCH_INDEX = null;
+function searchIndex(){
+  if(SEARCH_INDEX) return SEARCH_INDEX;
+  SEARCH_INDEX = [];
+  for(const [mod, words] of allModules()){
+    for(const [eng, tur] of words){
+      SEARCH_INDEX.push({eng, tur, mod, key:fold(eng) + " " + fold(tur)});
+    }
+  }
+  return SEARCH_INDEX;
+}
+
+function searchHits(query){
+  const q = fold(query);
+  if(!q) return [];
+  const hits = searchIndex().filter(w => w.key.includes(q));
+  // Whole-word and opening matches first, then alphabetical.
+  hits.sort((a, b) => {
+    const ra = fold(a.eng) === q || fold(a.tur) === q ? 0
+             : fold(a.eng).startsWith(q) || fold(a.tur).startsWith(q) ? 1 : 2;
+    const rb = fold(b.eng) === q || fold(b.tur) === q ? 0
+             : fold(b.eng).startsWith(q) || fold(b.tur).startsWith(q) ? 1 : 2;
+    return ra - rb || a.eng.localeCompare(b.eng);
+  });
+  return hits;
+}
+
+function searchResults(query){
+  const hits = searchHits(query);
+  if(!query.trim()) return `<p class="note" style="text-align:center">
+    ${searchIndex().length} words. Type in either language — accents optional.</p>`;
+  if(!hits.length) return `<p class="note" style="text-align:center">
+    Nothing matches “${esc(query)}”.</p>`;
+  return `<div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft);
+      border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden">
+    ${hits.slice(0, 60).map(w => {
+      const en = computeMastery(historyOf(w.mod, w.eng, w.tur, "en_to_tr"));
+      const tr = computeMastery(historyOf(w.mod, w.eng, w.tur, "tr_to_en"));
+      const col = v => v === 0 ? "var(--faint)" : v >= 0.9 ? "var(--good)" : "var(--ink)";
+      return `<div class="hit">
+        <span class="w">
+          <b>${esc(w.eng)}</b> <span>${esc(w.tur)}</span>
+          <span class="mod">${esc(w.mod)}</span>
+        </span>
+        <span class="dirs">
+          <div style="color:${col(en)}">${pct(en)}%<small>EN→TR</small></div>
+          <div style="color:${col(tr)}">${pct(tr)}%<small>TR→EN</small></div>
+        </span>
+      </div>`;
+    }).join("")}
+  </div>
+  ${hits.length > 60 ? `<p class="note" style="text-align:center">
+    Showing 60 of ${hits.length} matches.</p>` : ""}`;
+}
+
+function renderSearch(){
+  app.innerHTML = `
+    ${topbar("Look up a word", "home")}
+    <input class="search" id="q" type="search" autocomplete="off" autocapitalize="off"
+           spellcheck="false" placeholder="English or Türkçe…" value="${esc(view.query)}">
+    <div id="hits">${searchResults(view.query)}</div>`;
+  const box = document.getElementById("q");
+  box.addEventListener("input", () => {
+    view.query = box.value;
+    // Patch just the list so the field keeps focus and the keyboard stays up.
+    document.getElementById("hits").innerHTML = searchResults(view.query);
+  });
+  if(!view.query) box.focus();
 }
 
 /* Progress across everything, or narrowed to one module. */
@@ -1205,6 +1478,7 @@ function render(){
   else if(s === "quiz") renderQuiz();
   else if(s === "results") renderResults();
   else if(s === "progress") renderProgress();
+  else if(s === "search") renderSearch();
   else if(s === "data") renderData();
   window.scrollTo(0, 0);
 }
@@ -1212,6 +1486,7 @@ function render(){
 function go(screen){ view.screen = screen; render(); }
 
 function pickModule(cat, sub){
+  view.mode = "module";
   view.cat = cat;
   view.module = moduleName(cat, sub);
   view.words = wordsOf(cat, sub);
@@ -1260,6 +1535,16 @@ app.addEventListener("click", ev => {
   else if(act === "setup"){ go("setup"); }
   else if(act === "data"){ go("data"); }
   else if(act === "progress"){ go("progress"); }
+  else if(act === "search"){ go("search"); }
+  else if(act === "checkstart"){
+    view.mode = "check";
+    view.module = CHECK;
+    go("setup");
+  }
+  else if(act === "threshold"){
+    const b = ev.target.closest("[data-t]");
+    if(b){ view.threshold = prefs.threshold = +b.dataset.t; savePrefs(); render(); }
+  }
   else if(act === "copy"){
     const text = JSON.stringify(stats, null, 2);
     navigator.clipboard.writeText(text)
@@ -1290,6 +1575,14 @@ document.addEventListener("keydown", ev => {
 });
 
 render();
+
+/* Offline support, only where it can work: needs a real https origin, so this
+   is a no-op opened from file:// and harmless anywhere sw.js isn't served. */
+if("serviceWorker" in navigator && location.protocol === "https:"){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

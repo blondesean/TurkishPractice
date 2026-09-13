@@ -1,0 +1,16 @@
+{
+  "name": "Türkçe Practice",
+  "short_name": "Türkçe",
+  "description": "Turkish vocabulary drilling with weighted mastery tracking.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#E9EDF2",
+  "theme_color": "#17539B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
