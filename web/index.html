@@ -29,10 +29,10 @@
   --ink:#132A42;
   --muted:#5C7288;
   --faint:#8496A8;
-  --cobalt:#17539B;
-  --cobalt-ink:#FFFFFF;
-  --cobalt-wash:#DEE8F6;
-  --turquoise:#1A8F8A;
+  --accent:#17539B;
+  --accent-ink:#FFFFFF;
+  --accent-wash:#DEE8F6;
+  --data:#1A8F8A;
   --bole:#BC3E2C;
   --good:#1A7F5E;
   --good-wash:#DCEFE7;
@@ -56,10 +56,10 @@
     --ink:#E2EAF3;
     --muted:#8CA2B9;
     --faint:#6B8199;
-    --cobalt:#6AA8E6;
-    --cobalt-ink:#06121F;
-    --cobalt-wash:#1A3149;
-    --turquoise:#3FC2BA;
+    --accent:#6AA8E6;
+    --accent-ink:#06121F;
+    --accent-wash:#1A3149;
+    --data:#3FC2BA;
     --bole:#E4715D;
     --good:#3DB88C;
     --good-wash:#14332A;
@@ -79,10 +79,10 @@
   --ink:#E2EAF3;
   --muted:#8CA2B9;
   --faint:#6B8199;
-  --cobalt:#6AA8E6;
-  --cobalt-ink:#06121F;
-  --cobalt-wash:#1A3149;
-  --turquoise:#3FC2BA;
+  --accent:#6AA8E6;
+  --accent-ink:#06121F;
+  --accent-wash:#1A3149;
+  --data:#3FC2BA;
   --bole:#E4715D;
   --good:#3DB88C;
   --good-wash:#14332A;
@@ -91,6 +91,114 @@
   --gold:#D8A441;
   --plum:#B98ACB;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+/* ---------------------------------------------------------------------------
+   Colour themes, picked in Data & settings (data-palette on <html>). Each one
+   redefines the neutrals, accent and data colour for light and dark; anything
+   a theme leaves out falls back to İznik above. Semantic colours move only
+   where they'd blur into the accent: "wrong" under Nar, "right" under Zümrüt.
+   Every dark block must repeat every token its light block sets.
+--------------------------------------------------------------------------- */
+:root[data-palette="nar"]{
+  --paper:#F1ECEB; --sunken:#F7F3F2; --line:#DDD3D1; --line-soft:#E9E2E0;
+  --ink:#2A1414; --muted:#6F5854; --faint:#9A8683;
+  --accent:#830000; --accent-ink:#FFFFFF; --accent-wash:#F2DEDA; --data:#015E49;
+  --bad:#C2560C; --bad-wash:#FBEBDD; --bole:#C2560C;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="nar"]:not([data-theme="light"]){
+    --paper:#160D0D; --surface:#211515; --sunken:#2A1B1B; --line:#3F2A29; --line-soft:#312121;
+    --ink:#F2E6E4; --muted:#BFA5A1; --faint:#8F7773;
+    --accent:#E58B80; --accent-ink:#2A0A08; --accent-wash:#3A1C1A; --data:#4FC3A1;
+    --bad:#F08A3C; --bad-wash:#3A2413; --bole:#F08A3C;
+  }
+}
+:root[data-palette="nar"][data-theme="dark"]{
+  --paper:#160D0D; --surface:#211515; --sunken:#2A1B1B; --line:#3F2A29; --line-soft:#312121;
+  --ink:#F2E6E4; --muted:#BFA5A1; --faint:#8F7773;
+  --accent:#E58B80; --accent-ink:#2A0A08; --accent-wash:#3A1C1A; --data:#4FC3A1;
+  --bad:#F08A3C; --bad-wash:#3A2413; --bole:#F08A3C;
+}
+
+:root[data-palette="zumrut"]{
+  --paper:#E8EEEC; --sunken:#F1F5F4; --line:#CFDCD8; --line-soft:#DFE8E5;
+  --ink:#0F2621; --muted:#52706A; --faint:#82988F;
+  --accent:#015E49; --accent-ink:#FFFFFF; --accent-wash:#D6E9E3; --data:#8B663D;
+  --gold:#6D6A1F; --good:#3C8D2F; --good-wash:#E2F0DA;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="zumrut"]:not([data-theme="light"]){
+    --paper:#0A1512; --surface:#11201C; --sunken:#172A25; --line:#24403A; --line-soft:#1B332D;
+    --ink:#E1EEEA; --muted:#93B2AA; --faint:#6A857D;
+    --accent:#4FC7A6; --accent-ink:#04201A; --accent-wash:#143A31; --data:#D1A574;
+    --gold:#C9C46A; --good:#7CC26A; --good-wash:#1E3317;
+  }
+}
+:root[data-palette="zumrut"][data-theme="dark"]{
+  --paper:#0A1512; --surface:#11201C; --sunken:#172A25; --line:#24403A; --line-soft:#1B332D;
+  --ink:#E1EEEA; --muted:#93B2AA; --faint:#6A857D;
+  --accent:#4FC7A6; --accent-ink:#04201A; --accent-wash:#143A31; --data:#D1A574;
+  --gold:#C9C46A; --good:#7CC26A; --good-wash:#1E3317;
+}
+
+/* #C2C2E1 is too pale to carry white text: it's the tint in light mode and the
+   accent itself in dark mode. */
+:root[data-palette="lavanta"]{
+  --paper:#ECECF4; --sunken:#F4F4F9; --line:#D4D4E6; --line-soft:#E3E3EF;
+  --ink:#1E1E33; --muted:#5E5E7A; --faint:#8C8CA6;
+  --accent:#45457A; --accent-ink:#FFFFFF; --accent-wash:#C2C2E1; --data:#3E8A8A;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="lavanta"]:not([data-theme="light"]){
+    --paper:#13131F; --surface:#1B1B2B; --sunken:#232336; --line:#34344F; --line-soft:#2A2A40;
+    --ink:#E8E8F4; --muted:#A9A9C6; --faint:#7A7A96;
+    --accent:#C2C2E1; --accent-ink:#1B1B2E; --accent-wash:#2F2F4B; --data:#6CC7C2;
+  }
+}
+:root[data-palette="lavanta"][data-theme="dark"]{
+  --paper:#13131F; --surface:#1B1B2B; --sunken:#232336; --line:#34344F; --line-soft:#2A2A40;
+  --ink:#E8E8F4; --muted:#A9A9C6; --faint:#7A7A96;
+  --accent:#C2C2E1; --accent-ink:#1B1B2E; --accent-wash:#2F2F4B; --data:#6CC7C2;
+}
+
+:root[data-palette="kahve"]{
+  --paper:#EEEAE4; --sunken:#F5F2EE; --line:#DBD2C6; --line-soft:#E7E0D6;
+  --ink:#2B2118; --muted:#6F6150; --faint:#9A8C7B;
+  --accent:#8B663D; --accent-ink:#FFFFFF; --accent-wash:#EADFD1; --data:#015E49;
+  --gold:#5C5A12;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="kahve"]:not([data-theme="light"]){
+    --paper:#16110C; --surface:#211A13; --sunken:#2A2119; --line:#433627; --line-soft:#33291E;
+    --ink:#F1E9DF; --muted:#BFAE98; --faint:#8C7C69;
+    --accent:#D2A874; --accent-ink:#2A1B0B; --accent-wash:#3A2C1C; --data:#4FC3A1;
+    --gold:#C9C46A;
+  }
+}
+:root[data-palette="kahve"][data-theme="dark"]{
+  --paper:#16110C; --surface:#211A13; --sunken:#2A2119; --line:#433627; --line-soft:#33291E;
+  --ink:#F1E9DF; --muted:#BFAE98; --faint:#8C7C69;
+  --accent:#D2A874; --accent-ink:#2A1B0B; --accent-wash:#3A2C1C; --data:#4FC3A1;
+  --gold:#C9C46A;
+}
+
+:root[data-palette="zeytin"]{
+  --paper:#ECECE3; --sunken:#F4F4EE; --line:#D6D5C4; --line-soft:#E4E3D6;
+  --ink:#23220F; --muted:#66644A; --faint:#939177;
+  --accent:#3E3C00; --accent-ink:#FFFFFF; --accent-wash:#E3E2CC; --data:#8B663D;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="zeytin"]:not([data-theme="light"]){
+    --paper:#12120A; --surface:#1B1B10; --sunken:#242416; --line:#3A3A24; --line-soft:#2C2C1B;
+    --ink:#EEEDDC; --muted:#B3B191; --faint:#85836A;
+    --accent:#CFCB74; --accent-ink:#1C1B05; --accent-wash:#33321A; --data:#D1A574;
+  }
+}
+:root[data-palette="zeytin"][data-theme="dark"]{
+  --paper:#12120A; --surface:#1B1B10; --sunken:#242416; --line:#3A3A24; --line-soft:#2C2C1B;
+  --ink:#EEEDDC; --muted:#B3B191; --faint:#85836A;
+  --accent:#CFCB74; --accent-ink:#1C1B05; --accent-wash:#33321A; --data:#D1A574;
 }
 
 *{box-sizing:border-box}
@@ -107,7 +215,7 @@ body{
 }
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation}
-:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px;border-radius:6px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 
 #app{
   max-width:640px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;
@@ -123,7 +231,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 .topbar .grow{flex:1;min-width:0}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);
   font-size:14px;font-weight:600;padding:6px 10px 6px 4px;margin-left:-4px}
-.back:hover{color:var(--cobalt)}
+.back:hover{color:var(--accent)}
 .screen-title{font-family:var(--serif);font-size:26px;font-weight:600;
   line-height:1.1;letter-spacing:-.01em;text-wrap:balance;margin:0}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -137,7 +245,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
   line-height:1;letter-spacing:-.02em}
 .overall{text-align:right;flex:none}
 .overall b{font-family:var(--mono);font-size:24px;font-weight:600;display:block;
-  line-height:1.1;color:var(--cobalt)}
+  line-height:1.1;color:var(--accent)}
 
 .rows{display:flex;flex-direction:column;gap:1px;background:var(--line-soft);
   border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden}
@@ -154,22 +262,22 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 
 .bar{height:5px;border-radius:99px;background:var(--sunken);overflow:hidden;
   margin-top:6px;border:1px solid var(--line-soft)}
-.bar i{display:block;height:100%;background:var(--turquoise);border-radius:99px}
+.bar i{display:block;height:100%;background:var(--data);border-radius:99px}
 
 .suggest{display:flex;align-items:center;gap:13px;width:100%;text-align:left;
-  padding:14px;border-radius:var(--r);background:var(--cobalt-wash);
+  padding:14px;border-radius:var(--r);background:var(--accent-wash);
   border:1px solid transparent}
-.suggest:hover{border-color:var(--cobalt)}
-.suggest .mark{width:34px;height:34px;flex:none;border-radius:9px;background:var(--cobalt);
-  color:var(--cobalt-ink);display:grid;place-items:center;font-family:var(--serif);
+.suggest:hover{border-color:var(--accent)}
+.suggest .mark{width:34px;height:34px;flex:none;border-radius:9px;background:var(--accent);
+  color:var(--accent-ink);display:grid;place-items:center;font-family:var(--serif);
   font-size:18px;font-weight:700}
 .suggest .name{font-weight:700;font-size:15.5px;display:block}
 .suggest .sub{font-size:12.5px;color:var(--muted)}
-.suggest .pct{font-family:var(--mono);font-weight:600;color:var(--cobalt);flex:none}
+.suggest .pct{font-family:var(--mono);font-weight:600;color:var(--accent);flex:none}
 .suggest.check{background:transparent;border-color:var(--line)}
-.suggest.check:hover{border-color:var(--turquoise)}
-.suggest.check .mark{background:var(--turquoise);color:var(--surface)}
-.suggest.check .pct{color:var(--turquoise)}
+.suggest.check:hover{border-color:var(--data)}
+.suggest.check .mark{background:var(--data);color:var(--surface)}
+.suggest.check .pct{color:var(--data)}
 
 .search{width:100%;font-family:var(--sans);font-size:16px;padding:14px 14px;border-radius:12px;
   border:1px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -197,8 +305,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
   font-family:var(--mono);font-size:14px;font-weight:500;color:var(--muted)}
 .chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);
   border-color:var(--ink)}
-.primary{display:block;width:100%;padding:16px;border-radius:12px;background:var(--cobalt);
-  color:var(--cobalt-ink);font-size:16px;font-weight:700;letter-spacing:.01em;
+.primary{display:block;width:100%;padding:16px;border-radius:12px;background:var(--accent);
+  color:var(--accent-ink);font-size:16px;font-weight:700;letter-spacing:.01em;
   text-align:center;box-shadow:var(--shadow)}
 .primary:hover{filter:brightness(1.08)}
 .ghost{display:block;width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);
@@ -210,7 +318,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 .pips i{height:4px;flex:1;border-radius:99px;background:var(--line)}
 .pips i.ok{background:var(--good)}
 .pips i.no{background:var(--bad)}
-.pips i.now{background:var(--cobalt)}
+.pips i.now{background:var(--accent)}
 
 .prompt{padding:26px 20px;text-align:center;display:flex;flex-direction:column;
   gap:10px;align-items:center}
@@ -222,7 +330,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 .choice{display:flex;align-items:center;gap:9px;padding:13px 11px;border-radius:12px;
   background:var(--surface);border:1px solid var(--line);text-align:left;font-size:15.5px;
   font-weight:500;min-height:64px;transition:border-color .12s, background .12s}
-.choice:hover:not(:disabled){border-color:var(--cobalt)}
+.choice:hover:not(:disabled){border-color:var(--accent)}
 .choice .k{font-family:var(--mono);font-size:12px;color:var(--faint);flex:none;
   width:20px;height:20px;border-radius:5px;background:var(--sunken);display:grid;
   place-items:center;font-weight:500}
@@ -261,7 +369,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 /* the 10 weighted slots of compute_mastery(), most recent on the left */
 .meter{display:flex;gap:2px;height:8px;margin-top:5px}
 .meter i{border-radius:2px;background:var(--line)}
-.meter i.y{background:var(--turquoise)}
+.meter i.y{background:var(--data)}
 .meter i.n{background:var(--bole)}
 
 /* render_mastery_change(): grey base bar with this round's gain/loss overlaid */
@@ -301,7 +409,77 @@ textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:13px;
   border-radius:99px;font-size:14px;font-weight:600;box-shadow:var(--shadow);z-index:9}
 .foot{margin-top:auto;padding-top:6px;display:flex;justify-content:center;gap:18px}
 .foot button{font-size:13px;color:var(--faint);font-weight:600}
-.foot button:hover{color:var(--cobalt)}
+.foot button:hover{color:var(--accent)}
+
+/* --- sound --------------------------------------------------------------- */
+.speak{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;
+  color:var(--accent);background:var(--accent-wash)}
+.speak:hover:not(:disabled){box-shadow:inset 0 0 0 1.5px var(--accent)}
+.speak:disabled{opacity:.35;cursor:default}
+.speak svg{width:20px;height:20px}
+.speak.big{width:68px;height:68px}
+.speak.big svg{width:30px;height:30px}
+.hidden-word{color:var(--faint);letter-spacing:.25em}
+
+/* --- my words & irregulars ------------------------------------------------ */
+.letters{display:flex;flex-wrap:wrap;gap:6px}
+.letters button{min-width:42px;height:42px;border-radius:9px;border:1px solid var(--line);
+  background:var(--sunken);font-size:18px;font-weight:600}
+.letters button:active{background:var(--accent-wash)}
+.irr{font-family:var(--mono);font-size:.5em;vertical-align:super;margin-left:3px;color:var(--accent)}
+.irr-note{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+
+/* --- theme picker ------------------------------------------------------ */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.swatch{display:flex;flex-direction:column;align-items:flex-start;gap:9px;padding:11px 10px;
+  border-radius:12px;border:1px solid var(--line);background:var(--surface);text-align:left}
+.swatch:hover{border-color:var(--muted)}
+.swatch[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.swatch .dots{display:flex;padding-left:2px}
+.swatch .dots i{width:22px;height:22px;border-radius:50%;margin-left:-5px;
+  box-shadow:0 0 0 2px var(--surface)}
+.swatch .dots i:first-child{margin-left:0}
+.swatch b{display:block;font-size:14px;font-weight:700}
+.swatch small{display:block;font-size:11.5px;color:var(--faint)}
+
+/* --- conjugation & sentences ----------------------------------------- */
+.seg.modes button{font-size:13.5px;padding:10px 4px}
+.person{display:inline-flex;align-items:baseline;gap:8px;padding:6px 14px;border-radius:99px;
+  background:var(--accent-wash);color:var(--accent);font-weight:700;font-size:16px}
+.person small{font-weight:500;font-size:12.5px;color:var(--muted)}
+.rule{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.choice .t .stem{opacity:.55;font-weight:400}
+.choice .t b{font-weight:700}
+.row.locked{cursor:default}
+.row.locked:hover{background:var(--surface)}
+.row.locked .name,.row.locked .pct{color:var(--faint)}
+.row .chev.lock{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+
+/* six persons against the eight harmony vowels, in pairs: a ı · o u · e i · ö ü */
+.grid{display:grid;grid-template-columns:40px 1fr 1fr 5px 1fr 1fr 5px 1fr 1fr 5px 1fr 1fr;
+  gap:3px;padding:0 14px 14px}
+.grid .h{font-family:var(--mono);font-size:11px;color:var(--faint);text-align:center;align-self:center}
+.grid .h.who{text-align:left}
+.grid .c{aspect-ratio:1;border-radius:4px;display:grid;place-items:center;font-family:var(--mono);
+  font-size:9.5px;font-variant-numeric:tabular-nums}
+.grid .c.off{background:repeating-linear-gradient(45deg,var(--line) 0 1.5px,transparent 1.5px 5px)}
+.grid .c.hit{box-shadow:inset 0 0 0 2px var(--accent)}
+
+.sentence-en{font-family:var(--serif);font-size:clamp(21px,5.6vw,28px);font-weight:600;
+  line-height:1.22;letter-spacing:-.01em;text-wrap:balance}
+.line{min-height:64px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:7px;padding:11px;
+  border-radius:12px;border:1.5px dashed var(--line);background:var(--sunken)}
+.line.right{border-style:solid;border-color:var(--good)}
+.bank{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.tile{display:inline-flex;align-items:center;min-height:46px;padding:10px 15px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--line);font-size:17px;font-weight:600;
+  box-shadow:0 1px 0 var(--line)}
+button.tile:hover:not(:disabled){border-color:var(--accent)}
+button.tile:disabled{opacity:.5;cursor:default}
+.tile.spent{visibility:hidden}
+.line .tile{background:var(--accent-wash);border-color:transparent;box-shadow:none;color:var(--accent)}
+.line.right .tile{background:var(--good-wash);color:var(--good)}
+.line .tile.no{background:var(--bad-wash);color:var(--bad)}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -309,7 +487,638 @@ textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:13px;
 <body>
 <div id="app"></div>
 
-<script id="vocab-data" type="application/json">{"Airport":{"Main":[["Aeroplane","Uçak"],["Airline","Havayolu"],["Airport","Havaalanı / Havalimanı"],["Arrival","Varış"],["Customs","Gümrük"],["Departure","Kalkış"],["Domestic","Yurtiçi"],["Flight","Uçuş"],["Hand luggage","El bagajı"],["International","Yurtdışı"],["Luggage","Bagaj"],["Passenger","Yolcu"],["Passport","Pasaport"],["Runway","Pist"],["Security Control","Güvenlik Kontrolü"],["Terminal","Terminal"],["Ticket","Bilet"]]},"Animals":{"Main":[["Animal","Hayvan"],["Bear","Ayı"],["Bird","Kuş"],["Camel","Deve"],["Cat","Kedi"],["Cheetah","Çita"],["Chicken","Tavuk"],["Cow","İnek"],["Dog","Köpek"],["Donkey","Eşek"],["Duck","Ördek"],["Eagle","Kartal"],["Elephant","Fil"],["Fish","Balık"],["Giraffe","Zürafa"],["Horse","At"],["Kangaroo","Kanguru"],["Lion","Aslan"],["Monkey","Maymun"],["Mouse","Fare"],["Owl","Baykuş"],["Penguin","Penguen"],["Rabbit","Tavşan"],["Sheep","Koyun"],["Snake","Yılan"],["Spider","Örümcek"]]},"At Home":{"General":[["Chair","Sandalye"],["Clock","Saat"],["Desk","Masa"],["Door","Kapı"],["House","Ev"],["Light","Işık"],["Room","Oda"],["Stairs","Merdiven"],["Window","Pencere"]],"Living room":[["Bookshelf","Kitaplık"],["Coffee table","Sehpa"],["Couch","Kanepe"],["Fireplace","Şömine"],["Living room","Oturma odası"],["Rug","Halı"],["Vase","Vazo"]],"Bedroom":[["Alarm clock","Çalar saat"],["Bed","Yatak"],["Bedroom","Yatak odası"],["Blanket","Battaniye"],["Computer","Bilgisayar"],["Curtain","Perde"],["Drawer","Çekmece"],["Lamp","Lamba"],["Pillow","Yastık"],["Wardrobe","Gardırop"]],"Kitchen":[["Dinner Table","Yemek masası"],["Dishwasher","Bulaşık makinesi"],["Fridge","Buzdolabı"],["Kitchen","Mutfak"],["Oven","Fırın"],["Pot","Tencere"],["Stove","Ocak"],["Teapot","Çaydanlık"]],"Bathroom":[["Bathroom","Banyo"],["Mirror","Ayna"],["Shower","Duş"],["Soap","Sabun"],["Tap","Musluk"],["Toothbrush","Diş fırçası"],["Toothpaste","Diş macunu"],["Towel","Havlu"]],"Clothing":[["Belt","Kemer"],["Blouse","Bluz"],["Gloves","Eldiven"],["Headscarf","Eşarp / Başörtüsü"],["Jacket","Mont"],["Jeans","Kot pantolon"],["Jersey","Kazak"],["Jubbah / Thobe","Cübbe"],["Overcoat (Men's)","Palto"],["Overcoat (Women's)","Manto"],["Pants / Trousers","Pantolon"],["Pyjamas","Pijama"],["Shirt","Gömlek"],["Shoes","Ayakkabı"],["Skirt","Etek"],["Socks","Çorap"],["Suit","Takım elbise"],["Tie","Kravat"],["Tracksuit","Eşofman"],["T-shirt","Tişört"],["Underwear","İç çamaşır"]]},"Colors":{"Main":[["White","Beyaz"],["Grey","Gri"],["Turquoise","Türküaz"],["Blue","Mavi"],["Navy","Lacivert"],["Green","Yeşil"],["Yellow","Sarı"],["Orange","Turuncu"],["Red","Kırmızı"],["Pink","Pembe"],["Purple","Mor"],["Brown","Kahverengi"],["Black","Siyah"]]},"Countries":{"Africa (Afrika)":[["Algeria","Cezayir"],["Angola","Angola"],["Botswana","Botsvana"],["Cameroon","Kamerun"],["Central African Republic","Orta Afrika Cumhuriyeti"],["Democratic Republic of Congo","Demokratik Kongo Cumhuriyeti"],["Egypt","Mısır"],["Ethiopia","Etiyopya"],["Gabon","Gabon"],["Ghana","Gana"],["Ivory Coast","Fildişi Kıyısı"],["Kenya","Kenya"],["Libya","Libya"],["Malawi","Malavi"],["Mali","Mali"],["Mauritania","Moritanya"],["Morocco","Fas"],["Mozambique","Mozambik"],["Namibia","Namibya"],["Nigeria","Nijerya"],["Republic of the Congo","Kongo Cumhuriyeti"],["Senegal","Senegal"],["Somalia","Somali"],["South Africa","Güney Afrika"],["Sudan","Sudan"],["Tanzania","Tanzanya"],["Tunisia","Tunus"],["Uganda","Uganda"],["Zambia","Zambiya"],["Zimbabwe","Zimbabve"]],"Asia (Asya)":[["Afghanistan","Afganistan"],["Armenia","Ermenistan"],["Azerbaijan","Azerbaycan"],["Bangladesh","Bangladeş"],["Bahrain","Bahreyn"],["Cambodia","Kamboçya"],["Chechnya","Çeçenistan"],["China","Çin"],["Georgia","Gürcistan"],["Hong Kong","Hong Kong"],["India","Hindistan"],["Indonesia","Endonezya"],["Iran","İran"],["Iraq","Irak"],["Israel","İsrail"],["Japan","Japonya"],["Jordan","Ürdün"],["Kazakhstan","Kazakistan"],["Kuwait","Kuveyt"],["Kyrgyzstan","Kırgızistan"],["Lebanon","Lübnan"],["Malaysia","Malezya"],["Mongolia","Moğolistan"],["North Korea","Kuzey Kore"],["Oman","Umman"],["Pakistan","Pakistan"],["Palestine","Filistin"],["Philippines","Filipinler"],["Qatar","Katar"],["Saudi Arabia","Suudi Arabistan"],["South Korea","Güney Kore"],["Syria","Suriye"],["Tajikistan","Tacikistan"],["Türkiye","Türkiye"],["Turkmenistan","Türkmenistan"],["United Arab Emirates","Birleşik Arap Emirlikleri"],["Uzbekistan","Özbekistan"],["Vietnam","Vietnam"],["Yemen","Yemen"]],"Europe (Avrupa)":[["Albania","Arnavutluk"],["Austria","Avusturya"],["Belarus","Belarus / Beyaz Rusya"],["Belgium","Belçika"],["Bosnia Herzegovina","Bosna Hersek"],["Bulgaria","Bulgaristan"],["Croatia","Hırvatistan"],["Cyprus","Kıbrıs"],["Czech Republic","Çek Cumhuriyeti"],["Denmark","Danimarka"],["England","İngiltere"],["Estonia","Estonya"],["Finland","Finlandiya"],["France","Fransa"],["Georgia","Gürcistan"],["Germany","Almanya"],["Greece","Yunanistan"],["Holland","Hollanda"],["Hungary","Macaristan"],["Ireland","İrlanda"],["Italy","İtalya"],["Kosovo","Kosova"],["Latvia","Letonya"],["Lithuania","Litvanya"],["Luxembourg","Lüksemburg"],["Malta","Malta"],["Macedonia","Makedonya"],["Moldova","Moldova"],["Montenegro","Karadağ"],["Northern Ireland","Kuzey İrlanda"],["Norway","Norveç"],["Poland","Polonya"],["Portugal","Portekiz"],["Romania","Romanya"],["Russia","Rusya"],["Scotland","İskoçya"],["Serbia","Sırbistan"],["Slovakia","Slovakya"],["Slovenia","Slovenya"],["Spain","İspanya"],["Sweden","İsveç"],["Switzerland","İsviçre"],["Ukraine","Ukrayna"],["Wales","Galler"]],"North America (Kuzey Amerİka)":[["Canada","Kanada"],["Costa Rica","Kosta Rika"],["Cuba","Küba"],["Haiti","Haiti"],["Mexico","Meksika"],["Panama","Panama"],["United States of America","Amerika Birleşik Devletleri"]],"South America (Güney Amerİka)":[["Argentina","Arjantin"],["Bolivia","Bolivya"],["Brazil","Brezilya"],["Chile","Şili"],["Colombia","Kolombiya"],["Ecuador","Ekvador"],["Paraguay","Paraguay"],["Peru","Peru"],["Uruguay","Uruguay"],["Venezuela","Venezuela"]],"Oceania (Okyanusya)":[["Australia","Avustralya"],["Fiji","Fiji"],["New Zealand","Yeni Zelanda"],["Papua New Guinea","Papua Yeni Gine"],["Samoa","Samoa"],["Tonga","Tonga"]]},"Currency":{"Main":[["Dirham","Dirhem"],["Dollar","Dolar"],["Euro","Euro / Avro"],["Franc","Frank"],["Pound","Sterlin"],["Rupee","Rupi"],["Yen","Yen"]]},"Time":{"Days":[["Monday","Pazartesi"],["Tuesday","Salı"],["Wednesday","Çarşamba"],["Thursday","Perşembe"],["Friday","Cuma"],["Saturday","Cumartesi"],["Sunday","Pazar"],["Today","Bugün"],["Yesterday","Dün"],["Tomorrow","Yarın"],["Day before yesterday","Önceki gün / Evvelsi gün"],["Day after tomorrow","Öbür gün"],["Day","Gün"],["Week","Hafta"],["Month","Ay"],["Year","Yıl / Sene"],["Century","Yüzyıl"]],"Months":[["January","Ocak"],["February","Şubat"],["March","Mart"],["April","Nisan"],["May","Mayıs"],["June","Haziran"],["July","Temmuz"],["August","Ağustos"],["September","Eylül"],["October","Ekim"],["November","Kasım"],["December","Aralık"]],"Seasons":[["Spring","İlkbahar"],["Summer","Yaz"],["Autumn","Sonbahar"],["Winter","Kış"]],"Times of the day":[["Sunrise","Gündoğumu"],["Morning","Sabah"],["Midday","Öğle / Öğlen"],["Afternoon","Öğleden sonra"],["Evening","Akşam"],["Sunset","Günbatımı"],["Night","Gece"],["Midnight","Gece yarısı"]],"Clock Time":[["Second","Saniye"],["Minute","Dakika"],["Hour","Saat"]]},"Family Members":{"Immediate":[["Father","Baba"],["Mother","Anne"],["Brother","Kardeş"],["Sister","Kız kardeş"],["Elder brother","Abi"],["Elder sister","Abla"],["Grandfather","Dede"],["Grandmother","See below"],["Grandchild","Torun"],["Husband","Koca"],["Wife","Hanım"],["Spouse (Husband / Wife)","Eş"],["Son","Oğul"],["Daughter","Kız"]],"Maternal":[["Aunt","Teyze"],["Uncle","Dayı"],["Grandmother","Anneanne"]],"Paternal":[["Aunt","Hala"],["Uncle","Amca"],["Grandmother","Babaanne"]],"In-laws":[["Mother-in-law","Kaynana / Kayınvalide"],["Father-in-law","Kayınbaba / Kayınpeder"]]},"Food":{"Meat and Fish":[["Beef","Sığır eti / Et"],["Chicken","Tavuk"],["Fish","Balık"],["Lamb","Kuzu"],["Sausage","Sosis"],["Steak","Biftek"],["Turkey","Hindi"]],"Grains":[["Bread","Ekmek"],["Pasta","Makarna"],["Rice","Pirinç / Pilav"]],"Dairy":[["Cheese","Peynir"],["Egg","Yumurta"],["Ice-cream","Dondurma"],["Milk","Süt"],["Yogurt","Yoğurt"]],"Fruit":[["Apple","Elma"],["Apricot","Kayısı"],["Banana","Muz"],["Grapes","Üzüm"],["Mango","Mango"],["Orange","Portakal"],["Peach","Şeftali"],["Pear","Armut"],["Pineapple","Ananas"],["Pomegranate","Nar"],["Sour cherry","Vişne"],["Strawberry","Çilek"],["Watermelon","Karpuz"]],"Vegetables":[["Cabbage","Lahana"],["Carrot","Havuç"],["Corn","Mısır"],["Cucumber","Salatalık"],["Eggplant","Patlıcan"],["Lettuce","Marul"],["Onion","Soğan"],["Peas","Bezelye"],["Potato","Patates"],["Spinach","Ispanak"]],"Fast food":[["Burger","Burger"],["French fries","Patates kızartması"],["Ketchup","Ketçap"],["Mayonnaise","Mayonez"],["Mustard","Hardal"],["Pizza","Pizza"],["Sandwich","Sandviç"]],"Snacks":[["Cake","Pasta"],["Candy","Şeker"],["Chocolate","Çikolata"],["Cookies","Bisküvi"],["Dessert","Tatlı"],["Potato chips","Patates cipsi"]],"Drinks":[["Coffee","Kahve"],["Cola","Kola"],["Fruit juice","Meyve suyu"],["Tea","Çay"],["Water","Su"]],"Spices":[["Chili pepper","Pul biber"],["Pepper","Karabiber"],["Salt","Tuz"],["Vinegar","Sirke"]],"Meals":[["Breakfast","Kahvaltı"],["Lunch","Öğle yemeği"],["Dinner","Akşam yemeği"]],"Main":[["Water","Su"],["Bread","Ekmek"],["Meat","Et"],["Chicken","Tavuk"],["Fish","Balık"],["Egg","Yumurta"],["Cheese","Peynir"],["Milk","Süt"],["Apple","Elma"],["Tomato","Domates"],["Potato","Patates"],["Onion","Soğan"],["Rice","Pirinç"],["Pasta","Makarna"],["Soup","Çorba"],["Salad","Salata"],["Fruit","Meyve"],["Vegetable","Sebze"],["Salt","Tuz"],["Sugar","Şeker"]]},"Islam":{"General":[["Muslim","Müslüman"],["Islam","İslam"],["Quran","Kur'ân"],["Sunnah","Sünnet"]],"Mosque":[["Ablution (Wuzu)","Abdest"],["Call to prayer","Ezan"],["Dome","Kubbe"],["Imam","İmam"],["Minaret","Minare"],["Mosque","Cami"],["Muazzin","Müezzin"],["Niche","Mihrap"],["Pulpit","Minber"],["Salaah (Prayer)","Namaz"]],"Salaah (Prayer)":[["Fajr salaah","Sabah namazı"],["Thuhr salaah","Öğle namazı"],["Asr salaah","İkindi namazı"],["Maghrib salaah","Akşam namazı"],["Esha salaah","Yatsı namazı"],["To perform salaah","Namaz kılmak"]],"Ramadan (Fasting Month)":[["To Fast","Oruç tutmak"],["Iftar","İftar"],["Laylatul Qadr","Kadir gecesi"],["Ramadan","Ramazan"],["Ramadan Mubarak","Ramazanınız Mübarek Olsun"],["Suhoor","Sahur"],["Taraweeh salaah","Teravih namazı"]],"Special Occasions":[["Eid Al-Fitr","Ramazan Bayramı"],["Eid Al-Adha","Kurban Bayramı"],["Eid Mubarak","Bayramınız Mübarek Olsun"],["Jumuah","Cuma"],["Jumuah Mubarakah","Cumanız Mübarek Olsun"],["Hajj","Hac"],["Umrah","Umre"]],"Months (Hijri)":[["Muharram","Muharrem"],["Safar","Safer"],["Rabi'ul Awwal","Rebiülevvel"],["Rabi'ul Akhir","Rebiülahir"],["Jumadul Awwal","Cemaziyelevvel"],["Jumadul Akhir","Cemaziyelahir"],["Rajab","Recep"],["Shabaan","Şaban"],["Ramadan","Ramazan"],["Shawwal","Şevval"],["Dhul Qadah","Zilkade"],["Dhul Hijjah","Zilhicce"]],"Clothing":[["Headscarf","Eşarp / Başörtüsü"],["Niqab","Çarşaf"],["Jubbah / Kurta","Cübbe"],["Turban","Sarık"],["Taqiyah / Cap","Takke"]]},"Languages":{"Main":[["Arabic","Arapça"],["Chinese","Çince"],["English","İngilizce"],["Farsi","Farsça"],["French","Fransızca"],["German","Almanca"],["Hindi","Hintçe"],["Kurdish","Kürtçe"],["Latin","Latince"],["Ottoman","Osmanlıca"],["Portuguese","Portekizce"],["Russian","Rusça"],["Spanish","İspanyolca"],["Turkish","Türkçe"],["Urdu","Urduca"]]},"Mobile Phone":{"Main":[["App","Uygulama"],["Battery","Pil"],["Call","Çağrı"],["Charger","Şarj aleti"],["Data","Veri"],["Device","Cihaz"],["Internet","İnternet"],["Message","Mesaj"],["Mobile phone","Cep telefonu"],["Network","Ağ"],["Password","Şifre"],["Prepaid credits / airtime","Kontör"],["Roaming","Dolaşım"],["Sim card","SIM kart"],["Smartphone","Akıllı telefon"],["Touch screen","Dokunmatik ekran"]]},"Occupations":{"Main":[["Accountant","Muhasebeci"],["Businessman","İşadamı"],["Chef","Aşçı"],["Dentist","Diş hekimi"],["Doctor","Doktor"],["Engineer","Mühendis"],["Farmer","Çiftçi"],["Journalist","Gazeteci"],["Lawyer","Avukat"],["Nurse","Hemşire"],["Researcher","Araştırmacı"],["Student","Öğrenci"],["Teacher","Öğretmen"],["Writer","Yazar"],["Teacher","Öğretmen"],["Doctor","Doktor"],["Engineer","Mühendis"],["Nurse","Hemşire"],["Lawyer","Avukat"],["Police Officer","Polis"],["Chef / Cook","Aşçı"],["Waiter","Garson"],["Student","Öğrenci"],["Manager","Müdür"],["Accountant","Muhasebeci"],["Driver","Şoför"],["Farmer","Çiftçi"],["Writer","Yazar"],["Artist","Sanatçı"],["Musician","Müzisyen"],["Actor","Oyuncu"],["Secretary","Sekreter"],["Architect","Mimar"],["Businessman","İş adamı"]]},"Parts Of The Body":{"Head and face":[["Beard","Sakal"],["Brain","Beyin"],["Chin","Çene"],["Ear","Kulak"],["Eye","Göz"],["Face","Yüz"],["Hair","Saç"],["Head","Baş"],["Lip","Dudak"],["Moustache","Bıyık"],["Mouth","Ağız"],["Neck","Boyun"],["Nose","Burun"],["Tongue","Dil"],["Tooth","Diş"]],"Upper Body":[["Arm","Kol"],["Chest","Göğüs"],["Elbow","Dirsek"],["Finger","Parmak"],["Hand","El"],["Heart","Kalp"],["Shoulder","Omuz"],["Stomach","Mide"]],"Lower Body":[["Ankle","Ayak bileği"],["Foot","Ayak"],["Heel","Topuk"],["Knee","Diz"],["Leg","Bacak"],["Toe","Ayak parmağı"]]},"Politics":{"Main":[["Ballot box","Sandık"],["Border","Sınır"],["Citizen","Vatandaş"],["Constitution","Anayasa"],["Coup","Darbe"],["Democracy","Demokrasi"],["Economy","Ekonomi"],["Election","Seçim"],["Government","Hükümet"],["Minister","Bakan"],["Parliament","Parlamento / Meclis"],["Party","Parti"],["Politician","Siyasetçi"],["Politics","Siyaset"],["President","Cumhurbaşkanı / Devlet Başkanı"],["Prime Minister","Başbakan"],["Republic","Cumhuriyet"],["Vote","Oy"],["War","Savaş"]]},"School":{"General":[["Bell","Zil"],["Blackboard","Tahta"],["Chair","Sandalye"],["Class / Grade","Sınıf"],["Desk","Masa"],["Elementary School","İlkokul"],["Holiday","Tatil"],["Homework","Ödev"],["Lesson","Ders"],["Middle School","Ortaokul"],["Principal","Okul müdürü"],["Recess / Break","Teneffüs"],["School","Okul"],["Secondary School / High School","Lise"],["Student","Öğrenci"],["Subject","Ders"],["Teacher","Öğretmen"],["Test","Sınav"],["Uniform","Kıyafet"]],"Stationery":[["Chalk","Tebeşir"],["Eraser","Silgi"],["Glue","Tutkal"],["Notebook","Defter"],["Pen","Kalem"],["Pencil","Kurşun kalem"],["Ruler","Cetvel"],["Scissor","Makas"],["Sharpener","Kalemtıraş"],["Textbook","Kitap"]],"Subjects":[["Biology","Biyoloji"],["Chemistry","Kimya"],["English","İngilizce"],["French","Fransızca"],["Geography","Coğrafya"],["Geometry","Geometri"],["German","Almanca"],["History","Tarih"],["Literature","Edebiyat"],["Mathematics","Matematik"],["Philosophy","Felsefe"],["Physics","Fizik"],["Spanish","İspanyolca"],["Turkish","Türkçe"]]},"Transport":{"Main":[["Aeroplane","Uçak"],["Bicycle","Bisiklet"],["Boat","Tekne"],["Bus","Otobüs"],["Car","Araba"],["Ferry","Feribot / Vapur"],["Helicopter","Helikopter"],["Motorbike","Motosiklet"],["Scooter","Skuter"],["Ship","Gemi"],["Subway / Underground Railway","Metro"],["Taxi","Taksi"],["Train","Tren"],["Tram","Tramvay"],["Truck","Kamyon"]]},"Numbers":{"Main":[["1","Bir"],["2","İki"],["3","Üç"],["4","Dört"],["5","Beş"],["6","Altı"],["7","Yedi"],["8","Sekiz"],["9","Dokuz"],["10","On"],["20","Yirmi"],["30","Otuz"],["40","Kırk"],["50","Elli"],["60","Altmış"],["70","Yetmiş"],["80","Seksen"],["90","Doksan"],["100","Yüz"]]},"Verbs":{"Main":[["To be","Olmak"],["To do / To make","Yapmak"],["To go","Gitmek"],["To come","Gelmek"],["To say","Demek"],["To see","Görmek"],["To take / To buy","Almak"],["To give","Vermek"],["To want","İstemek"],["To know","Bilmek"],["To think","Düşünmek"],["To find","Bulmak"],["To understand","Anlamak"],["To work / To study","Çalışmak"],["To look","Bakmak"],["To use","Kullanmak"],["To ask","Sormak"],["To tell / To explain","Anlatmak"],["To try","Denemek"],["To wait","Beklemek"]]},"Emotions":{"Main":[["Happy","Mutlu"],["Sad","Üzgün"],["Angry","Kızgın"],["Tired","Yorgun"],["Surprised","Şaşkın"],["Scared","Korkmuş"],["Excited","Heyecanlı"],["Bored","Sıkılmış"],["Confused","Kafası karışık"],["Anxious","Endişeli"],["Calm","Sakin"],["Nervous","Gergin"],["Proud","Gururlu"],["Disappointed","Hayal kırıklığına uğramış"],["Jealous","Kıskanç"],["Hopeful","Umutlu"],["Lonely","Yalnız"],["Shy","Utangaç"],["Relieved","Rahatlamış"],["Guilty","Suçlu"]]},"Phrases":{"Greetings":[["Hello","Merhaba"],["My name is _____","Benim adım _____"],["How are you?","Nasılsınız?"],["I am fine thank you","Teşekkür ederim iyiyim"],["Pleased to meet you","Memnun oldum"],["Pleased to meet you too","Ben de memnun oldum"],["The weather is really nice today","Bugün hava çok güzel"],["I speak English","Ben İngilizce konuşuyorum"],["I am learning Turkish","Ben Türkçe öğreniyorum"],["See you","Görüşürüz"],["Good morning","Günaydın"],["Good day","İyi günler"],["Good evening","İyi akşamlar"],["What's up? (Informal)","Ne var ne yok?"],["Welcome","Hoş geldiniz"],["Thank you (Reply to \"Welcome\")","Hoş bulduk"],["What is your name?","Adınız ne?"],["How old are you?","Kaç yaşındasınız?"],["I am 20 years old","Ben yirmi yaşındayım"],["Where are you from?","Nerelisiniz?"]],"Questions":[["What's this?","Bu ne?"],["This is a _______","Bu _______"],["Can you help me?","Bana yardımcı olabilir misiniz?"],["What does this mean?","Bu ne demek?"],["I understand","Anladım"],["I don't understand","Anlamadım"],["Do you have a _______?","_______ var mı?"],["I'm lost","Kayboldum"],["Where is __________ ?","__________ neresi?"],["I am looking for a __________","Ben bir __________ arıyorum"],["How far is it from here?","Ne kadar uzaklıkta?"],["Do you have a map?","Haritanız var mı?"],["Where does this road go to?","Bu yol nereye gidiyor?"],["Is this [place name] ?","Burası ____________ mı?"]],"Basic":[["Yes","Evet"],["No","Hayır"],["Please","Lütfen"],["Thank you","Teşekkür ederim"],["You're welcome","Rica ederim"],["Thank you very much","Çok teşekkür ederim"]],"Wishes":[["Congratulations","Tebrikler"],["Get well soon","Geçmiş olsun"],["Bon voyage","Hayırlı yolculuklar"],["Enjoy your meal","Afiyet olsun"],["Ramadan Mubarak","Ramazanınız Mübarek Olsun"],["Eid Mubarak","Bayramınız Mübarek Olsun"],["Happy Eid","Hayırlı Bayramlar"],["Jumuah Mubarakah","Cumanız Mübarek Olsun"],["May Allah have mercy on his/her soul (when someone dies)","Allah rahmet eylesin"]]},"Directions":{"Main":[["Go straight","Düz git"],["Turn right","Sağa dön"],["Turn left","Sola dön"],["Traffic lights","Trafik ışıkları"],["Map","Harita"]]},"Restaurant":{"Phrases":[["Could we have the menu please?","Bize menüyü getirir misin?"],["What would you like to eat?","Ne yemek istiyorsunuz?"],["I'll have the ___________ and the ___________.","___________ ve ___________ alayım."],["I'll have one/two portions of the __________.","Ben bir/iki porsiyon __________ alayım."],["Could I have the bill please?","Hesap lütfen."],["Enjoy your meal.","Afiyet olsun."]],"Main":[["Restaurant","Lokanta"],["Waiter","Garson"],["Menu","Menü"],["Bill","Hesap"],["Food","Yemek"],["Soup","Çorba"],["Salad","Salata"],["Bread","Ekmek"],["Meat","Et"],["Beef","Sığır eti"],["Chicken","Tavuk"],["Fish","Balık"],["Rice","Pilav"],["Dessert","Tatlı"],["Drink","İçecek"],["Water","Su"],["Cola","Kola"],["Tea","Çay"],["Coffee","Kahve"]]},"Shopping":{"Phrases":[["What is your size? (Clothing)","Kaç beden giyiyorsunuz?"],["My size is ___","___ beden giyiyorum"],["What color would you like?","Ne renk istiyorsunuz?"],["I would like [color]","_______ renk istiyorum"],["I would like to buy a __________","_________ almak istiyorum"],["Do you have _________?","_________ var mı?"],["How much is this?","Bunun fiyatı ne?"],["Ok, I'll take it","Tamam alacağım"]]}}</script>
+<script id="vocab-data" type="application/json">{"Airport":{"Main":[["Aeroplane","Uçak"],["Airline","Havayolu"],["Airport","Havaalanı / Havalimanı"],["Arrival","Varış"],["Customs","Gümrük"],["Departure","Kalkış"],["Domestic","Yurtiçi"],["Flight","Uçuş"],["Hand luggage","El bagajı"],["International","Yurtdışı"],["Luggage","Bagaj"],["Passenger","Yolcu"],["Passport","Pasaport"],["Runway","Pist"],["Security Control","Güvenlik Kontrolü"],["Terminal","Terminal"],["Ticket","Bilet"]]},"Animals":{"Main":[["Animal","Hayvan"],["Bear","Ayı"],["Bird","Kuş"],["Camel","Deve"],["Cat","Kedi"],["Cheetah","Çita"],["Chicken","Tavuk"],["Cow","İnek"],["Dog","Köpek"],["Donkey","Eşek"],["Duck","Ördek"],["Eagle","Kartal"],["Elephant","Fil"],["Fish","Balık"],["Giraffe","Zürafa"],["Horse","At"],["Kangaroo","Kanguru"],["Lion","Aslan"],["Monkey","Maymun"],["Mouse","Fare"],["Owl","Baykuş"],["Penguin","Penguen"],["Rabbit","Tavşan"],["Sheep","Koyun"],["Snake","Yılan"],["Spider","Örümcek"]]},"At Home":{"General":[["Chair","Sandalye"],["Clock","Saat"],["Desk","Masa"],["Door","Kapı"],["House","Ev"],["Light","Işık"],["Room","Oda"],["Stairs","Merdiven"],["Window","Pencere"]],"Living room":[["Bookshelf","Kitaplık"],["Coffee table","Sehpa"],["Couch","Kanepe"],["Fireplace","Şömine"],["Living room","Oturma odası"],["Rug","Halı"],["Vase","Vazo"]],"Bedroom":[["Alarm clock","Çalar saat"],["Bed","Yatak"],["Bedroom","Yatak odası"],["Blanket","Battaniye"],["Computer","Bilgisayar"],["Curtain","Perde"],["Drawer","Çekmece"],["Lamp","Lamba"],["Pillow","Yastık"],["Wardrobe","Gardırop"]],"Kitchen":[["Dinner Table","Yemek masası"],["Dishwasher","Bulaşık makinesi"],["Fridge","Buzdolabı"],["Kitchen","Mutfak"],["Oven","Fırın"],["Pot","Tencere"],["Stove","Ocak"],["Teapot","Çaydanlık"]],"Bathroom":[["Bathroom","Banyo"],["Mirror","Ayna"],["Shower","Duş"],["Soap","Sabun"],["Tap","Musluk"],["Toothbrush","Diş fırçası"],["Toothpaste","Diş macunu"],["Towel","Havlu"]],"Clothing":[["Belt","Kemer"],["Blouse","Bluz"],["Gloves","Eldiven"],["Headscarf","Eşarp / Başörtüsü"],["Jacket","Mont"],["Jeans","Kot pantolon"],["Jersey","Kazak"],["Jubbah / Thobe","Cübbe"],["Overcoat (Men's)","Palto"],["Overcoat (Women's)","Manto"],["Pants / Trousers","Pantolon"],["Pyjamas","Pijama"],["Shirt","Gömlek"],["Shoes","Ayakkabı"],["Skirt","Etek"],["Socks","Çorap"],["Suit","Takım elbise"],["Tie","Kravat"],["Tracksuit","Eşofman"],["T-shirt","Tişört"],["Underwear","İç çamaşır"]]},"Colors":{"Main":[["White","Beyaz"],["Grey","Gri"],["Turquoise","Türküaz"],["Blue","Mavi"],["Navy","Lacivert"],["Green","Yeşil"],["Yellow","Sarı"],["Orange","Turuncu"],["Red","Kırmızı"],["Pink","Pembe"],["Purple","Mor"],["Brown","Kahverengi"],["Black","Siyah"]]},"Countries":{"Africa (Afrika)":[["Algeria","Cezayir"],["Angola","Angola"],["Botswana","Botsvana"],["Cameroon","Kamerun"],["Central African Republic","Orta Afrika Cumhuriyeti"],["Democratic Republic of Congo","Demokratik Kongo Cumhuriyeti"],["Egypt","Mısır"],["Ethiopia","Etiyopya"],["Gabon","Gabon"],["Ghana","Gana"],["Ivory Coast","Fildişi Kıyısı"],["Kenya","Kenya"],["Libya","Libya"],["Malawi","Malavi"],["Mali","Mali"],["Mauritania","Moritanya"],["Morocco","Fas"],["Mozambique","Mozambik"],["Namibia","Namibya"],["Nigeria","Nijerya"],["Republic of the Congo","Kongo Cumhuriyeti"],["Senegal","Senegal"],["Somalia","Somali"],["South Africa","Güney Afrika"],["Sudan","Sudan"],["Tanzania","Tanzanya"],["Tunisia","Tunus"],["Uganda","Uganda"],["Zambia","Zambiya"],["Zimbabwe","Zimbabve"]],"Asia (Asya)":[["Afghanistan","Afganistan"],["Armenia","Ermenistan"],["Azerbaijan","Azerbaycan"],["Bangladesh","Bangladeş"],["Bahrain","Bahreyn"],["Cambodia","Kamboçya"],["Chechnya","Çeçenistan"],["China","Çin"],["Georgia","Gürcistan"],["Hong Kong","Hong Kong"],["India","Hindistan"],["Indonesia","Endonezya"],["Iran","İran"],["Iraq","Irak"],["Israel","İsrail"],["Japan","Japonya"],["Jordan","Ürdün"],["Kazakhstan","Kazakistan"],["Kuwait","Kuveyt"],["Kyrgyzstan","Kırgızistan"],["Lebanon","Lübnan"],["Malaysia","Malezya"],["Mongolia","Moğolistan"],["North Korea","Kuzey Kore"],["Oman","Umman"],["Pakistan","Pakistan"],["Palestine","Filistin"],["Philippines","Filipinler"],["Qatar","Katar"],["Saudi Arabia","Suudi Arabistan"],["South Korea","Güney Kore"],["Syria","Suriye"],["Tajikistan","Tacikistan"],["Türkiye","Türkiye"],["Turkmenistan","Türkmenistan"],["United Arab Emirates","Birleşik Arap Emirlikleri"],["Uzbekistan","Özbekistan"],["Vietnam","Vietnam"],["Yemen","Yemen"]],"Europe (Avrupa)":[["Albania","Arnavutluk"],["Austria","Avusturya"],["Belarus","Belarus / Beyaz Rusya"],["Belgium","Belçika"],["Bosnia Herzegovina","Bosna Hersek"],["Bulgaria","Bulgaristan"],["Croatia","Hırvatistan"],["Cyprus","Kıbrıs"],["Czech Republic","Çek Cumhuriyeti"],["Denmark","Danimarka"],["England","İngiltere"],["Estonia","Estonya"],["Finland","Finlandiya"],["France","Fransa"],["Georgia","Gürcistan"],["Germany","Almanya"],["Greece","Yunanistan"],["Holland","Hollanda"],["Hungary","Macaristan"],["Ireland","İrlanda"],["Italy","İtalya"],["Kosovo","Kosova"],["Latvia","Letonya"],["Lithuania","Litvanya"],["Luxembourg","Lüksemburg"],["Malta","Malta"],["Macedonia","Makedonya"],["Moldova","Moldova"],["Montenegro","Karadağ"],["Northern Ireland","Kuzey İrlanda"],["Norway","Norveç"],["Poland","Polonya"],["Portugal","Portekiz"],["Romania","Romanya"],["Russia","Rusya"],["Scotland","İskoçya"],["Serbia","Sırbistan"],["Slovakia","Slovakya"],["Slovenia","Slovenya"],["Spain","İspanya"],["Sweden","İsveç"],["Switzerland","İsviçre"],["Ukraine","Ukrayna"],["Wales","Galler"]],"North America (Kuzey Amerİka)":[["Canada","Kanada"],["Costa Rica","Kosta Rika"],["Cuba","Küba"],["Haiti","Haiti"],["Mexico","Meksika"],["Panama","Panama"],["United States of America","Amerika Birleşik Devletleri"]],"South America (Güney Amerİka)":[["Argentina","Arjantin"],["Bolivia","Bolivya"],["Brazil","Brezilya"],["Chile","Şili"],["Colombia","Kolombiya"],["Ecuador","Ekvador"],["Paraguay","Paraguay"],["Peru","Peru"],["Uruguay","Uruguay"],["Venezuela","Venezuela"]],"Oceania (Okyanusya)":[["Australia","Avustralya"],["Fiji","Fiji"],["New Zealand","Yeni Zelanda"],["Papua New Guinea","Papua Yeni Gine"],["Samoa","Samoa"],["Tonga","Tonga"]]},"Currency":{"Main":[["Dirham","Dirhem"],["Dollar","Dolar"],["Euro","Euro / Avro"],["Franc","Frank"],["Pound","Sterlin"],["Rupee","Rupi"],["Yen","Yen"]]},"Time":{"Days":[["Monday","Pazartesi"],["Tuesday","Salı"],["Wednesday","Çarşamba"],["Thursday","Perşembe"],["Friday","Cuma"],["Saturday","Cumartesi"],["Sunday","Pazar"],["Today","Bugün"],["Yesterday","Dün"],["Tomorrow","Yarın"],["Day before yesterday","Önceki gün / Evvelsi gün"],["Day after tomorrow","Öbür gün"],["Day","Gün"],["Week","Hafta"],["Month","Ay"],["Year","Yıl / Sene"],["Century","Yüzyıl"]],"Months":[["January","Ocak"],["February","Şubat"],["March","Mart"],["April","Nisan"],["May","Mayıs"],["June","Haziran"],["July","Temmuz"],["August","Ağustos"],["September","Eylül"],["October","Ekim"],["November","Kasım"],["December","Aralık"]],"Seasons":[["Spring","İlkbahar"],["Summer","Yaz"],["Autumn","Sonbahar"],["Winter","Kış"]],"Times of the day":[["Sunrise","Gündoğumu"],["Morning","Sabah"],["Midday","Öğle / Öğlen"],["Afternoon","Öğleden sonra"],["Evening","Akşam"],["Sunset","Günbatımı"],["Night","Gece"],["Midnight","Gece yarısı"]],"Clock Time":[["Second","Saniye"],["Minute","Dakika"],["Hour","Saat"]]},"Family Members":{"Immediate":[["Father","Baba"],["Mother","Anne"],["Brother","Kardeş"],["Sister","Kız kardeş"],["Elder brother","Abi"],["Elder sister","Abla"],["Grandfather","Dede"],["Grandmother","See below"],["Grandchild","Torun"],["Husband","Koca"],["Wife","Hanım"],["Spouse (Husband / Wife)","Eş"],["Son","Oğul"],["Daughter","Kız"]],"Maternal":[["Aunt","Teyze"],["Uncle","Dayı"],["Grandmother","Anneanne"]],"Paternal":[["Aunt","Hala"],["Uncle","Amca"],["Grandmother","Babaanne"]],"In-laws":[["Mother-in-law","Kaynana / Kayınvalide"],["Father-in-law","Kayınbaba / Kayınpeder"]]},"Food":{"Meat and Fish":[["Beef","Sığır eti / Et"],["Chicken","Tavuk"],["Fish","Balık"],["Lamb","Kuzu"],["Sausage","Sosis"],["Steak","Biftek"],["Turkey","Hindi"]],"Grains":[["Bread","Ekmek"],["Pasta","Makarna"],["Rice","Pirinç / Pilav"]],"Dairy":[["Cheese","Peynir"],["Egg","Yumurta"],["Ice-cream","Dondurma"],["Milk","Süt"],["Yogurt","Yoğurt"]],"Fruit":[["Apple","Elma"],["Apricot","Kayısı"],["Banana","Muz"],["Grapes","Üzüm"],["Mango","Mango"],["Orange","Portakal"],["Peach","Şeftali"],["Pear","Armut"],["Pineapple","Ananas"],["Pomegranate","Nar"],["Sour cherry","Vişne"],["Strawberry","Çilek"],["Watermelon","Karpuz"]],"Vegetables":[["Cabbage","Lahana"],["Carrot","Havuç"],["Corn","Mısır"],["Cucumber","Salatalık"],["Eggplant","Patlıcan"],["Lettuce","Marul"],["Onion","Soğan"],["Peas","Bezelye"],["Potato","Patates"],["Spinach","Ispanak"]],"Fast food":[["Burger","Burger"],["French fries","Patates kızartması"],["Ketchup","Ketçap"],["Mayonnaise","Mayonez"],["Mustard","Hardal"],["Pizza","Pizza"],["Sandwich","Sandviç"]],"Snacks":[["Cake","Pasta"],["Candy","Şeker"],["Chocolate","Çikolata"],["Cookies","Bisküvi"],["Dessert","Tatlı"],["Potato chips","Patates cipsi"]],"Drinks":[["Coffee","Kahve"],["Cola","Kola"],["Fruit juice","Meyve suyu"],["Tea","Çay"],["Water","Su"]],"Spices":[["Chili pepper","Pul biber"],["Pepper","Karabiber"],["Salt","Tuz"],["Vinegar","Sirke"]],"Meals":[["Breakfast","Kahvaltı"],["Lunch","Öğle yemeği"],["Dinner","Akşam yemeği"]],"Main":[["Water","Su"],["Bread","Ekmek"],["Meat","Et"],["Chicken","Tavuk"],["Fish","Balık"],["Egg","Yumurta"],["Cheese","Peynir"],["Milk","Süt"],["Apple","Elma"],["Tomato","Domates"],["Potato","Patates"],["Onion","Soğan"],["Rice","Pirinç"],["Pasta","Makarna"],["Soup","Çorba"],["Salad","Salata"],["Fruit","Meyve"],["Vegetable","Sebze"],["Salt","Tuz"],["Sugar","Şeker"]]},"Islam":{"General":[["Muslim","Müslüman"],["Islam","İslam"],["Quran","Kur'ân"],["Sunnah","Sünnet"]],"Mosque":[["Ablution (Wuzu)","Abdest"],["Call to prayer","Ezan"],["Dome","Kubbe"],["Imam","İmam"],["Minaret","Minare"],["Mosque","Cami"],["Muazzin","Müezzin"],["Niche","Mihrap"],["Pulpit","Minber"],["Salaah (Prayer)","Namaz"]],"Salaah (Prayer)":[["Fajr salaah","Sabah namazı"],["Thuhr salaah","Öğle namazı"],["Asr salaah","İkindi namazı"],["Maghrib salaah","Akşam namazı"],["Esha salaah","Yatsı namazı"],["To perform salaah","Namaz kılmak"]],"Ramadan (Fasting Month)":[["To Fast","Oruç tutmak"],["Iftar","İftar"],["Laylatul Qadr","Kadir gecesi"],["Ramadan","Ramazan"],["Ramadan Mubarak","Ramazanınız Mübarek Olsun"],["Suhoor","Sahur"],["Taraweeh salaah","Teravih namazı"]],"Special Occasions":[["Eid Al-Fitr","Ramazan Bayramı"],["Eid Al-Adha","Kurban Bayramı"],["Eid Mubarak","Bayramınız Mübarek Olsun"],["Jumuah","Cuma"],["Jumuah Mubarakah","Cumanız Mübarek Olsun"],["Hajj","Hac"],["Umrah","Umre"]],"Months (Hijri)":[["Muharram","Muharrem"],["Safar","Safer"],["Rabi'ul Awwal","Rebiülevvel"],["Rabi'ul Akhir","Rebiülahir"],["Jumadul Awwal","Cemaziyelevvel"],["Jumadul Akhir","Cemaziyelahir"],["Rajab","Recep"],["Shabaan","Şaban"],["Ramadan","Ramazan"],["Shawwal","Şevval"],["Dhul Qadah","Zilkade"],["Dhul Hijjah","Zilhicce"]],"Clothing":[["Headscarf","Eşarp / Başörtüsü"],["Niqab","Çarşaf"],["Jubbah / Kurta","Cübbe"],["Turban","Sarık"],["Taqiyah / Cap","Takke"]]},"Languages":{"Main":[["Arabic","Arapça"],["Chinese","Çince"],["English","İngilizce"],["Farsi","Farsça"],["French","Fransızca"],["German","Almanca"],["Hindi","Hintçe"],["Kurdish","Kürtçe"],["Latin","Latince"],["Ottoman","Osmanlıca"],["Portuguese","Portekizce"],["Russian","Rusça"],["Spanish","İspanyolca"],["Turkish","Türkçe"],["Urdu","Urduca"]]},"Mobile Phone":{"Main":[["App","Uygulama"],["Battery","Pil"],["Call","Çağrı"],["Charger","Şarj aleti"],["Data","Veri"],["Device","Cihaz"],["Internet","İnternet"],["Message","Mesaj"],["Mobile phone","Cep telefonu"],["Network","Ağ"],["Password","Şifre"],["Prepaid credits / airtime","Kontör"],["Roaming","Dolaşım"],["Sim card","SIM kart"],["Smartphone","Akıllı telefon"],["Touch screen","Dokunmatik ekran"]]},"Occupations":{"Main":[["Accountant","Muhasebeci"],["Businessman","İşadamı"],["Chef","Aşçı"],["Dentist","Diş hekimi"],["Doctor","Doktor"],["Engineer","Mühendis"],["Farmer","Çiftçi"],["Journalist","Gazeteci"],["Lawyer","Avukat"],["Nurse","Hemşire"],["Researcher","Araştırmacı"],["Student","Öğrenci"],["Teacher","Öğretmen"],["Writer","Yazar"],["Teacher","Öğretmen"],["Doctor","Doktor"],["Engineer","Mühendis"],["Nurse","Hemşire"],["Lawyer","Avukat"],["Police Officer","Polis"],["Chef / Cook","Aşçı"],["Waiter","Garson"],["Student","Öğrenci"],["Manager","Müdür"],["Accountant","Muhasebeci"],["Driver","Şoför"],["Farmer","Çiftçi"],["Writer","Yazar"],["Artist","Sanatçı"],["Musician","Müzisyen"],["Actor","Oyuncu"],["Secretary","Sekreter"],["Architect","Mimar"],["Businessman","İş adamı"]]},"Parts Of The Body":{"Head and face":[["Beard","Sakal"],["Brain","Beyin"],["Chin","Çene"],["Ear","Kulak"],["Eye","Göz"],["Face","Yüz"],["Hair","Saç"],["Head","Baş"],["Lip","Dudak"],["Moustache","Bıyık"],["Mouth","Ağız"],["Neck","Boyun"],["Nose","Burun"],["Tongue","Dil"],["Tooth","Diş"]],"Upper Body":[["Arm","Kol"],["Chest","Göğüs"],["Elbow","Dirsek"],["Finger","Parmak"],["Hand","El"],["Heart","Kalp"],["Shoulder","Omuz"],["Stomach","Mide"]],"Lower Body":[["Ankle","Ayak bileği"],["Foot","Ayak"],["Heel","Topuk"],["Knee","Diz"],["Leg","Bacak"],["Toe","Ayak parmağı"]]},"Politics":{"Main":[["Ballot box","Sandık"],["Border","Sınır"],["Citizen","Vatandaş"],["Constitution","Anayasa"],["Coup","Darbe"],["Democracy","Demokrasi"],["Economy","Ekonomi"],["Election","Seçim"],["Government","Hükümet"],["Minister","Bakan"],["Parliament","Parlamento / Meclis"],["Party","Parti"],["Politician","Siyasetçi"],["Politics","Siyaset"],["President","Cumhurbaşkanı / Devlet Başkanı"],["Prime Minister","Başbakan"],["Republic","Cumhuriyet"],["Vote","Oy"],["War","Savaş"]]},"School":{"General":[["Bell","Zil"],["Blackboard","Tahta"],["Chair","Sandalye"],["Class / Grade","Sınıf"],["Desk","Masa"],["Elementary School","İlkokul"],["Holiday","Tatil"],["Homework","Ödev"],["Lesson","Ders"],["Middle School","Ortaokul"],["Principal","Okul müdürü"],["Recess / Break","Teneffüs"],["School","Okul"],["Secondary School / High School","Lise"],["Student","Öğrenci"],["Subject","Ders"],["Teacher","Öğretmen"],["Test","Sınav"],["Uniform","Kıyafet"]],"Stationery":[["Chalk","Tebeşir"],["Eraser","Silgi"],["Glue","Tutkal"],["Notebook","Defter"],["Pen","Kalem"],["Pencil","Kurşun kalem"],["Ruler","Cetvel"],["Scissor","Makas"],["Sharpener","Kalemtıraş"],["Textbook","Kitap"]],"Subjects":[["Biology","Biyoloji"],["Chemistry","Kimya"],["English","İngilizce"],["French","Fransızca"],["Geography","Coğrafya"],["Geometry","Geometri"],["German","Almanca"],["History","Tarih"],["Literature","Edebiyat"],["Mathematics","Matematik"],["Philosophy","Felsefe"],["Physics","Fizik"],["Spanish","İspanyolca"],["Turkish","Türkçe"]]},"Transport":{"Main":[["Aeroplane","Uçak"],["Bicycle","Bisiklet"],["Boat","Tekne"],["Bus","Otobüs"],["Car","Araba"],["Ferry","Feribot / Vapur"],["Helicopter","Helikopter"],["Motorbike","Motosiklet"],["Scooter","Skuter"],["Ship","Gemi"],["Subway / Underground Railway","Metro"],["Taxi","Taksi"],["Train","Tren"],["Tram","Tramvay"],["Truck","Kamyon"]]},"Numbers":{"Main":[["1","Bir"],["2","İki"],["3","Üç"],["4","Dört"],["5","Beş"],["6","Altı"],["7","Yedi"],["8","Sekiz"],["9","Dokuz"],["10","On"],["20","Yirmi"],["30","Otuz"],["40","Kırk"],["50","Elli"],["60","Altmış"],["70","Yetmiş"],["80","Seksen"],["90","Doksan"],["100","Yüz"]]},"Verbs":{"Main":[["To be","Olmak"],["To do / To make","Yapmak"],["To go","Gitmek"],["To come","Gelmek"],["To say","Demek"],["To see","Görmek"],["To take / To buy","Almak"],["To give","Vermek"],["To want","İstemek"],["To know","Bilmek"],["To think","Düşünmek"],["To find","Bulmak"],["To understand","Anlamak"],["To work / To study","Çalışmak"],["To look","Bakmak"],["To use","Kullanmak"],["To ask","Sormak"],["To tell / To explain","Anlatmak"],["To try","Denemek"],["To wait","Beklemek"]]},"Emotions":{"Main":[["Happy","Mutlu"],["Sad","Üzgün"],["Angry","Kızgın"],["Tired","Yorgun"],["Surprised","Şaşkın"],["Scared","Korkmuş"],["Excited","Heyecanlı"],["Bored","Sıkılmış"],["Confused","Kafası karışık"],["Anxious","Endişeli"],["Calm","Sakin"],["Nervous","Gergin"],["Proud","Gururlu"],["Disappointed","Hayal kırıklığına uğramış"],["Jealous","Kıskanç"],["Hopeful","Umutlu"],["Lonely","Yalnız"],["Shy","Utangaç"],["Relieved","Rahatlamış"],["Guilty","Suçlu"]]},"Phrases":{"Greetings":[["Hello","Merhaba"],["My name is _____","Benim adım _____"],["How are you?","Nasılsınız?"],["I am fine thank you","Teşekkür ederim iyiyim"],["Pleased to meet you","Memnun oldum"],["Pleased to meet you too","Ben de memnun oldum"],["The weather is really nice today","Bugün hava çok güzel"],["I speak English","Ben İngilizce konuşuyorum"],["I am learning Turkish","Ben Türkçe öğreniyorum"],["See you","Görüşürüz"],["Good morning","Günaydın"],["Good day","İyi günler"],["Good evening","İyi akşamlar"],["What's up? (Informal)","Ne var ne yok?"],["Welcome","Hoş geldiniz"],["Thank you (Reply to \"Welcome\")","Hoş bulduk"],["What is your name?","Adınız ne?"],["How old are you?","Kaç yaşındasınız?"],["I am 20 years old","Ben yirmi yaşındayım"],["Where are you from?","Nerelisiniz?"]],"Questions":[["What's this?","Bu ne?"],["This is a _______","Bu _______"],["Can you help me?","Bana yardımcı olabilir misiniz?"],["What does this mean?","Bu ne demek?"],["I understand","Anladım"],["I don't understand","Anlamadım"],["Do you have a _______?","_______ var mı?"],["I'm lost","Kayboldum"],["Where is __________ ?","__________ neresi?"],["I am looking for a __________","Ben bir __________ arıyorum"],["How far is it from here?","Ne kadar uzaklıkta?"],["Do you have a map?","Haritanız var mı?"],["Where does this road go to?","Bu yol nereye gidiyor?"],["Is this [place name] ?","Burası ____________ mı?"]],"Basic":[["Yes","Evet"],["No","Hayır"],["Please","Lütfen"],["Thank you","Teşekkür ederim"],["You're welcome","Rica ederim"],["Thank you very much","Çok teşekkür ederim"]],"Wishes":[["Congratulations","Tebrikler"],["Get well soon","Geçmiş olsun"],["Bon voyage","Hayırlı yolculuklar"],["Enjoy your meal","Afiyet olsun"],["Ramadan Mubarak","Ramazanınız Mübarek Olsun"],["Eid Mubarak","Bayramınız Mübarek Olsun"],["Happy Eid","Hayırlı Bayramlar"],["Jumuah Mubarakah","Cumanız Mübarek Olsun"],["May Allah have mercy on his/her soul (when someone dies)","Allah rahmet eylesin"]]},"Directions":{"Main":[["Go straight","Düz git"],["Turn right","Sağa dön"],["Turn left","Sola dön"],["Traffic lights","Trafik ışıkları"],["Map","Harita"]]},"Restaurant":{"Phrases":[["Could we have the menu please?","Bize menüyü getirir misin?"],["What would you like to eat?","Ne yemek istiyorsunuz?"],["I'll have the ___________ and the ___________.","___________ ve ___________ alayım."],["I'll have one/two portions of the __________.","Ben bir/iki porsiyon __________ alayım."],["Could I have the bill please?","Hesap lütfen."],["Enjoy your meal.","Afiyet olsun."]],"Main":[["Restaurant","Lokanta"],["Waiter","Garson"],["Menu","Menü"],["Bill","Hesap"],["Food","Yemek"],["Soup","Çorba"],["Salad","Salata"],["Bread","Ekmek"],["Meat","Et"],["Beef","Sığır eti"],["Chicken","Tavuk"],["Fish","Balık"],["Rice","Pilav"],["Dessert","Tatlı"],["Drink","İçecek"],["Water","Su"],["Cola","Kola"],["Tea","Çay"],["Coffee","Kahve"]]},"Shopping":{"Phrases":[["What is your size? (Clothing)","Kaç beden giyiyorsunuz?"],["My size is ___","___ beden giyiyorum"],["What color would you like?","Ne renk istiyorsunuz?"],["I would like [color]","_______ renk istiyorum"],["I would like to buy a __________","_________ almak istiyorum"],["Do you have _________?","_________ var mı?"],["How much is this?","Bunun fiyatı ne?"],["Ok, I'll take it","Tamam alacağım"]]},"More Verbs":{"Main":[["To eat","Yemek"],["To drink","İçmek"],["To sleep","Uyumak"],["To read","Okumak"],["To write","Yazmak"],["To speak","Konuşmak"],["To open","Açmak"],["To close","Kapatmak"],["To live","Yaşamak"],["To love / To like","Sevmek"],["To learn","Öğrenmek"],["To teach","Öğretmek"],["To sit","Oturmak"],["To get up","Kalkmak"],["To walk","Yürümek"],["To run","Koşmak"],["To play","Oynamak"],["To listen","Dinlemek"],["To watch","İzlemek"],["To start","Başlamak"],["To finish","Bitirmek"],["To bring","Getirmek"],["To enter","Girmek"],["To go out","Çıkmak"],["To come back","Dönmek"],["To forget","Unutmak"],["To remember","Hatırlamak"],["To pay","Ödemek"],["To cook","Pişirmek"],["To wash","Yıkamak"],["To wear","Giymek"],["To help","Yardım etmek"],["To sell","Satmak"],["To call / To look for","Aramak"],["To stay","Kalmak"]]},"Adjectives":{"People":[["Young","Genç"],["Old (people)","Yaşlı"],["Beautiful","Güzel"],["Handsome","Yakışıklı"],["Tall","Uzun"],["Short","Kısa"],["Thin","Zayıf"],["Fat","Şişman"],["Rich","Zengin"],["Poor","Fakir"],["Sick","Hasta"],["Hungry","Aç"],["Thirsty","Susamış"],["Busy","Meşgul"],["Ready","Hazır"],["Clever","Akıllı"],["Hardworking","Çalışkan"],["Lazy","Tembel"],["Quiet","Sessiz"],["Brave","Cesur"],["Kind","Nazik"],["Fine","İyi"],["Unwell","Kötü"]],"Things":[["Big","Büyük"],["Small","Küçük"],["Good","İyi"],["Bad","Kötü"],["New","Yeni"],["Old (things)","Eski"],["Hot","Sıcak"],["Cold","Soğuk"],["Easy","Kolay"],["Difficult","Zor"],["Cheap","Ucuz"],["Expensive","Pahalı"],["Clean","Temiz"],["Dirty","Kirli"],["Open","Açık"],["Closed","Kapalı"],["Full","Dolu"],["Empty","Boş"],["Heavy","Ağır"],["Light (weight)","Hafif"],["Fast","Hızlı"],["Slow","Yavaş"],["Near","Yakın"],["Far","Uzak"],["Important","Önemli"],["Delicious","Lezzetli"],["Correct","Doğru"],["Wrong","Yanlış"],["Long","Uzun"],["A lot","Çok"],["A little","Az"]]}}</script>
+
+<script id="sound-data" type="application/json">{"correct": "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", "wrong": "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"}</script>
+
+<script id="grammar">
+/* Turkish grammar for the Conjugation and Sentences modes.
+ *
+ * build_web.py inlines this file into web/index.html -- edit it here, then run
+ * `py -3 build_web.py`. Check forms with `node web/grammar_test.js`.
+ *
+ * Forms are built from rules rather than stored, so each rule lives once:
+ *   four-way harmony (ı-type):  a ı → ı    e i → i    o u → u    ö ü → ü
+ *   two-way harmony  (a-type):  a ı o u → a            e i ö ü → e
+ *   a suffix's d becomes t after a voiceless consonant (f s t k ç ş h p)
+ *   a final p ç k g softens to b c ğ ğ before a vowel (nk → ng), in words of
+ *   two or more syllables; t softens only in the words listed
+ *   a y (or s, n) buffer separates two vowels
+ * Words that break a rule are listed in NOUNS and VERBS.
+ */
+const Grammar = (() => {
+"use strict";
+
+/* --- people ------------------------------------------------------------- */
+const PERSONS = ["p1s", "p2s", "p3s", "p1p", "p2p", "p3p"];
+const PRONOUN = {p1s:"ben", p2s:"sen", p3s:"o", p1p:"biz", p2p:"siz", p3p:"onlar"};
+const GENITIVE = {p1s:"benim", p2s:"senin", p3s:"onun", p1p:"bizim", p2p:"sizin", p3p:"onların"};
+const PERSON_EN = {p1s:"I", p2s:"you", p3s:"he / she", p1p:"we", p2p:"you (plural)", p3p:"they"};
+const SUBJECT_EN = {p1s:"I", p2s:"you", p3s:"he/she", p1p:"we", p2p:"you all", p3p:"they"};
+const BE_EN = {p1s:"am", p2s:"are", p3s:"is", p1p:"are", p2p:"are", p3p:"are"};
+const POSSESSIVE_EN = {p1s:"my", p2s:"your", p3s:"his/her", p1p:"our", p2p:"your", p3p:"their"};
+
+/* --- sounds ------------------------------------------------------------- */
+const VOWELS = ["a", "ı", "o", "u", "e", "i", "ö", "ü"];
+const FOUR = {a:"ı", ı:"ı", o:"u", u:"u", e:"i", i:"i", ö:"ü", ü:"ü"};
+const BACK = new Set(["a", "ı", "o", "u"]);
+const CIRCUMFLEX = {"â":"a", "î":"i", "û":"u"};
+const VOICELESS = new Set([..."fstkçşhp"]);
+
+const lower = s => s.toLocaleLowerCase("tr");
+const vowelOf = ch => { const c = CIRCUMFLEX[ch] || ch; return FOUR[c] ? c : null; };
+const isVowel = ch => !!vowelOf(lower(ch));
+const four = v => FOUR[v];
+const two = v => BACK.has(v) ? "a" : "e";
+const endsInVowel = w => isVowel(w[w.length - 1]);
+
+function lastVowel(w){
+  for(let i = w.length - 1; i >= 0; i--){
+    const v = vowelOf(lower(w[i]));
+    if(v) return v;
+  }
+  return null;
+}
+
+/* Suffixes attach to the last word of a phrase: "Güney Kore" → "Güney Koreli". */
+function splitLast(phrase){
+  const i = phrase.lastIndexOf(" ");
+  return {head: phrase.slice(0, i + 1), last: phrase.slice(i + 1)};
+}
+
+/* --- exceptions --------------------------------------------------------- */
+const NOUNS = {
+  // Loanwords whose suffixes take front harmony despite the spelling.
+  "saat":  {vowel:"e"},
+  "kalp":  {vowel:"e", soft:"kalb"},
+  "rol":   {vowel:"ö"},
+  "alkol": {vowel:"ö"},
+  "hayal": {vowel:"e"},
+  // The last vowel drops before a vowel-initial suffix: ağız → ağzım.
+  "ağız":  {drop:"ağz"},
+  "burun": {drop:"burn"},
+  "boyun": {drop:"boyn"},
+  "beyin": {drop:"beyn"},
+  "göğüs": {drop:"göğs"},
+  "omuz":  {drop:"omz"},
+  "oğul":  {drop:"oğl"},
+  "alın":  {drop:"aln"},
+  "karın": {drop:"karn"},
+  // Softening the general rule gets wrong in one direction or the other.
+  "avukat":  {soft:false},
+  "sandviç": {soft:false},
+  "yoğurt":  {soft:"yoğurd"},
+  "renk":    {soft:"reng"},
+  // Takes a y where a vowel-final noun would take nothing: suyum, suyu.
+  "su": {buffer:"y"},
+  // Front harmony on an Arabic loan: meşgulüm, not meşgulum.
+  "meşgul": {vowel:"ü"},
+  // One syllable, but softens anyway: genç → gencim.
+  "genç": {soft:"genc"},
+};
+
+const VERBS = {
+  // t → d before a vowel: gitmek → gidiyor, gideceğim (but gitti).
+  "git": {soft:"gid"},
+  "et":  {soft:"ed"},
+  "tat": {soft:"tad"},
+  "güt": {soft:"güd"},
+  // e → i before a y: diyor, diyecek, yiyor, yiyecek -- but dedi, yedi. The
+  // present happens to fall out of the vowel-drop rule, yet every grammar
+  // teaches it as irregular, so it's marked there too.
+  "de":  {future:"diy", irregularIn:["present", "future"]},
+  "ye":  {future:"yiy", irregularIn:["present", "future"]},
+};
+
+/* o.plain ignores the exception lists -- comparing plain and real forms is how
+   a word is found to be irregular. */
+const nounLex = (w, o = {}) => (!o.plain && NOUNS[w]) || {};
+const verbLex = (st, o = {}) => (!o.plain && VERBS[st]) || {};
+const nounVowel = (w, o = {}) => nounLex(w, o).vowel || lastVowel(w);
+
+/* Consonant softening before a vowel-initial suffix. */
+function soften(w, o){
+  if(o.noSoften) return w;
+  const lex = nounLex(w, o);
+  if(typeof lex.soft === "string") return lex.soft;
+  if(lex.soft === false) return w;
+  const last = w[w.length - 1];
+  if(last === "t" || !"pçkg".includes(last)) return w;
+  if([...w].filter(isVowel).length < 2) return w;   // saç → saçı, top → topu
+  if(last === "k") return w.slice(0, -1) + (w[w.length - 2] === "n" ? "g" : "ğ");
+  return w.slice(0, -1) + {p:"b", ç:"c", g:"ğ"}[last];
+}
+
+/* Possessive stems also lose a dropping vowel. */
+function possessiveStem(w, o){
+  if(o.noSoften) return w;
+  return nounLex(w, o).drop || soften(w, o);
+}
+
+const verbStem = inf => lower(splitLast(inf).last).replace(/m[ae]k$/, "");
+
+/* --- forms -------------------------------------------------------------- *
+ * Each takes a vocab entry {tr, en}, a person, and options used to generate
+ * plausible wrong answers:
+ *   forceVowel  apply harmony as if the stem's vowel were this one
+ *   noSoften    skip consonant softening, vowel drop, and d → t
+ *   noBuffer    skip the y / s buffer between vowels
+ * and returns {text, vowel}, where vowel is the harmony vowel the form really
+ * depends on -- the column of the 6 × 8 mastery grid.
+ * ----------------------------------------------------------------------- */
+
+/* Nerelisin: place + -lı, then the personal ending. Bolivya → Bolivyalıyım. */
+function nerelisin(entry, p, o = {}){
+  const {head, last} = splitLast(entry.tr);
+  const real = lastVowel(last);
+  const u = four(o.forceVowel || real);
+  const base = head + last + "l" + u;
+  const y = o.noBuffer ? "" : "y";
+  const text = {
+    p1s: base + y + u + "m",
+    p2s: base + "s" + u + "n",
+    p3s: base,
+    p1p: base + y + u + "z",
+    p2p: base + "s" + u + "n" + u + "z",
+    p3p: base + "l" + two(u) + "r",
+  }[p];
+  return {text, vowel: real};
+}
+
+/* Feelings: the personal "to be" endings on an adjective. yorgun → yorgunum. */
+function feelings(entry, p, o = {}){
+  const {head, last} = splitLast(lower(entry.tr));
+  const real = nounVowel(last);
+  const v = o.forceVowel || nounVowel(last, o);
+  const u = four(v);
+  const pre = endsInVowel(last) ? last + (o.noBuffer ? "" : "y") : soften(last, o);
+  const text = {
+    p1s: pre + u + "m",
+    p2s: last + "s" + u + "n",
+    p3s: last,
+    p1p: pre + u + "z",
+    p2p: last + "s" + u + "n" + u + "z",
+    p3p: last + "l" + two(v) + "r",
+  }[p];
+  return {text: head + text, vowel: real};
+}
+
+/* Possession: anne → annem, annen, annesi … kulak → kulağım, ağız → ağzım. */
+function possession(entry, p, o = {}){
+  const {head, last} = splitLast(lower(entry.tr));
+  const real = nounVowel(last);
+  const v = o.forceVowel || nounVowel(last, o);
+  const u = four(v), a = two(v);
+  const lex = nounLex(last, o);
+  const plural = last + "l" + a + "r" + four(a);        // -ları / -leri, no softening
+  let text;
+  if(endsInVowel(last) && !lex.buffer){
+    text = {
+      p1s: last + "m",
+      p2s: last + "n",
+      p3s: last + (o.noBuffer ? "" : "s") + u,
+      p1p: last + "m" + u + "z",
+      p2p: last + "n" + u + "z",
+      p3p: plural,
+    }[p];
+  }else{
+    const s = endsInVowel(last) ? last + (o.noBuffer ? "" : lex.buffer) : possessiveStem(last, o);
+    text = {
+      p1s: s + u + "m",
+      p2s: s + u + "n",
+      p3s: s + u,
+      p1p: s + u + "m" + u + "z",
+      p2p: s + u + "n" + u + "z",
+      p3p: plural,
+    }[p];
+  }
+  return {text: head + text, vowel: real};
+}
+
+/* Present continuous -(ı)yor: gel → geliyor; a final vowel drops: anla → anlıyor. */
+function present(entry, p, o = {}){
+  const head = lower(splitLast(entry.tr).head);
+  const st = verbStem(entry.tr);
+  let base, real;
+  if(endsInVowel(st)){
+    const cut = st.slice(0, -1);
+    real = lastVowel(cut) || lastVowel(st);
+    base = o.noSoften
+      ? st + "yor"                                      // the classic slip: anlayor
+      : cut + four(o.forceVowel || real) + "yor";
+  }else{
+    real = lastVowel(st);
+    const s = o.noSoften ? st : (verbLex(st, o).soft || st);
+    base = s + four(o.forceVowel || real) + "yor";
+  }
+  const text = {
+    p1s: base + "um", p2s: base + "sun", p3s: base,
+    p1p: base + "uz", p2p: base + "sunuz", p3p: base + "lar",
+  }[p];
+  return {text: head + text, vowel: real};
+}
+
+/* Going to -(y)acak/-(y)ecek; k → ğ before -ım/-ız: gideceğim, gidecek. */
+function future(entry, p, o = {}){
+  const head = lower(splitLast(entry.tr).head);
+  const st = verbStem(entry.tr);
+  const real = lastVowel(st);
+  const a = two(o.forceVowel || real);
+  const u = four(a);
+  const lex = verbLex(st, o);
+  const s = lex.future && !o.noSoften ? lex.future          // demek → diyecek
+    : endsInVowel(st) ? st + (o.noBuffer ? "" : "y")
+    : (o.noSoften ? st : (lex.soft || st));
+  const k = a === "a" ? "acak" : "ecek";
+  const g = o.noSoften ? k : k.slice(0, -1) + "ğ";
+  const text = {
+    p1s: s + g + u + "m",
+    p2s: s + k + "s" + u + "n",
+    p3s: s + k,
+    p1p: s + g + u + "z",
+    p2p: s + k + "s" + u + "n" + u + "z",
+    p3p: s + k + "l" + a + "r",
+  }[p];
+  return {text: head + text, vowel: real};
+}
+
+/* Past -dı/-tı: gel → geldim, git → gittim, çalış → çalıştım. */
+function past(entry, p, o = {}){
+  const head = lower(splitLast(entry.tr).head);
+  const st = verbStem(entry.tr);
+  const real = lastVowel(st);
+  const v = o.forceVowel || real;
+  const u = four(v);
+  const d = !o.noSoften && VOICELESS.has(st[st.length - 1]) ? "t" : "d";
+  const base = st + d + u;
+  const text = {
+    p1s: base + "m", p2s: base + "n", p3s: base,
+    p1p: base + "k", p2p: base + "n" + u + "z", p3p: base + "l" + two(v) + "r",
+  }[p];
+  return {text: head + text, vowel: real};
+}
+
+/* --- which vocab each form can use -------------------------------------- */
+const usable = tr => !/[\/_]|see below/i.test(tr) && lastVowel(tr) !== null;
+
+// Multi-word names that already carry a suffix, and plural names, don't take -lı
+// cleanly (Amerika Birleşik Devletleri, Filipinler).
+const acceptPlace = tr =>
+  !/\s(Cumhuriyeti|Devletleri|Emirlikleri|Kıyısı)$/.test(tr) && !/^\S+l[ae]r$/.test(tr);
+// "Kafası karışık" conjugates inside the phrase (kafaları karışık), not at the end.
+const acceptFeeling = tr => tr !== "Kafası karışık";
+// A compound that already ends in a possessive (Ayak bileği) can't take another.
+const acceptPossessed = tr => !(/\s/.test(tr) && /s?[ıiuü]$/.test(tr));
+// Any infinitive; the irregular ones (demek, yemek, gitmek…) are listed in VERBS.
+const acceptVerb = tr => /m[ae]k$/i.test(tr);
+
+const CATEGORIES = [
+  {id:"nerelisin",  name:"Nerelisin",          en:"I am from…",
+   rule:"-lı · -li · -lu · -lü, then “to be”",   example:["Bolivya", "Bolivyalıyım"],
+   note:"This is the everyday “from X” form; some countries also have their own nationality word (Alman, Fransız, İngiliz).",
+   source: m => m.startsWith("Countries/"), custom:"place", accept: acceptPlace, keepCase:true, form: nerelisin},
+  {id:"feelings",   name:"Feelings & jobs",    en:"I am tired · a teacher · young",
+   rule:"-(y)ım · -sın · — · -(y)ız · -sınız · -lar", example:["yorgun", "yorgunum"],
+   note:"Occupations and adjectives for people share the same endings and fill in the vowels emotions lack (o, e, ö).",
+   source: m => m === "Emotions" || m === "Occupations" || m === "Adjectives/People",
+   custom:"adjective", accept: acceptFeeling, form: feelings},
+  {id:"possession", name:"Possession",         en:"my mother, your hand",
+   rule:"-(ı)m · -(ı)n · -(s)ı · -(ı)mız · -(ı)nız · -ları", example:["kulak", "kulağım"],
+   source: m => m.startsWith("Family Members/") || m.startsWith("Parts Of The Body/"),
+   custom:"noun", accept: acceptPossessed, form: possession},
+  {id:"present",    name:"Present continuous", en:"I am going",
+   rule:"-(ı)yor + -um · -sun · — · -uz · -sunuz · -lar", example:["gitmek", "gidiyorum"],
+   source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: present},
+  {id:"future",     name:"Going to",           en:"I am going to go",
+   rule:"-(y)acak · -(y)ecek, k → ğ before a vowel", example:["gitmek", "gideceğim"],
+   source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: future},
+  {id:"past",       name:"Past",               en:"I went",
+   rule:"-dı · -tı + -m · -n · — · -k · -nız · -lar", example:["gitmek", "gittim"],
+   source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: past},
+];
+const CATEGORY = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+const TENSES = ["present", "future", "past"];
+
+function eachEntry(vocab, fn){
+  for(const [cat, subs] of Object.entries(vocab)){
+    const keys = Object.keys(subs);
+    const flat = keys.length === 1 && keys[0] === "Main";
+    for(const [sub, words] of Object.entries(subs)){
+      const module = flat ? cat : `${cat}/${sub}`;
+      for(const [en, tr] of words) fn({en, tr, module});
+    }
+  }
+}
+
+/* Irregular in a category = the exception lists change any of its six forms
+   there, or VERBS says so outright. So gitmek is irregular in the present
+   (gidiyor) but not the past (gitti). */
+function isIrregular(categoryId, entry){
+  const c = CATEGORY[categoryId];
+  if(c.verb && ((VERBS[verbStem(entry.tr)] || {}).irregularIn || []).includes(categoryId)) return true;
+  return PERSONS.some(p => c.form(entry, p).text !== c.form(entry, p, {plain:true}).text);
+}
+
+/* {categoryId: [{en, tr, module, vowel, irregular}]}, de-duplicated on the
+   Turkish. `extra` is My Words, each routed by the type the user picked. */
+function buildPools(vocab, extra = []){
+  const pools = {};
+  for(const c of CATEGORIES){
+    const seen = new Set(), list = [];
+    const add = e => {
+      if(!usable(e.tr) || !c.accept(e.tr) || seen.has(e.tr)) return;
+      seen.add(e.tr);
+      list.push(Object.assign({}, e, {vowel: c.form(e, "p3s").vowel, irregular: isIrregular(c.id, e)}));
+    };
+    eachEntry(vocab, e => { if(c.source(e.module)) add(e); });
+    for(const e of extra) if(c.custom && e.type === c.custom) add(e);
+    pools[c.id] = list;
+  }
+  return pools;
+}
+
+/* --- answer buttons ----------------------------------------------------- */
+function shuffle(a){
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+const pick = a => a[Math.floor(Math.random() * a.length)];
+
+/* The right form, plus wrong answers that each test one thing: a slip in the
+   consonant / buffer rule, the wrong harmony, the wrong person. */
+function choices(categoryId, entry, person, n = 6){
+  const form = CATEGORY[categoryId].form;
+  const correct = form(entry, person).text;
+  const out = [correct];
+  const take = (list, k) => {
+    let added = 0;
+    for(const t of list){
+      if(added >= k || out.length >= n) return;
+      if(!out.includes(t)){ out.push(t); added++; }
+    }
+  };
+  const others = shuffle(PERSONS.filter(q => q !== person));
+  const vowels = shuffle(VOWELS.slice());
+
+  take(shuffle([{noSoften:true}, {noBuffer:true}].map(o => form(entry, person, o).text)), 1);
+  take(vowels.map(v => form(entry, person, {forceVowel:v}).text), 2);
+  take(others.map(q => form(entry, q).text), 2);
+  for(const q of others){                                    // wrong on both counts
+    take(vowels.map(v => form(entry, q, {forceVowel:v}).text), n);
+  }
+  return shuffle(out.slice(0, n));
+}
+
+/* --- sentences ---------------------------------------------------------- */
+const INTRANSITIVE = {
+  "Gitmek":    {base:"go",         ing:"going",       past:"went",       group:true},
+  "Gelmek":    {base:"come",       ing:"coming",      past:"came",       group:true},
+  "Beklemek":  {base:"wait",       ing:"waiting",     past:"waited",     group:true},
+  "Çalışmak":  {base:"work",       ing:"working",     past:"worked",     group:true},
+  "Düşünmek":  {base:"think",      ing:"thinking",    past:"thought"},
+  "Anlamak":   {base:"understand", s:"understands",   past:"understood", stative:true},
+  "Bakmak":    {base:"look",       ing:"looking",     past:"looked"},
+  "Denemek":   {base:"try",        ing:"trying",      past:"tried"},
+  "Uyumak":    {base:"sleep",      ing:"sleeping",    past:"slept",      group:true},
+  "Yürümek":   {base:"walk",       ing:"walking",     past:"walked",     group:true},
+  "Koşmak":    {base:"run",        ing:"running",     past:"ran"},
+  "Oynamak":   {base:"play",       ing:"playing",     past:"played",     group:true},
+  "Konuşmak":  {base:"talk",       ing:"talking",     past:"talked"},
+  "Okumak":    {base:"read",       ing:"reading",     past:"read"},
+  "Yazmak":    {base:"write",      ing:"writing",     past:"wrote"},
+  "Oturmak":   {base:"sit",        ing:"sitting",     past:"sat"},
+  "Çıkmak":    {base:"go out",     ing:"going out",   past:"went out",   group:true},
+  "Dönmek":    {base:"come back",  ing:"coming back", past:"came back",  group:true},
+  "Kalmak":    {base:"stay",       ing:"staying",     past:"stayed",     group:true},
+};
+const TRANSITIVE = {
+  "Almak":     {base:"buy",  ing:"buying", past:"bought"},
+  "İstemek":   {base:"want", s:"wants",    past:"wanted", stative:true, tenses:["present", "past"]},
+  "Yemek":     {base:"eat",   ing:"eating",   past:"ate",   objects: en => !DRINKS.has(en) && !SEASONING.has(en)},
+  "İçmek":     {base:"drink", ing:"drinking", past:"drank", objects: en => DRINKS.has(en)},
+};
+const TIME_WORDS = {
+  "Bugün": {en:"today",     tenses:["present", "future", "past"]},
+  "Dün":   {en:"yesterday", tenses:["past"]},
+  "Yarın": {en:"tomorrow",  tenses:["future"]},
+};
+// Uncountable in English, so "I bought ___" reads naturally without an article.
+const MASS_FOODS = new Set(["Water", "Bread", "Meat", "Cheese", "Milk", "Rice", "Pasta", "Soup",
+  "Salad", "Fruit", "Salt", "Sugar", "Tea", "Coffee", "Yogurt", "Chicken", "Fish", "Ice-cream",
+  "Chocolate", "Lamb"]);
+// What you can drink, and what you wouldn't say you ate on its own.
+const DRINKS = new Set(["Water", "Milk", "Tea", "Coffee"]);
+const SEASONING = new Set(["Salt", "Sugar"]);
+
+const SLOTS = {
+  country:    {source: m => m.startsWith("Countries/"),      accept: e => acceptPlace(e.tr), custom:"place"},
+  emotion:    {source: m => m === "Emotions" || m === "Adjectives/People",
+               accept: e => acceptFeeling(e.tr), custom:"adjective"},
+  family:     {source: m => m.startsWith("Family Members/"), accept: e => acceptPossessed(e.tr)},
+  verb:       {source: m => m === "Verbs" || m === "More Verbs", accept: e => !!INTRANSITIVE[e.tr]},
+  objectVerb: {source: m => m === "Verbs" || m === "More Verbs", accept: e => !!TRANSITIVE[e.tr]},
+  food:       {source: m => m.startsWith("Food/"),           accept: e => MASS_FOODS.has(e.en) && !/\s/.test(e.tr)},
+  occupation: {source: m => m === "Occupations",             accept: () => true},
+  time:       {source: m => m === "Time/Days",               accept: e => !!TIME_WORDS[e.tr]},
+};
+
+/* {slot: [{en, tr, module}]} -- the app narrows these to mastered modules. */
+function buildSlotPools(vocab, extra = []){
+  const pools = {};
+  for(const [slot, def] of Object.entries(SLOTS)){
+    const seen = new Set(), list = [];
+    const add = e => {
+      if(!usable(e.tr) || !def.accept(e) || seen.has(e.tr)) return;
+      seen.add(e.tr);
+      list.push(e);
+    };
+    eachEntry(vocab, e => { if(def.source(e.module)) add(e); });
+    for(const e of extra) if(def.custom && e.type === def.custom) add(e);
+    pools[slot] = list;
+  }
+  return pools;
+}
+
+const cap = s => s.charAt(0).toLocaleUpperCase("tr") + s.slice(1);
+const plainEn = en => en.replace(/\s*\(.*?\)/g, "").trim();
+const lowEn = en => plainEn(en).toLowerCase();
+const midSubject = p => p === "p1s" ? "I" : SUBJECT_EN[p];
+const article = en => /^[aeiou]/i.test(en) ? "an" : "a";
+const verbEntry = v => ({tr: v.tr, en: v.en});
+const FORM_OF = {present, future, past};
+
+function englishVerb(v, tense, p){
+  if(tense === "present"){
+    if(v.stative) return p === "p3s" ? v.s : v.base;
+    return `${BE_EN[p]} ${v.ing}`;
+  }
+  if(tense === "future") return `${BE_EN[p]} going to ${v.base}`;
+  return v.past;
+}
+
+/* Verb / time / tense combinations the learner can actually be asked. */
+function timedVerbs(ctx, slot, table, filter = () => true){
+  const out = [];
+  for(const t of ctx.words("time")){
+    for(const v of ctx.words(slot)){
+      const info = table[v.tr];
+      if(!filter(info)) continue;
+      for(const tense of TIME_WORDS[t.tr].tenses){
+        if(ctx.tenses().includes(tense) && (!info.tenses || info.tenses.includes(tense))){
+          out.push({t, v, tense, info});
+        }
+      }
+    }
+  }
+  return out;
+}
+function tensedVerbs(ctx, slot, table, filter = () => true){
+  const out = [];
+  for(const v of ctx.words(slot)){
+    const info = table[v.tr];
+    if(!filter(info)) continue;
+    for(const tense of ctx.tenses()){
+      if(!info.tenses || info.tenses.includes(tense)) out.push({v, tense, info});
+    }
+  }
+  return out;
+}
+/* Object verbs paired with the foods that make sense after them. */
+function objectOptions(ctx, timed, minFoods){
+  const base = timed ? timedVerbs(ctx, "objectVerb", TRANSITIVE) : tensedVerbs(ctx, "objectVerb", TRANSITIVE);
+  return base
+    .map(o => Object.assign(o, {foods: ctx.words("food").filter(f => !o.info.objects || o.info.objects(f.en))}))
+    .filter(o => o.foods.length >= minFoods);
+}
+const distinct = (list, k) => shuffle(list.slice()).slice(0, k);
+// Pair different people, not "you" with "you all".
+const personsExcept = p => PERSONS.filter(q => q[1] !== p[1]);
+// A spouse has one owner -- "our husband" isn't a sentence anyone says.
+const ONE_OWNER = new Set(["Koca", "Hanım", "Eş"]);
+const ownerFor = (...family) => pick(family.some(f => ONE_OWNER.has(f.tr)) ? ["p1s", "p2s", "p3s"] : PERSONS);
+
+/* Each template: a level, a check that it can be filled from what's mastered,
+   and a builder returning the English prompt, the Turkish tiles in their
+   natural order, and every order that counts as correct (as tile indices). */
+const TEMPLATES = [
+  {id:"from", level:"easy",
+   ready: c => c.words("country").length > 0 && c.has("nerelisin"),
+   build(c){
+     const place = pick(c.words("country")), p = pick(PERSONS);
+     return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} from ${plainEn(place.en)}.`,
+             tiles: [PRONOUN[p], nerelisin(place, p).text], orders: [[0, 1]]};
+   }},
+  {id:"feel", level:"easy",
+   ready: c => c.words("emotion").length > 0 && c.has("feelings"),
+   build(c){
+     const e = pick(c.words("emotion")), p = pick(PERSONS);
+     return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${lowEn(e.en)}.`,
+             tiles: [PRONOUN[p], feelings(e, p).text], orders: [[0, 1]]};
+   }},
+  {id:"doing", level:"easy",
+   ready: c => tensedVerbs(c, "verb", INTRANSITIVE).length > 0,
+   build(c){
+     const {v, tense, info} = pick(tensedVerbs(c, "verb", INTRANSITIVE)), p = pick(PERSONS);
+     return {en: `${cap(SUBJECT_EN[p])} ${englishVerb(info, tense, p)}.`,
+             tiles: [PRONOUN[p], FORM_OF[tense](verbEntry(v), p).text], orders: [[0, 1]]};
+   }},
+
+  {id:"when", level:"medium",
+   ready: c => timedVerbs(c, "verb", INTRANSITIVE).length > 0,
+   build(c){
+     const {t, v, tense, info} = pick(timedVerbs(c, "verb", INTRANSITIVE)), p = pick(PERSONS);
+     return {en: `${cap(TIME_WORDS[t.tr].en)} ${midSubject(p)} ${englishVerb(info, tense, p)}.`,
+             tiles: [lower(t.tr), PRONOUN[p], FORM_OF[tense](verbEntry(v), p).text],
+             orders: [[0, 1, 2], [1, 0, 2]]};
+   }},
+  {id:"object", level:"medium",
+   ready: c => objectOptions(c, false, 1).length > 0,
+   build(c){
+     const {v, tense, info, foods} = pick(objectOptions(c, false, 1));
+     const f = pick(foods), p = pick(PERSONS);
+     return {en: `${cap(SUBJECT_EN[p])} ${englishVerb(info, tense, p)} ${lowEn(f.en)}.`,
+             tiles: [PRONOUN[p], lower(f.tr), FORM_OF[tense](verbEntry(v), p).text],
+             orders: [[0, 1, 2]]};
+   }},
+  {id:"family-feel", level:"medium",
+   ready: c => c.words("family").length > 0 && c.words("emotion").length > 0 && c.has("possession"),
+   build(c){
+     const f = pick(c.words("family")), e = pick(c.words("emotion")), p = ownerFor(f);
+     return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)} is ${lowEn(e.en)}.`,
+             tiles: [GENITIVE[p], possession(f, p).text, lower(e.tr)], orders: [[0, 1, 2]]};
+   }},
+  {id:"family-job", level:"medium",
+   ready: c => c.words("family").length > 0 && c.words("occupation").length > 0 && c.has("possession"),
+   build(c){
+     const f = pick(c.words("family")), j = pick(c.words("occupation")), p = ownerFor(f);
+     const job = lowEn(j.en);
+     return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)} is ${article(job)} ${job}.`,
+             tiles: [GENITIVE[p], possession(f, p).text, lower(j.tr)], orders: [[0, 1, 2]]};
+   }},
+
+  {id:"two-places", level:"hard",
+   ready: c => c.words("country").length > 1 && c.has("nerelisin"),
+   build(c){
+     const [a, b] = distinct(c.words("country"), 2);
+     const p = pick(PERSONS), q = pick(personsExcept(p));
+     return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} from ${plainEn(a.en)} and ${midSubject(q)} ${BE_EN[q]} from ${plainEn(b.en)}.`,
+             tiles: [PRONOUN[p], nerelisin(a, p).text, "ve", PRONOUN[q], nerelisin(b, q).text],
+             orders: [[0, 1, 2, 3, 4], [3, 4, 2, 0, 1]]};
+   }},
+  {id:"shopping", level:"hard",
+   ready: c => objectOptions(c, true, 2).length > 0,
+   build(c){
+     const {t, v, tense, info, foods} = pick(objectOptions(c, true, 2));
+     const [f, g] = distinct(foods, 2), p = pick(PERSONS);
+     return {en: `${cap(TIME_WORDS[t.tr].en)} ${midSubject(p)} ${englishVerb(info, tense, p)} ${lowEn(f.en)} and ${lowEn(g.en)}.`,
+             tiles: [lower(t.tr), PRONOUN[p], lower(f.tr), "ve", lower(g.tr), FORM_OF[tense](verbEntry(v), p).text],
+             orders: [[0, 1, 2, 3, 4, 5], [1, 0, 2, 3, 4, 5], [0, 1, 4, 3, 2, 5], [1, 0, 4, 3, 2, 5]]};
+   }},
+  {id:"family-plans", level:"hard",
+   ready: c => c.words("family").length > 1 && c.has("possession")
+            && timedVerbs(c, "verb", INTRANSITIVE, i => i.group).length > 0,
+   build(c){
+     const {t, v, tense, info} = pick(timedVerbs(c, "verb", INTRANSITIVE, i => i.group));
+     const [f, g] = distinct(c.words("family"), 2), p = ownerFor(f, g);
+     const my = POSSESSIVE_EN[p];
+     return {en: `${cap(TIME_WORDS[t.tr].en)} ${my} ${lowEn(f.en)} and ${my} ${lowEn(g.en)} ${englishVerb(info, tense, "p3p")}.`,
+             tiles: [lower(t.tr), possession(f, p).text, "ve", possession(g, p).text, FORM_OF[tense](verbEntry(v), "p3p").text],
+             orders: [[0, 1, 2, 3, 4], [1, 2, 3, 0, 4], [0, 3, 2, 1, 4], [3, 2, 1, 0, 4]]};
+   }},
+  {id:"family-origin", level:"hard",
+   ready: c => c.words("family").length > 0 && c.words("country").length > 0 && c.words("emotion").length > 0
+            && c.has("possession") && c.has("nerelisin"),
+   build(c){
+     const f = pick(c.words("family")), place = pick(c.words("country")), e = pick(c.words("emotion"));
+     const p = ownerFor(f);
+     return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)} is from ${plainEn(place.en)} and ${lowEn(e.en)}.`,
+             tiles: [GENITIVE[p], possession(f, p).text, nerelisin(place, "p3s").text, "ve", lower(e.tr)],
+             orders: [[0, 1, 2, 3, 4], [0, 1, 4, 3, 2]]};
+   }},
+];
+
+/* To unlock a level you need this many vocab modules and conjugation
+   categories mastered, and at least one of its templates fillable. */
+const LEVELS = [
+  {id:"easy",   name:"Easy",   length:"2 words",   modules:1, categories:1},
+  {id:"medium", name:"Medium", length:"3 words",   modules:3, categories:2},
+  {id:"hard",   name:"Hard",   length:"5–6 words", modules:5, categories:3},
+];
+
+return {
+  PERSONS, PRONOUN, GENITIVE, PERSON_EN, VOWELS, CATEGORIES, CATEGORY, TENSES,
+  TEMPLATES, LEVELS, SLOTS,
+  buildPools, buildSlotPools, isIrregular, choices, shuffle, pick, lower, cap,
+  forms: {nerelisin, feelings, possession, present, future, past},
+};
+})();
+
+if(typeof module !== "undefined" && module.exports) module.exports = Grammar;
+
+</script>
 
 <script>
 "use strict";
@@ -341,7 +1150,9 @@ const DIRS = ["en_to_tr", "tr_to_en"];
 const VOCAB = JSON.parse(document.getElementById("vocab-data").textContent);
 
 function emptyStats(){
-  return {words:{}, modules:{}, sessions:0, session_history:[]};
+  return {words:{}, modules:{}, sessions:0, session_history:[],
+          conjugation:{cells:{}, session_history:[]}, syntax:{levels:{}, session_history:[]},
+          custom_words:[]};
 }
 function loadStats(){
   try{
@@ -358,6 +1169,12 @@ function normalize(s){
   s.modules = s.modules || {};
   s.sessions = s.sessions || 0;
   s.session_history = s.session_history || [];
+  // Conjugation and Sentences keep their own keys. The Python CLI never reads
+  // them, and its json.load / json.dump round trip carries them through intact.
+  s.conjugation = Object.assign({cells:{}, session_history:[]}, s.conjugation);
+  s.syntax = Object.assign({levels:{}, session_history:[]}, s.syntax);
+  // My words: [{en, tr, type, added}] -- in stats so backups carry them.
+  s.custom_words = Array.isArray(s.custom_words) ? s.custom_words : [];
   // Mirror _migrate_module_names(), but only for the all-lowercase legacy names
   // it was written for -- title-casing a name that already has capitals risks
   // mangling Turkish dotted capitals (İ) and breaking the word key.
@@ -614,10 +1431,143 @@ function poolMastery(entries){
 const NUM_CHOICES = 6;   // six answers on screen, always -- three per thumb
 
 let stats = loadStats();
-let prefs = Object.assign({count:5, autoAdvance:true, threshold:0.8}, (() => {
+let prefs = Object.assign({count:5, autoAdvance:true, threshold:0.8, app:"vocab", ccount:5, scount:5,
+                           palette:"iznik", sfx:true, readAnswer:false, quizType:"text",
+                           markIrregular:true}, (() => {
   try{ return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }catch(e){ return {}; }
 })());
 function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){} }
+
+/* Colour themes -- the CSS lives in :root[data-palette]; swatches preview the
+   light-mode accent, data colour and tint. */
+const PALETTES = [
+  {id:"iznik",   name:"İznik",   en:"tile blue",   swatch:["#17539B", "#1A8F8A", "#DEE8F6"]},
+  {id:"nar",     name:"Nar",     en:"pomegranate", swatch:["#830000", "#015E49", "#F2DEDA"]},
+  {id:"zumrut",  name:"Zümrüt",  en:"emerald",     swatch:["#015E49", "#8B663D", "#D6E9E3"]},
+  {id:"lavanta", name:"Lavanta", en:"lavender",    swatch:["#45457A", "#3E8A8A", "#C2C2E1"]},
+  {id:"kahve",   name:"Kahve",   en:"coffee",      swatch:["#8B663D", "#015E49", "#EADFD1"]},
+  {id:"zeytin",  name:"Zeytin",  en:"olive",       swatch:["#3E3C00", "#8B663D", "#E3E2CC"]},
+];
+function applyPalette(){
+  const root = document.documentElement;
+  if(PALETTES.some(p => p.id === prefs.palette) && prefs.palette !== "iznik") root.setAttribute("data-palette", prefs.palette);
+  else root.removeAttribute("data-palette");
+}
+applyPalette();
+
+/* ===========================================================================
+   Sound -- answer effects from web/sounds (inlined by build_web.py) and the
+   device's own Turkish voice for reading aloud. iOS plays nothing until the
+   user has tapped, so both unlock on the first interaction.
+   =========================================================================== */
+const SOUND_DATA = (() => {
+  try{ return JSON.parse(document.getElementById("sound-data").textContent) || {}; }catch(e){ return {}; }
+})();
+const SPEAKER_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+
+const Speech = {
+  voice: null,
+  available: () => typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined",
+  pickVoice(){
+    if(!this.available()) return;
+    const turkish = speechSynthesis.getVoices().filter(v => /^tr([-_]|$)/i.test(v.lang));
+    // Prefer a downloaded Enhanced / Premium voice when the device has one.
+    this.voice = turkish.find(v => /enhanced|premium|neural/i.test(v.name)) || turkish[0] || null;
+  },
+  /* Vocab carries alternatives, blanks and glosses: "Pirinç / Pilav", "Benim adım _____". */
+  clean: text => String(text).split("/")[0].replace(/_+/g, " ").replace(/\s*\(.*?\)/g, "").replace(/\s+/g, " ").trim(),
+  speak(text, onEnd){
+    const done = onEnd || (() => {});
+    const line = text ? this.clean(text) : "";
+    if(!this.available() || !line){ done(); return; }
+    // Safari can drop an utterance queued straight after cancel(), so only
+    // cancel when something is actually playing.
+    if(speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(line);
+    u.lang = "tr-TR";
+    if(this.voice) u.voice = this.voice;
+    u.rate = 0.9;
+    let finished = false;
+    const finish = () => { if(!finished){ finished = true; done(); } };
+    u.onend = finish;
+    u.onerror = finish;
+    setTimeout(finish, 1500 + 110 * line.length);   // some iOS builds never fire onend
+    speechSynthesis.speak(u);
+  },
+  stop(){ if(this.available() && (speechSynthesis.speaking || speechSynthesis.pending)) speechSynthesis.cancel(); },
+};
+if(Speech.available()){
+  Speech.pickVoice();
+  if(speechSynthesis.addEventListener) speechSynthesis.addEventListener("voiceschanged", () => Speech.pickVoice());
+}
+
+const Sound = {
+  ctx: null,
+  buffers: {},
+  unlocked: false,
+  unlock(){
+    if(!this.ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(AC){
+        try{
+          this.ctx = new AC();
+          for(const [name, b64] of Object.entries(SOUND_DATA)){
+            const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+            this.ctx.decodeAudioData(bytes.buffer, buf => { this.buffers[name] = buf; }, () => {});
+          }
+        }catch(e){ this.ctx = null; }
+      }
+    }
+    if(this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+    if(!this.unlocked && Speech.available()){
+      // A silent utterance inside the first tap lets later speech start from a timer.
+      const u = new SpeechSynthesisUtterance(" ");
+      u.volume = 0;
+      speechSynthesis.speak(u);
+    }
+    this.unlocked = true;
+  },
+  /* Plays an effect and returns its length in seconds (0 when silent). */
+  play(name){
+    if(!prefs.sfx || !SOUND_DATA[name]) return 0;
+    this.unlock();
+    const buf = this.buffers[name];
+    if(this.ctx && buf){
+      const src = this.ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(this.ctx.destination);
+      src.start();
+      return buf.duration;
+    }
+    if(typeof Audio !== "undefined"){
+      try{ new Audio("data:audio/mpeg;base64," + SOUND_DATA[name]).play().catch(() => {}); }catch(e){}
+      return 0.6;
+    }
+    return 0;
+  },
+};
+
+/* After an answer: the effect, then the Turkish read aloud if that's on, then
+   next() -- never sooner than minMs, so auto-advance doesn't talk over itself. */
+function answerFeedback(correct, turkish, minMs, next){
+  const started = Date.now();
+  const effect = Sound.play(correct ? "correct" : "wrong");
+  const after = () => { if(next) setTimeout(next, Math.max(0, minMs - (Date.now() - started))); };
+  if(prefs.readAnswer && turkish && Speech.available()){
+    setTimeout(() => Speech.speak(turkish, after), Math.min(effect, 1.2) * 1000);
+  }else after();
+}
+
+/* Dimmed until there's Turkish that won't give the answer away. */
+function speakButton(text, big){
+  if(!Speech.available()) return "";
+  const cls = big ? "speak big" : "speak";
+  return text
+    ? `<button class="${cls}" data-act="speak" data-say="${esc(text)}" aria-label="Hear it in Turkish">${SPEAKER_ICON}</button>`
+    : `<button class="${cls}" disabled aria-label="Answer first to hear it">${SPEAKER_ICON}</button>`;
+}
 
 const view = {
   screen:"home",
@@ -626,6 +1576,11 @@ const view = {
   threshold:prefs.threshold,   // Mastery Check floor, remembered between sittings
   dir:"en_to_tr", count:prefs.count,
   quiz:null, last:null, filter:"", query:"",
+  app:prefs.app,            // "vocab" | "conj" | "syntax"
+  conjCat:null, ccount:prefs.ccount, cquiz:null, clast:null,
+  synLevel:"easy", scount:prefs.scount, squiz:null, slast:null,
+  quizType:prefs.quizType,  // "text" | "listen"
+  draft:null, editWord:null, focusField:"w-tr",   // My words form
   sitting:[]        // this sitting only -- the CLI's session_scores
 };
 try{ view.sitting = JSON.parse(sessionStorage.getItem("sitting")) || []; }catch(e){}
@@ -683,11 +1638,21 @@ function topbar(title, onBack){
    Screens
    =========================================================================== */
 function renderHome(){
-  const low = lowestMasteryModule();
-  const cats = Object.keys(VOCAB).sort();
-  const total = cats.reduce((n, c) => n + countWords(c), 0);
-  const qualify = qualifyingModules(view.threshold);
-  const qualifyWords = qualify.reduce((n, [, w]) => n + w.length, 0);
+  const mode = view.app;
+  let figure, caption, body;
+  if(mode === "conj"){
+    figure = meanOf(Grammar.CATEGORIES.map(c => conjMastery(c.id)));
+    caption = `${Grammar.CATEGORIES.length} conjugations`;
+    body = conjHomeBody();
+  }else if(mode === "syntax"){
+    figure = meanOf(Grammar.LEVELS.map(l => levelMastery(l.id)));
+    caption = `${Grammar.LEVELS.length} levels`;
+    body = syntaxHomeBody();
+  }else{
+    figure = overallMastery();
+    caption = `${Object.keys(VOCAB).reduce((n, c) => n + countWords(c), 0)} words`;
+    body = vocabHomeBody();
+  }
 
   app.innerHTML = `
     <div class="masthead">
@@ -696,11 +1661,34 @@ function renderHome(){
         <h1>Turkish Practice</h1>
       </div>
       <div class="overall">
-        <b class="num">${pct(overallMastery())}%</b>
-        <span class="eyebrow">${total} words</span>
+        <b class="num">${pct(figure)}%</b>
+        <span class="eyebrow">${caption}</span>
       </div>
     </div>
 
+    <div class="seg modes" data-act="appmode" role="group" aria-label="Practice mode">
+      ${[["vocab", "Vocabulary"], ["conj", "Conjugation"], ["syntax", "Sentences"]].map(([id, name]) =>
+        `<button data-app="${id}" aria-pressed="${mode === id}">${name}</button>`).join("")}
+    </div>
+
+    ${body}
+
+    <div class="foot">
+      <button data-act="search">Look up a word</button>
+      <button data-act="progress">Progress</button>
+      <button data-act="data">Data &amp; settings</button>
+    </div>`;
+}
+
+function vocabHomeBody(){
+  const low = lowestMasteryModule();
+  const cats = Object.keys(VOCAB).filter(c => c !== MY).sort();
+  const qualify = qualifyingModules(view.threshold);
+  const qualifyWords = qualify.reduce((n, [, w]) => n + w.length, 0);
+  const mine = stats.custom_words.length;
+  const mineMastery = mine ? moduleMastery(MY, VOCAB[MY].Main) : 0;
+
+  return `
     <button class="suggest" data-act="quick">
       <span class="mark">↗</span>
       <span class="label" style="flex:1;min-width:0">
@@ -722,6 +1710,18 @@ function renderHome(){
     </button>
 
     <div class="rows">
+      <button class="row" data-act="mywords">
+        <span class="label">
+          <span class="name">My words</span>
+          <span class="sub">${mine ? `${mine} word${mine === 1 ? "" : "s"} you added` : "Add words you come across"}</span>
+          ${mine ? bar(mineMastery) : ""}
+        </span>
+        <span class="pct">${mine ? pct(mineMastery) + "%" : "Add"}</span>
+        <span class="chev">›</span>
+      </button>
+    </div>
+
+    <div class="rows">
       ${cats.map(c => {
         const m = categoryMastery(c);
         const subs = Object.keys(VOCAB[c]).length;
@@ -735,12 +1735,6 @@ function renderHome(){
           <span class="chev">›</span>
         </button>`;
       }).join("")}
-    </div>
-
-    <div class="foot">
-      <button data-act="search">Look up a word</button>
-      <button data-act="progress">Progress</button>
-      <button data-act="data">Data &amp; settings</button>
     </div>`;
 }
 
@@ -766,9 +1760,9 @@ function renderCategory(){
     </div>`;
 }
 
-function thresholdField(){
+function thresholdField(label = "Draw from modules at or above"){
   return `<div class="field">
-    <span class="eyebrow">Draw from modules at or above</span>
+    <span class="eyebrow">${label}</span>
     <div class="chips" data-act="threshold">
       ${[0.9, 0.8, 0.6].map(t => {
         const n = qualifyingModules(t).length;
@@ -784,9 +1778,15 @@ function renderSetup(){
   if(check) view.words = checkPool(view.threshold).map(e => [e.eng, e.tur]);
   const max = view.words.length;
   const counts = [5, 10, 20, max].filter((n, i, a) => n <= max && a.indexOf(n) === i);
-  if(view.count > max) view.count = max;
+  // Clamp only against a real pool -- an empty Mastery Check pool used to set
+  // the count to 0, and the next module then started a quiz with no questions.
+  if(max){
+    if(!(view.count >= 1)) view.count = Math.min(prefs.count || 5, max);
+    if(view.count > max) view.count = max;
+  }
   const [eng, tur] = view.words[0] || ["—", "—"];
   const qualifying = check ? qualifyingModules(view.threshold) : [];
+  const listening = view.quizType === "listen" && Speech.available();
 
   if(check && !max){
     const best = allModules()
@@ -818,6 +1818,18 @@ function renderSetup(){
     ${check ? thresholdField() : ""}
     <div class="sheet stack">
       <div class="field">
+        <span class="eyebrow">Quiz type</span>
+        <div class="seg" data-act="qtype">
+          <button data-q="text" aria-pressed="${!listening}">Text</button>
+          <button data-q="listen" aria-pressed="${listening}"${Speech.available() ? "" : " disabled"}>Listening</button>
+        </div>
+        ${Speech.available() ? "" : `<span class="note">Listening needs a device that can speak Turkish.</span>`}
+      </div>
+      ${listening ? `<div class="field">
+        <span class="note">You'll hear <b>${esc(tur)}</b> read aloud — tap the speaker to hear it again — and
+          pick <b>${esc(eng)}</b>. The Turkish stays hidden until you answer, and it counts toward
+          Türkçe → English.</span>
+      </div>` : `<div class="field">
         <span class="eyebrow">Direction</span>
         <div class="seg" data-act="dir">
           <button data-dir="en_to_tr" aria-pressed="${view.dir === "en_to_tr"}">English → Türkçe</button>
@@ -826,7 +1838,7 @@ function renderSetup(){
         <span class="note">${view.dir === "en_to_tr"
           ? `You'll see <b>${esc(eng)}</b> and pick <b>${esc(tur)}</b>.`
           : `You'll see <b>${esc(tur)}</b> and pick <b>${esc(eng)}</b>.`}</span>
-      </div>
+      </div>`}
       <div class="field">
         <span class="eyebrow">Questions · ${max} available</span>
         <div class="chips" data-act="count">
@@ -843,6 +1855,9 @@ function renderSetup(){
 }
 
 function startQuiz(){
+  // Listening is always hear the Turkish, pick the English.
+  const listen = view.quizType === "listen" && Speech.available();
+  if(listen) view.dir = "tr_to_en";
   let entries, pool;
   if(view.mode === "check"){
     // An audit: sample the qualifying vocabulary evenly rather than leaning on
@@ -856,7 +1871,13 @@ function startQuiz(){
       .map(i => ({eng:view.words[i][0], tur:view.words[i][1], module:view.module}));
   }
 
-  const answers = pool.map(e => view.dir === "en_to_tr" ? e.tur : e.eng);
+  let answers = pool.map(e => view.dir === "en_to_tr" ? e.tur : e.eng);
+  // A small module (My words, early on) borrows wrong answers from everything
+  // else, so there are still six buttons.
+  if(new Set(answers).size < NUM_CHOICES){
+    const side = view.dir === "en_to_tr" ? 1 : 0;
+    answers = answers.concat(allModules().flatMap(([, words]) => words.map(w => w[side])));
+  }
   const nChoices = Math.min(NUM_CHOICES, new Set(answers).size);
   const questions = entries.map(e => {
     const prompt = view.dir === "en_to_tr" ? e.eng : e.tur;
@@ -867,9 +1888,11 @@ function startQuiz(){
       before: computeMastery(historyOf(e.module, e.eng, e.tur, view.dir))
     };
   });
-  view.quiz = {questions, i:0, score:0, results:[], picked:null};
+  if(!questions.length){ toast("There's nothing to ask here yet."); go("home"); return; }
+  view.quiz = {questions, i:0, score:0, results:[], picked:null, listen};
   view.screen = "quiz";
   render();
+  if(listen) Speech.speak(questions[0].tur);
 }
 
 function renderQuiz(){
@@ -889,8 +1912,14 @@ function renderQuiz(){
     </div>
 
     <div class="sheet prompt">
-      <span class="ask">${view.dir === "en_to_tr" ? "How do you say" : "What does this mean"}</span>
-      <span class="word">${esc(cur.prompt)}</span>
+      ${q.listen ? `
+        <span class="ask">Listen — what does it mean?</span>
+        ${speakButton(cur.tur, true)}
+        <span class="word${answered ? "" : " hidden-word"}">${answered ? esc(cur.tur) : "· · ·"}</span>`
+      : `
+        <span class="ask">${view.dir === "en_to_tr" ? "How do you say" : "What does this mean"}</span>
+        <span class="word">${esc(cur.prompt)}</span>
+        ${speakButton(view.dir === "tr_to_en" || answered ? cur.tur : null)}`}
     </div>
 
     <div class="choices">
@@ -926,21 +1955,33 @@ function answerQuiz(choice){
   q.results.push({eng:cur.eng, tur:cur.tur, module:cur.module, correct, before:cur.before});
   saveStats();
   render();
-  if(correct && prefs.autoAdvance) setTimeout(() => { if(view.quiz === q && q.picked !== null) nextQuestion(); }, 750);
+  // Read the Turkish side whichever way round the question was asked.
+  const at = q.i;
+  answerFeedback(correct, cur.tur, 750, correct && prefs.autoAdvance
+    ? () => { if(view.quiz === q && q.i === at && q.picked !== null) nextQuestion(); }
+    : null);
 }
 
 function nextQuestion(){
   const q = view.quiz;
-  if(q.picked === null) return;
+  if(!q || q.picked === null) return;
+  Speech.stop();
   q.picked = null;
-  if(q.i + 1 < q.questions.length){ q.i += 1; render(); return; }
+  if(q.i + 1 < q.questions.length){
+    q.i += 1;
+    render();
+    if(q.listen) Speech.speak(q.questions[q.i].tur);
+    return;
+  }
   const label = view.mode === "check" ? CHECK : view.module;
   const snapshot = view.mode === "check"
     ? poolMastery(view.checkPool || [])
     : moduleMastery(view.module, view.words);
   recordSession(label, view.dir, q.score, q.questions.length, snapshot);
+  if(q.listen) stats.session_history[stats.session_history.length - 1].listening = true;
   saveStats();
-  view.sitting.push({module:label, direction:view.dir, score:q.score, total:q.questions.length});
+  view.sitting.push({module: q.listen ? `${label} · listening` : label, direction:view.dir,
+                     score:q.score, total:q.questions.length});
   saveSitting();
   view.last = q;
   view.quiz = null;
@@ -950,7 +1991,7 @@ function nextQuestion(){
 
 /* --- charts -------------------------------------------------------------- */
 /* Rotating per-module colours, mirroring MODULE_COLORS in graphs.py */
-const MODULE_COLORS = ["var(--cobalt)", "var(--turquoise)", "var(--bole)",
+const MODULE_COLORS = ["var(--accent)", "var(--data)", "var(--bole)",
                        "var(--good)", "var(--gold)", "var(--plum)"];
 
 function lineChart(series, labels){
@@ -1021,7 +2062,7 @@ function moduleRoundsChart(){
     <h3>${esc(mod)} over time</h3>
     <p>What you scored in each of the last ${hist.length} round${hist.length === 1 ? "" : "s"} of
        ${view.mode === "check" ? "the check" : "this module"}, both directions.</p>
-    ${lineChart([{points:pts, color:"var(--cobalt)"}], [`${hist.length} rounds ago`, "now"])}
+    ${lineChart([{points:pts, color:"var(--accent)"}], [`${hist.length} rounds ago`, "now"])}
   </div>`;
 }
 
@@ -1047,11 +2088,11 @@ function cumulativeChart(){
        ${view.mode === "check" ? "the mastery of everything the check draws from" : "the module's mastery"}
        at each round.${gaps ? " Gaps are rounds recorded before mastery was tracked." : ""}</p>
     ${lineChart([
-      {points:acc, color:"var(--cobalt)"},
+      {points:acc, color:"var(--accent)"},
       {points:mast, color:"var(--gold)"}
     ], [`${hist.length} rounds ago`, "now"])}
     <div class="legend">
-      <span><b style="background:var(--cobalt)"></b>Test accuracy — ${pct(acc[acc.length-1])}%</span>
+      <span><b style="background:var(--accent)"></b>Test accuracy — ${pct(acc[acc.length-1])}%</span>
       <span><b style="background:var(--gold)"></b>Mastery — ${pct(view.mode === "check"
         ? poolMastery(view.checkPool || []) : moduleMastery(view.module, view.words))}%</span>
     </div>
@@ -1107,10 +2148,10 @@ function rankingChart(){
         const d = r.delta || 0;
         const dc = d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
         const here = r.live;
-        return `<div class="wordrow"${here ? ' style="background:var(--cobalt-wash)"' : ""}>
+        return `<div class="wordrow"${here ? ' style="background:var(--accent-wash)"' : ""}>
           <span class="tick" style="color:var(--faint);font-size:12px">${i + 1}</span>
           <span class="pair">
-            <b${here ? ' style="color:var(--cobalt)"' : ""}>${esc(r.mod)}</b>
+            <b${here ? ' style="color:var(--accent)"' : ""}>${esc(r.mod)}</b>
             <span>${r.n} words</span>
             ${deltaBar(r.mastery, d)}
           </span>
@@ -1259,7 +2300,8 @@ function searchResults(query){
   if(!query.trim()) return `<p class="note" style="text-align:center">
     ${searchIndex().length} words. Type in either language — accents optional.</p>`;
   if(!hits.length) return `<p class="note" style="text-align:center">
-    Nothing matches “${esc(query)}”.</p>`;
+    Nothing matches “${esc(query)}”.</p>
+    <button class="ghost" data-act="wfromsearch">Add “${esc(query.trim())}” to My words</button>`;
   return `<div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft);
       border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden">
     ${hits.slice(0, 60).map(w => {
@@ -1297,71 +2339,94 @@ function renderSearch(){
   if(!view.query) box.focus();
 }
 
-/* Progress across everything, or narrowed to one module. */
+/* Progress across all vocabulary, or narrowed to one vocab module, one
+   conjugation or one sentence level. Filter values: "", "v:…", "c:…", "s:…". */
 function renderProgress(){
-  const all = stats.session_history;
-  const mods = [...new Set(all.map(s => s.module))].sort();
-  const f = view.filter;
-  const hist = f ? all.filter(s => s.module === f) : all;
+  const f = view.filter, kind = f.slice(0, 2), key = f.slice(2);
+  const mods = [...new Set(stats.session_history.map(s => s.module))].sort();
+  const conjs = Grammar.CATEGORIES.filter(c => stats.conjugation.session_history.some(s => s.module === c.id));
+  const levels = Grammar.LEVELS.filter(l => stats.syntax.session_history.some(s => s.module === l.id));
+
+  let hist, name, now, extra;
+  if(kind === "c:" && Grammar.CATEGORY[key]){
+    hist = stats.conjugation.session_history.filter(s => s.module === key);
+    name = Grammar.CATEGORY[key].name;
+    now = conjMastery(key);
+    extra = gridSheet(key, null, "Every ending") + conjRanking(null, null);
+  }else if(kind === "s:" && Grammar.LEVELS.some(l => l.id === key)){
+    hist = stats.syntax.session_history.filter(s => s.module === key);
+    name = `${Grammar.LEVELS.find(l => l.id === key).name} sentences`;
+    now = levelMastery(key);
+    extra = levelsSheet(null);
+  }else if(kind === "v:"){
+    hist = stats.session_history.filter(s => s.module === key);
+    name = key;
+    now = moduleMastery(key, moduleWordsFor(key));
+    extra = rankingChart();
+  }else{
+    hist = stats.session_history;
+    name = null;
+    now = overallMastery();
+    extra = rankingChart();
+  }
 
   let body;
   if(!hist.length){
     body = `<div class="sheet chart"><h3>Nothing recorded yet</h3>
       <p>Finish a round and it shows up here.</p></div>`;
+  }else if(name){
+    body = accuracyChart(hist, `Lifetime accuracy in ${esc(name)} against its mastery at each round.`, now);
   }else{
-    const shown = f ? hist : hist.slice(-40);
+    const shown = hist.slice(-40);
     let cc = 0, ct = 0;
-    const acc = [], mast = [], dots = [], scores = [];
+    const acc = [], dots = [], scores = [];
     const colorOf = m => MODULE_COLORS[mods.indexOf(m) % MODULE_COLORS.length];
     for(const s of shown){
       cc += s.score; ct += s.total;
       acc.push(ct ? cc / ct : 0);
       scores.push(s.total ? s.score / s.total : 0);
       dots.push(colorOf(s.module));
-      mast.push(s.mastery === null || s.mastery === undefined ? null : s.mastery);
     }
-    const series = f
-      ? [{points:acc, color:"var(--cobalt)"}, {points:mast, color:"var(--gold)"}]
-      : [{points:scores, color:"var(--line)", dots, noLine:true, markEvery:true},
-         {points:acc, color:"var(--cobalt)"}];
-    const questions = hist.reduce((n, s) => n + s.total, 0);
-    const correct = hist.reduce((n, s) => n + s.score, 0);
-
     body = `
       <div class="sheet chart">
-        <h3>${f ? esc(f) : "Every module"}</h3>
-        <p>${f
-          ? "Lifetime accuracy against the module's mastery at each round."
-          : `Each dot is one round, coloured by module; the line is lifetime accuracy.${
-              hist.length > 40 ? ` Showing the last 40 of ${hist.length} rounds.` : ""}`}</p>
-        ${lineChart(series, [`${shown.length} rounds ago`, "now"])}
+        <h3>Every vocabulary module</h3>
+        <p>Each dot is one round, coloured by module; the line is lifetime accuracy.${
+          hist.length > 40 ? ` Showing the last 40 of ${hist.length} rounds.` : ""}</p>
+        ${lineChart([{points:scores, color:"var(--line)", dots, noLine:true, markEvery:true},
+                     {points:acc, color:"var(--accent)"}], [`${shown.length} rounds ago`, "now"])}
         <div class="legend">
-          ${f
-            ? `<span><b style="background:var(--cobalt)"></b>Test accuracy</span>
-               <span><b style="background:var(--gold)"></b>Mastery</span>`
-            : mods.map(m => `<span><b style="background:${colorOf(m)}"></b>${esc(m)}</span>`).join("")}
+          ${mods.map(m => `<span><b style="background:${colorOf(m)}"></b>${esc(m)}</span>`).join("")}
         </div>
-      </div>
+      </div>`;
+  }
+  if(hist.length){
+    const questions = hist.reduce((n, s) => n + s.total, 0);
+    const correct = hist.reduce((n, s) => n + s.score, 0);
+    body += `
       <div class="sheet stack">
-        <span class="eyebrow">${f ? esc(f) : "All modules"}</span>
+        <span class="eyebrow">${esc(name || "All vocabulary")}</span>
         <p class="note" style="margin:0">
           <b class="num">${hist.length}</b> rounds · <b class="num">${correct}/${questions}</b>
           questions right (<b class="num">${questions ? Math.round(correct / questions * 100) : 0}%</b>) ·
-          mastery now <b class="num">${f ? pct(moduleMastery(f, moduleWordsFor(f))) : pct(overallMastery())}%</b>
+          mastery now <b class="num">${pct(now)}%</b>
         </p>
       </div>`;
   }
 
+  const opt = (value, label) =>
+    `<option value="${esc(value)}"${f === value ? " selected" : ""}>${esc(label)}</option>`;
   app.innerHTML = `
     ${topbar("Progress", "home")}
     <div class="field">
       <select id="filter">
-        <option value=""${f ? "" : " selected"}>All modules</option>
-        ${mods.map(m => `<option value="${esc(m)}"${f === m ? " selected" : ""}>${esc(m)}</option>`).join("")}
+        ${opt("", "All vocabulary")}
+        ${mods.length ? `<optgroup label="Vocabulary">${mods.map(m => opt("v:" + m, m)).join("")}</optgroup>` : ""}
+        ${conjs.length ? `<optgroup label="Conjugation">${conjs.map(c => opt("c:" + c.id, c.name)).join("")}</optgroup>` : ""}
+        ${levels.length ? `<optgroup label="Sentences">${levels.map(l => opt("s:" + l.id, l.name)).join("")}</optgroup>` : ""}
       </select>
     </div>
     ${body}
-    ${rankingChart()}`;
+    ${extra}`;
 
   const sel = document.getElementById("filter");
   if(sel) sel.addEventListener("change", e => { view.filter = e.target.value; render(); });
@@ -1382,7 +2447,10 @@ function renderData(){
         <span class="eyebrow">Progress stored on this device</span>
         <p class="note" style="margin:0">
           <b class="num">${stats.sessions}</b> rounds · <b class="num">${words}</b> words touched ·
-          <b class="num">${stats.session_history.length}</b> entries in history.
+          <b class="num">${stats.session_history.length}</b> entries in history ·
+          <b class="num">${stats.conjugation.session_history.length}</b> conjugation and
+          <b class="num">${stats.syntax.session_history.length}</b> sentence rounds ·
+          <b class="num">${stats.custom_words.length}</b> of your own words.
           Same format as <code>stats.json</code>, so it moves between the app and the
           Python CLI. Each browser keeps its own copy — use these to sync them.
         </p>
@@ -1404,11 +2472,58 @@ function renderData(){
 
     <div class="sheet stack">
       <div class="field">
+        <span class="eyebrow">Color theme</span>
+        <div class="swatches" data-act="palette">
+          ${PALETTES.map(p => `<button class="swatch" data-p="${p.id}" aria-pressed="${prefs.palette === p.id}">
+            <span class="dots">${p.swatch.map(c => `<i style="background:${c}"></i>`).join("")}</span>
+            <span><b>${p.name}</b><small>${p.en}</small></span>
+          </button>`).join("")}
+        </div>
+        <p class="note" style="margin:0">Saved on this device only, and follows light and dark mode.
+          The home-screen icon stays blue.</p>
+      </div>
+    </div>
+
+    <div class="sheet stack">
+      <div class="field">
         <span class="eyebrow">Answer feedback</span>
         <div class="seg" data-act="auto">
           <button data-v="1" aria-pressed="${prefs.autoAdvance}">Advance automatically</button>
           <button data-v="0" aria-pressed="${!prefs.autoAdvance}">Wait for a tap</button>
         </div>
+      </div>
+      <div class="field">
+        <span class="eyebrow">Irregular words in Conjugation</span>
+        <div class="seg" data-act="irregular">
+          <button data-v="1" aria-pressed="${prefs.markIrregular}">Mark with *</button>
+          <button data-v="0" aria-pressed="${!prefs.markIrregular}">Hide (harder)</button>
+        </div>
+        <span class="note">An * means the word breaks that category's usual rule — yemek → yiyecek,
+          gitmek → gidiyor, ağız → ağzım. Hide it to practise spotting them yourself.</span>
+      </div>
+      <div class="field">
+        <span class="eyebrow">Sound effects</span>
+        <div class="seg" data-act="sfx">
+          <button data-v="1" aria-pressed="${prefs.sfx}">On</button>
+          <button data-v="0" aria-pressed="${!prefs.sfx}">Off</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="eyebrow">Read the answer aloud</span>
+        <div class="seg" data-act="read">
+          <button data-v="1" aria-pressed="${prefs.readAnswer}">After every answer</button>
+          <button data-v="0" aria-pressed="${!prefs.readAnswer}">Off</button>
+        </div>
+        <p class="note" style="margin:0">${!Speech.available()
+          ? "This browser can't speak, so reading aloud does nothing here."
+          : `${Speech.voice
+              ? `Uses this device's Turkish voice, ${esc(Speech.voice.name)}.`
+              : "No Turkish voice found on this device yet, so words may get the wrong accent."}
+             On iPhone, a more natural one is free: Settings → Accessibility → Spoken Content →
+             Voices → Turkish → Yelda (Enhanced).`}</p>
+        ${Speech.available()
+          ? `<button class="ghost" data-act="speak" data-say="Merhaba! Türkçe öğreniyorum.">Test the voice</button>`
+          : ""}
       </div>
     </div>
 
@@ -1461,9 +2576,842 @@ function importStats(mode){
     }
     stats.session_history.sort((a, b) => a.timestamp < b.timestamp ? -1 : 1);
     stats.sessions = stats.session_history.length;
+
+    // Conjugation cells and sentence levels: keep whichever history is longer.
+    for(const [k, c] of Object.entries(incoming.conjugation.cells)){
+      const mine = stats.conjugation.cells[k];
+      if(!mine || (c.history || []).length > (mine.history || []).length) stats.conjugation.cells[k] = c;
+    }
+    for(const [k, l] of Object.entries(incoming.syntax.levels)){
+      const mine = stats.syntax.levels[k];
+      if(!mine || (l.history || []).length > (mine.history || []).length) stats.syntax.levels[k] = l;
+    }
+    // My words: add any the other copy has that this one doesn't.
+    for(const w of incoming.custom_words){
+      if(!stats.custom_words.some(m => sameWord(m, w))) stats.custom_words.push(w);
+    }
+    for(const group of ["conjugation", "syntax"]){
+      const list = stats[group].session_history;
+      const have = new Set(list.map(s => s.timestamp));
+      for(const s of incoming[group].session_history) if(!have.has(s.timestamp)) list.push(s);
+      list.sort((a, b) => a.timestamp < b.timestamp ? -1 : 1);
+    }
   }
+  refreshVocab();
   saveStats();
   toast(mode === "replace" ? "Progress replaced" : "Progress merged");
+  render();
+}
+
+/* ===========================================================================
+   Conjugation mode -- a word and a person, six forms to pick from. Mastery is
+   tracked per cell of person × harmony vowel rather than per word, so
+   "possession, 3rd plural, ö/ü" is one thing to learn whichever word shows it.
+   =========================================================================== */
+/* My words are folded into VOCAB as one flat module, and the typed ones also
+   join the conjugation and sentence pools. Rebuilt whenever the list changes. */
+const MY = "My Words";
+let CONJ_POOLS, SLOT_POOLS;
+function customEntries(){
+  return stats.custom_words.map(w => ({en:w.en, tr:w.tr, module:MY, type:w.type}));
+}
+function refreshVocab(){
+  if(stats.custom_words.length) VOCAB[MY] = {Main: stats.custom_words.map(w => [w.en, w.tr])};
+  else delete VOCAB[MY];
+  CONJ_POOLS = Grammar.buildPools(VOCAB, customEntries());
+  SLOT_POOLS = Grammar.buildSlotPools(VOCAB, customEntries());
+  SEARCH_INDEX = null;
+}
+refreshVocab();
+const {PERSONS, PRONOUN, PERSON_EN} = Grammar;
+const plainEn = en => en.replace(/\s*\(.*?\)/g, "").trim();
+const meanOf = xs => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0;
+const verdictLine = (score, n) => score === n ? "Harika! Perfect round."
+  : score >= n / 2 ? "Not bad — keep going." : "Keep at it, these will stick.";
+const signed = d => (d >= 0 ? "+" : "") + pct(d);
+const deltaColor = d => d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
+
+const cellKey = (id, p, v) => `${id}|${p}|${v}`;
+function cellHistory(id, p, v){
+  const c = stats.conjugation.cells[cellKey(id, p, v)];
+  return (c && c.history) || [];
+}
+/* Only vowels some word in the category ends in -- the rest can't be asked. */
+function conjVowels(id){
+  const have = new Set(CONJ_POOLS[id].map(e => e.vowel));
+  return Grammar.VOWELS.filter(v => have.has(v));
+}
+/* Mean over every reachable cell; untested cells count as 0, as untested words do.
+   `minus` ({cellKey: n}) drops each cell's last n answers, for the pre-round figure. */
+function conjMastery(id, minus){
+  const vs = conjVowels(id);
+  if(!vs.length) return 0;
+  let total = 0;
+  for(const p of PERSONS) for(const v of vs){
+    const h = cellHistory(id, p, v), k = (minus && minus[cellKey(id, p, v)]) || 0;
+    total += computeMastery(k ? h.slice(0, -k) : h);
+  }
+  return total / (vs.length * PERSONS.length);
+}
+function recordCell(id, p, v, correct){
+  const key = cellKey(id, p, v);
+  const c = stats.conjugation.cells[key] || (stats.conjugation.cells[key] = {seen:0, correct:0, history:[]});
+  c.seen += 1;
+  if(correct) c.correct += 1;
+  c.history.push(correct);
+}
+
+/* WeightedRecommender over cells: weakest person × vowel first, never exhausted. */
+function selectCells(id, n){
+  const cells = [];
+  for(const p of PERSONS) for(const v of conjVowels(id)){
+    cells.push({p, v, w: Math.max(1 - computeMastery(cellHistory(id, p, v)), MIN_WEIGHT)});
+  }
+  const out = [];
+  let pool = [];
+  while(out.length < n && cells.length){
+    if(!pool.length) pool = cells.slice();
+    let r = Math.random() * pool.reduce((s, c) => s + c.w, 0), i = 0;
+    for(; i < pool.length - 1; i++){ r -= pool[i].w; if(r <= 0) break; }
+    out.push(pool.splice(i, 1)[0]);
+  }
+  return out;
+}
+
+const conjWord = (id, entry) => Grammar.CATEGORY[id].keepCase ? entry.tr : Grammar.lower(entry.tr);
+/* The * on words that break this category's rule -- hidden for a harder round. */
+const irregularMark = entry => entry.irregular && prefs.markIrregular
+  ? `<sup class="irr" title="Irregular in this category">*</sup>` : "";
+const conjBase = (id, entry) => {
+  const w = Grammar.lower(entry.tr);
+  return Grammar.CATEGORY[id].verb ? w.replace(/m[ae]k$/, "") : w;
+};
+
+/* Everything after the part a form shares with the dictionary word, in bold --
+   so softening (kulak → kulağım) is highlighted along with the ending. */
+function markEnding(form, base){
+  const f = Grammar.lower(form);
+  let i = 0;
+  while(i < f.length && i < base.length && f[i] === base[i]) i++;
+  return `<span class="stem">${esc(form.slice(0, i))}</span><b>${esc(form.slice(i))}</b>`;
+}
+
+function pips(total, results, current){
+  return `<div class="pips">${Array.from({length: total}, (_, k) => k < results.length
+    ? `<i class="${results[k].correct ? "ok" : "no"}"></i>`
+    : `<i class="${k === current ? "now" : ""}"></i>`).join("")}</div>`;
+}
+
+function conjHomeBody(){
+  const ranked = Grammar.CATEGORIES.map(c => ({c, m: conjMastery(c.id)}));
+  const low = ranked.slice().sort((a, b) => a.m - b.m)[0];
+  return `
+    <button class="suggest" data-act="cpick" data-id="${low.c.id}">
+      <span class="mark">↗</span>
+      <span class="label" style="flex:1;min-width:0">
+        <span class="name">${esc(low.c.name)}</span>
+        <span class="sub">Most room for improvement · ${esc(low.c.en)}</span>
+      </span>
+      <span class="pct num">${pct(low.m)}%</span>
+    </button>
+
+    <div class="rows">
+      ${ranked.map(({c, m}) => `<button class="row" data-act="cpick" data-id="${c.id}">
+        <span class="label">
+          <span class="name">${esc(c.name)}</span>
+          <span class="sub">${esc(c.example[0])} → ${esc(c.example[1])} · ${CONJ_POOLS[c.id].length} words</span>
+          ${bar(m)}
+        </span>
+        <span class="pct">${pct(m)}%</span>
+        <span class="chev">›</span>
+      </button>`).join("")}
+    </div>
+    <p class="note" style="text-align:center;margin:0">
+      Each category tracks all six persons against the eight harmony vowels
+      (a ı · o u · e i · ö ü), so it only fills up once every ending is solid.
+    </p>`;
+}
+
+function renderConjSetup(){
+  const c = Grammar.CATEGORY[view.conjCat];
+  app.innerHTML = `
+    ${topbar(c.name, "home")}
+    <div class="sheet stack">
+      <p class="note" style="margin:0"><b>${esc(c.en)}</b> · <span class="rule">${esc(c.rule)}</span></p>
+      <p class="note" style="margin:0">
+        You'll get a word and a person — <b>${esc(c.example[0])}</b> with <b>ben</b>, say — and pick
+        <b>${esc(c.example[1])}</b> from six forms.${c.note ? " " + esc(c.note) : ""}${(() => {
+          if(!prefs.markIrregular) return "";
+          const irr = CONJ_POOLS[c.id].filter(e => e.irregular).map(e => conjWord(c.id, e));
+          return irr.length
+            ? ` Irregular words are marked <b>*</b>: ${esc(irr.slice(0, 6).join(", "))}${irr.length > 6 ? "…" : ""}.`
+            : " Nothing in this category is irregular.";
+        })()}
+      </p>
+      <div class="field">
+        <span class="eyebrow">Questions</span>
+        <div class="chips" data-act="ccount">
+          ${[5, 10, 20].map(n => `<button data-n="${n}" aria-pressed="${view.ccount === n}">${n}</button>`).join("")}
+        </div>
+      </div>
+    </div>
+    <button class="primary" data-act="cstart">Start</button>
+    <p class="note" style="text-align:center;margin:0">
+      The weakest person and vowel combinations come up most often.
+    </p>
+    ${gridSheet(c.id, null, "Where you stand")}`;
+}
+
+function startConj(){
+  const id = view.conjCat;
+  const questions = selectCells(id, view.ccount).map(({p, v}) => {
+    const entry = Grammar.pick(CONJ_POOLS[id].filter(e => e.vowel === v));
+    return {entry, p, v,
+            answer: Grammar.CATEGORY[id].form(entry, p).text,
+            choices: Grammar.choices(id, entry, p, NUM_CHOICES)};
+  });
+  view.cquiz = {id, questions, i:0, score:0, results:[], picked:null};
+  go("cquiz");
+}
+
+function renderConjQuiz(){
+  const q = view.cquiz, cur = q.questions[q.i], c = Grammar.CATEGORY[q.id];
+  const answered = q.picked !== null;
+  const right = answered && q.picked === cur.answer;
+  const base = conjBase(q.id, cur.entry);
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back" data-act="home" aria-label="Quit this round">✕</button>
+      ${pips(q.questions.length, q.results, q.i)}
+      <span class="num eyebrow">${q.i + 1}/${q.questions.length}</span>
+    </div>
+
+    <div class="sheet prompt">
+      <span class="ask">${esc(c.name)} · ${esc(plainEn(cur.entry.en))}</span>
+      <span class="word">${esc(conjWord(q.id, cur.entry))}${irregularMark(cur.entry)}</span>
+      <span class="person">${PRONOUN[cur.p]} <small>${PERSON_EN[cur.p]}</small></span>
+      ${speakButton(answered ? cur.answer : conjWord(q.id, cur.entry))}
+      ${irregularMark(cur.entry) ? `<span class="irr-note">* irregular in ${esc(c.name)}</span>` : ""}
+    </div>
+
+    <div class="choices">
+      ${cur.choices.map((t, i) => {
+        let cls = "";
+        if(answered) cls = t === cur.answer ? "right" : t === q.picked ? "wrong" : "dim";
+        return `<button class="choice ${cls}" data-act="canswer" data-choice="${esc(t)}" ${answered ? "disabled" : ""}>
+          <span class="k">${i + 1}</span><span class="t">${markEnding(t, base)}</span>
+        </button>`;
+      }).join("")}
+    </div>
+
+    ${answered ? `<div class="verdict ${right ? "right" : "wrong"}">
+      <span>${right ? "Doğru — correct" : `Answer: ${esc(cur.answer)}`}</span>
+      <button data-act="cnext">${q.i + 1 === q.questions.length ? "See results" : "Next"} →</button>
+    </div>` : ""}`;
+}
+
+function answerConj(choice){
+  const q = view.cquiz;
+  if(!q || q.picked !== null) return;
+  const cur = q.questions[q.i];
+  const correct = choice === cur.answer;
+  const before = computeMastery(cellHistory(q.id, cur.p, cur.v));
+  q.picked = choice;
+  if(correct) q.score += 1;
+  recordCell(q.id, cur.p, cur.v, correct);
+  q.results.push({entry:cur.entry, p:cur.p, v:cur.v, answer:cur.answer, picked:choice, correct, before});
+  saveStats();
+  render();
+  const at = q.i;
+  answerFeedback(correct, cur.answer, 750, correct && prefs.autoAdvance
+    ? () => { if(view.cquiz === q && q.i === at && q.picked !== null) nextConj(); }
+    : null);
+}
+
+function nextConj(){
+  const q = view.cquiz;
+  if(!q || q.picked === null) return;
+  Speech.stop();
+  q.picked = null;
+  if(q.i + 1 < q.questions.length){ q.i += 1; render(); return; }
+  stats.conjugation.session_history.push({
+    timestamp: localISO(), module:q.id, direction:"conjugation",
+    score:q.score, total:q.questions.length, mastery: conjMastery(q.id)
+  });
+  saveStats();
+  view.sitting.push({module:`Conjugation · ${Grammar.CATEGORY[q.id].name}`, direction:"conjugation",
+                     score:q.score, total:q.questions.length});
+  saveSitting();
+  view.clast = q;
+  view.cquiz = null;
+  go("cresults");
+}
+
+function renderConjResults(){
+  const q = view.clast, c = Grammar.CATEGORY[q.id], n = q.questions.length;
+  const minus = {};
+  for(const r of q.results){
+    const k = cellKey(q.id, r.p, r.v);
+    minus[k] = (minus[k] || 0) + 1;
+  }
+  const rows = q.results.map(r => {
+    const h = cellHistory(q.id, r.p, r.v), after = computeMastery(h), d = after - r.before;
+    return `<div class="wordrow">
+      <span class="tick" style="color:${r.correct ? "var(--good)" : "var(--bad)"}">${r.correct ? "✓" : "✕"}</span>
+      <span class="pair">
+        <b>${esc(r.answer)}</b> <span>${esc(conjWord(q.id, r.entry))}${irregularMark(r.entry)} · ${PRONOUN[r.p]}</span>
+        <span class="from">${esc(PERSON_EN[r.p])} · vowel ${r.v}${r.correct ? "" : ` · you picked ${esc(r.picked)}`}</span>
+        ${wordBars(h, d)}
+      </span>
+      <span class="delta">${pct(after)}%<br><span style="color:${deltaColor(d)}">${signed(d)}</span></span>
+    </div>`;
+  }).join("");
+  const hist = stats.conjugation.session_history.filter(s => s.module === q.id);
+
+  app.innerHTML = `
+    <div class="topbar"><div class="grow"><span class="eyebrow">Conjugation · ${esc(c.name)}</span></div></div>
+    <div class="sheet score">
+      <span class="big num">${q.score}<small>/${n}</small></span>
+      <span class="say">${verdictLine(q.score, n)}</span>
+    </div>
+
+    <button class="primary" data-act="cagain">Same again — ${n} more</button>
+    <div class="split">
+      <button class="ghost" data-act="csetup">Change length</button>
+      <button class="ghost" data-act="home">Different category</button>
+    </div>
+
+    <div class="sheet" style="overflow:hidden">
+      <div class="chart" style="padding-bottom:4px">
+        <h3>This round</h3>
+        <p>Bars are that person and vowel's last ten answers — every word with the same vowel shares them.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">${rows}</div>
+    </div>
+
+    ${sittingChart()}
+    ${roundsChart(hist, `${c.name} over time`,
+      `What you scored in each of the last ${hist.length} round${hist.length === 1 ? "" : "s"}.`)}
+    ${gridSheet(q.id, q.results, "Every ending")}
+    ${accuracyChart(hist, `Lifetime accuracy in ${esc(c.name)} against the category's mastery at each round.`,
+      conjMastery(q.id))}
+    ${conjRanking(q.id, minus)}
+
+    <button class="ghost" data-act="progress">All progress over time →</button>`;
+}
+
+/* The 6 × 8 grid: persons down, harmony vowels across, shaded by mastery. */
+function gridSheet(id, results, title){
+  const have = new Set(conjVowels(id));
+  const hit = new Set((results || []).map(r => r.p + r.v));
+  const gap = i => (i > 0 && i % 2 === 0) ? "<span></span>" : "";
+  let cells = "<span></span>" + Grammar.VOWELS.map((v, i) => gap(i) + `<span class="h">${v}</span>`).join("");
+  for(const p of PERSONS){
+    cells += `<span class="h who">${PRONOUN[p]}</span>`;
+    cells += Grammar.VOWELS.map((v, i) => {
+      if(!have.has(v)) return gap(i) + `<span class="c off" title="No words with ${v}"></span>`;
+      const m = computeMastery(cellHistory(id, p, v));
+      return gap(i) + `<span class="c${hit.has(p + v) ? " hit" : ""}" title="${PRONOUN[p]} · ${v} · ${pct(m)}%"
+        style="background:var(--sunken);background:color-mix(in srgb, var(--data) ${pct(m)}%, var(--sunken));color:${m >= 0.55 ? "var(--surface)" : "var(--muted)"}">${pct(m)}</span>`;
+    }).join("");
+  }
+  return `<div class="sheet" style="overflow:hidden">
+    <div class="chart" style="padding-bottom:10px">
+      <h3>${esc(title)}</h3>
+      <p>Mastery for each person against the stem's last vowel, in harmony pairs.${
+        results ? " Outlined cells came up this round." : ""}${
+        have.size < 8 ? " Striped columns have no words in your vocab yet." : ""}</p>
+    </div>
+    <div class="grid">${cells}</div>
+  </div>`;
+}
+
+function conjRanking(currentId, minus){
+  const ranked = Grammar.CATEGORIES.map(c => {
+    const m = conjMastery(c.id);
+    return {c, m, delta: (c.id === currentId && minus) ? m - conjMastery(c.id, minus) : null};
+  }).sort((a, b) => b.m - a.m);
+  return `<div class="sheet" style="overflow:hidden">
+    <div class="chart" style="padding-bottom:4px">
+      <h3>All conjugations ranked</h3>
+      <p>Mastery across every person and vowel each category has words for.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">
+      ${ranked.map((r, i) => {
+        const here = r.c.id === currentId, d = r.delta || 0;
+        return `<div class="wordrow"${here ? ' style="background:var(--accent-wash)"' : ""}>
+          <span class="tick" style="color:var(--faint);font-size:12px">${i + 1}</span>
+          <span class="pair">
+            <b${here ? ' style="color:var(--accent)"' : ""}>${esc(r.c.name)}</b> <span>${esc(r.c.example[1])}</span>
+            ${deltaBar(r.m, d)}
+          </span>
+          <span class="delta">${pct(r.m)}%<br>
+            <span style="color:${deltaColor(d)}">${r.delta === null ? "&nbsp;" : signed(d)}</span></span>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+/* Shared by the conjugation and sentence results and the Progress screen. */
+function roundsChart(hist, title, sub){
+  if(!hist.length) return "";
+  return `<div class="sheet chart">
+    <h3>${esc(title)}</h3>
+    <p>${sub}</p>
+    ${lineChart([{points: hist.map(s => s.total ? s.score / s.total : 0), color:"var(--accent)"}],
+                [`${hist.length} rounds ago`, "now"])}
+  </div>`;
+}
+function accuracyChart(hist, sub, now){
+  if(!hist.length) return "";
+  let cc = 0, ct = 0;
+  const acc = [], mast = [];
+  for(const s of hist){
+    cc += s.score; ct += s.total;
+    acc.push(ct ? cc / ct : 0);
+    mast.push(s.mastery === null || s.mastery === undefined ? null : s.mastery);
+  }
+  return `<div class="sheet chart">
+    <h3>Accuracy against mastery</h3>
+    <p>${sub}</p>
+    ${lineChart([{points:acc, color:"var(--accent)"}, {points:mast, color:"var(--gold)"}],
+                [`${hist.length} rounds ago`, "now"])}
+    <div class="legend">
+      <span><b style="background:var(--accent)"></b>Test accuracy — ${pct(acc[acc.length - 1])}%</span>
+      <span><b style="background:var(--gold)"></b>Mastery — ${pct(now)}%</span>
+    </div>
+  </div>`;
+}
+
+/* ===========================================================================
+   Sentences mode -- an English sentence, its Turkish words shuffled; tap them
+   in order. Built only from vocab modules and conjugations you've mastered.
+   Each tap is final, and one that can't lead to a correct order ends it.
+   =========================================================================== */
+const levelHistory = id => (stats.syntax.levels[id] && stats.syntax.levels[id].history) || [];
+const levelMastery = id => computeMastery(levelHistory(id));
+const LEVEL_HINT = {
+  easy:   "Master Countries with Nerelisin, Emotions with Feelings & jobs, or Verbs with a tense.",
+  medium: "Needs Verbs with a tense plus Time/Days or Food, or Family Members with Possession plus Emotions or Occupations.",
+  hard:   "Needs Countries with Nerelisin, Food and Time/Days with a tense, or Family Members with Possession and a tense.",
+};
+
+/* What the templates may draw from at the current threshold. */
+function syntaxCtx(){
+  const th = view.threshold;
+  const mods = new Set(allModules().filter(([m, w]) => moduleMastery(m, w) >= th).map(([m]) => m));
+  const cats = new Set(Grammar.CATEGORIES.filter(c => conjMastery(c.id) >= th).map(c => c.id));
+  const cache = {};
+  return {
+    modules: mods.size,
+    categories: cats.size,
+    words: slot => cache[slot] || (cache[slot] = SLOT_POOLS[slot].filter(e => mods.has(e.module))),
+    has: id => cats.has(id),
+    tenses: () => Grammar.TENSES.filter(t => cats.has(t)),
+  };
+}
+
+function levelStatus(level, ctx){
+  const ready = Grammar.TEMPLATES.filter(t => t.level === level.id && t.ready(ctx));
+  const needs = [];
+  const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  if(ctx.modules < level.modules) needs.push(`${plural(level.modules, "vocab module")} (you have ${ctx.modules})`);
+  if(ctx.categories < level.categories) needs.push(`${plural(level.categories, "conjugation")} (you have ${ctx.categories})`);
+  const reason = needs.length
+    ? `Needs ${needs.join(" and ")} at ${pct(view.threshold)}%.`
+    : (ready.length ? "" : LEVEL_HINT[level.id]);
+  return {unlocked: !needs.length && ready.length > 0, ready, reason};
+}
+
+const sentenceText = (s, order) => Grammar.cap(order.map(k => s.tiles[k]).join(" ")) + ".";
+
+/* Shuffle the tiles, but never into an order that's already correct. */
+function shuffledBank(s){
+  const idx = s.tiles.map((_, k) => k);
+  const key = order => order.map(k => s.tiles[k]).join(" ");
+  const valid = new Set(s.orders.map(key));
+  for(let t = 0; t < 30; t++){
+    Grammar.shuffle(idx);
+    if(!valid.has(key(idx))) break;
+  }
+  return idx.slice();
+}
+
+function syntaxHomeBody(){
+  const ctx = syntaxCtx();
+  return `
+    ${thresholdField("Counts as mastered at")}
+    <p class="note" style="margin:0">
+      At ${pct(view.threshold)}% you have <b class="num">${ctx.modules}</b> vocab
+      module${ctx.modules === 1 ? "" : "s"} and <b class="num">${ctx.categories}</b>
+      conjugation${ctx.categories === 1 ? "" : "s"} mastered. Sentences are built only from those.
+    </p>
+    <div class="rows">
+      ${Grammar.LEVELS.map(L => {
+        const st = levelStatus(L, ctx), m = levelMastery(L.id);
+        const inner = `<span class="label">
+            <span class="name">${L.name}</span>
+            <span class="sub">${st.unlocked
+              ? `${L.length} · ${st.ready.length} sentence pattern${st.ready.length === 1 ? "" : "s"} open`
+              : esc(st.reason)}</span>
+            ${bar(m)}
+          </span>
+          <span class="pct">${pct(m)}%</span>`;
+        return st.unlocked
+          ? `<button class="row" data-act="slevel" data-level="${L.id}">${inner}<span class="chev">›</span></button>`
+          : `<div class="row locked" aria-disabled="true">${inner}<span class="chev lock">Locked</span></div>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderSyntaxSetup(){
+  const L = Grammar.LEVELS.find(l => l.id === view.synLevel);
+  const ctx = syntaxCtx(), st = levelStatus(L, ctx);
+  if(!st.unlocked){ view.screen = "home"; renderHome(); return; }
+  const sample = Grammar.pick(st.ready).build(ctx);
+  app.innerHTML = `
+    ${topbar(`${L.name} sentences`, "home")}
+    <div class="sheet stack">
+      <p class="note" style="margin:0">
+        You'll see an English sentence and its ${L.length} in Turkish, shuffled. Tap them in order —
+        each tap is final, and one out of place ends the question.
+      </p>
+      <p class="note" style="margin:0">For example, <b>${esc(sample.en)}</b> →
+        <b>${esc(sentenceText(sample, sample.orders[0]))}</b></p>
+      <div class="field">
+        <span class="eyebrow">Questions</span>
+        <div class="chips" data-act="scount">
+          ${[5, 10, 20].map(n => `<button data-n="${n}" aria-pressed="${view.scount === n}">${n}</button>`).join("")}
+        </div>
+      </div>
+    </div>
+    <button class="primary" data-act="sstart">Start</button>
+    <p class="note" style="text-align:center;margin:0">
+      ${st.ready.length} sentence pattern${st.ready.length === 1 ? "" : "s"} open at this level from what you've mastered.
+    </p>`;
+}
+
+function startSyntax(){
+  const L = Grammar.LEVELS.find(l => l.id === view.synLevel);
+  const ctx = syntaxCtx(), st = levelStatus(L, ctx);
+  if(!st.unlocked){ toast("That level is locked"); go("home"); return; }
+  const questions = [], seen = new Set();
+  for(let i = 0; i < view.scount; i++){
+    let s = null;
+    for(let t = 0; t < 12; t++){
+      s = Grammar.pick(st.ready).build(ctx);
+      if(!seen.has(s.en)) break;
+    }
+    seen.add(s.en);
+    s.bank = shuffledBank(s);
+    questions.push(s);
+  }
+  view.squiz = {level:L.id, questions, i:0, score:0, results:[], placed:[], done:null};
+  go("squiz");
+}
+
+function renderSyntaxQuiz(){
+  const q = view.squiz, cur = q.questions[q.i], done = q.done;
+  const lastWrong = done === "wrong" ? q.placed.length - 1 : -1;
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="back" data-act="home" aria-label="Quit this round">✕</button>
+      ${pips(q.questions.length, q.results, q.i)}
+      <span class="num eyebrow">${q.i + 1}/${q.questions.length}</span>
+    </div>
+
+    <div class="sheet prompt">
+      <span class="ask">Say it in Turkish</span>
+      <span class="sentence-en">${esc(cur.en)}</span>
+      ${speakButton(done ? sentenceText(cur, cur.orders[0]) : null)}
+    </div>
+
+    <div class="line${done === "right" ? " right" : ""}" aria-live="polite">
+      ${q.placed.length
+        ? q.placed.map((k, j) => `<span class="tile${j === lastWrong ? " no" : ""}">${esc(cur.tiles[k])}</span>`).join("")
+        : `<span class="note" style="align-self:center;margin:auto">Tap the words in order</span>`}
+    </div>
+
+    <div class="bank">
+      ${cur.bank.map((k, pos) => q.placed.includes(k)
+        ? `<span class="tile spent" aria-hidden="true">${esc(cur.tiles[k])}</span>`
+        : `<button class="tile" data-act="stile" data-k="${k}"${done ? " disabled" : ""}
+             aria-label="${esc(cur.tiles[k])}, key ${pos + 1}">${esc(cur.tiles[k])}</button>`).join("")}
+    </div>
+
+    ${done ? `<div class="verdict ${done}">
+      <span>${done === "right" ? "Doğru — correct" : `Correct: ${esc(sentenceText(cur, cur.orders[0]))}`}</span>
+      <button data-act="snext">${q.i + 1 === q.questions.length ? "See results" : "Next"} →</button>
+    </div>` : ""}`;
+}
+
+function tapTile(k){
+  const q = view.squiz;
+  if(!q || q.done || q.placed.includes(k)) return;
+  const cur = q.questions[q.i];
+  q.placed.push(k);
+  const texts = q.placed.map(i => cur.tiles[i]);
+  // Compare words, not tiles, so either copy of a repeated word is fine.
+  const onTrack = cur.orders.some(o => texts.every((t, j) => cur.tiles[o[j]] === t));
+  if(!onTrack) finishSentence(false);
+  else if(q.placed.length === cur.tiles.length) finishSentence(true);
+  else render();
+}
+
+function finishSentence(correct){
+  const q = view.squiz, cur = q.questions[q.i];
+  q.done = correct ? "right" : "wrong";
+  if(correct) q.score += 1;
+  const lv = stats.syntax.levels[q.level] || (stats.syntax.levels[q.level] = {seen:0, correct:0, history:[]});
+  lv.seen += 1;
+  if(correct) lv.correct += 1;
+  lv.history.push(correct);
+  q.results.push({en:cur.en, tiles:cur.tiles, orders:cur.orders, placed:q.placed.slice(), correct});
+  saveStats();
+  render();
+  // One effect and one reading per sentence, when it ends -- not per tile.
+  const at = q.i;
+  answerFeedback(correct, sentenceText(cur, cur.orders[0]), 900, correct && prefs.autoAdvance
+    ? () => { if(view.squiz === q && q.i === at && q.done) nextSentence(); }
+    : null);
+}
+
+function nextSentence(){
+  const q = view.squiz;
+  if(!q || !q.done) return;
+  Speech.stop();
+  q.done = null;
+  q.placed = [];
+  if(q.i + 1 < q.questions.length){ q.i += 1; render(); return; }
+  stats.syntax.session_history.push({
+    timestamp: localISO(), module:q.level, direction:"sentences",
+    score:q.score, total:q.questions.length, mastery: levelMastery(q.level)
+  });
+  saveStats();
+  const L = Grammar.LEVELS.find(l => l.id === q.level);
+  view.sitting.push({module:`Sentences · ${L.name}`, direction:"sentences", score:q.score, total:q.questions.length});
+  saveSitting();
+  view.slast = q;
+  view.squiz = null;
+  go("sresults");
+}
+
+function renderSyntaxResults(){
+  const q = view.slast, L = Grammar.LEVELS.find(l => l.id === q.level), n = q.questions.length;
+  const rows = q.results.map(r => `<div class="wordrow">
+      <span class="tick" style="color:${r.correct ? "var(--good)" : "var(--bad)"}">${r.correct ? "✓" : "✕"}</span>
+      <span class="pair">
+        <b>${esc(sentenceText(r, r.orders[0]))}</b>
+        <span class="from">${esc(r.en)}</span>
+        ${r.correct ? "" : `<span class="from" style="color:var(--bad)">You had: ${esc(r.placed.map(i => r.tiles[i]).join(" "))} …</span>`}
+      </span>
+    </div>`).join("");
+  const hist = stats.syntax.session_history.filter(s => s.module === q.level);
+
+  app.innerHTML = `
+    <div class="topbar"><div class="grow"><span class="eyebrow">Sentences · ${L.name}</span></div></div>
+    <div class="sheet score">
+      <span class="big num">${q.score}<small>/${n}</small></span>
+      <span class="say">${verdictLine(q.score, n)}</span>
+    </div>
+
+    <button class="primary" data-act="sagain">Same again — ${n} more</button>
+    <div class="split">
+      <button class="ghost" data-act="ssetup">Change length</button>
+      <button class="ghost" data-act="home">Different level</button>
+    </div>
+
+    <div class="sheet" style="overflow:hidden">
+      <div class="chart" style="padding-bottom:4px">
+        <h3>This round</h3>
+        <p>Each sentence in its natural order, with the English you were given.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">${rows}</div>
+    </div>
+
+    ${sittingChart()}
+    ${roundsChart(hist, `${L.name} sentences over time`,
+      `What you scored in each of the last ${hist.length} round${hist.length === 1 ? "" : "s"}.`)}
+    ${accuracyChart(hist, `Lifetime accuracy on ${L.name.toLowerCase()} sentences against the level's mastery at each round.`,
+      levelMastery(q.level))}
+    ${levelsSheet(q)}
+
+    <button class="ghost" data-act="progress">All progress over time →</button>`;
+}
+
+function levelsSheet(q){
+  const ctx = syntaxCtx();
+  return `<div class="sheet" style="overflow:hidden">
+    <div class="chart" style="padding-bottom:4px">
+      <h3>Sentence levels</h3>
+      <p>Mastery from each level's last ten sentences.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--line-soft)">
+      ${Grammar.LEVELS.map(L => {
+        const h = levelHistory(L.id), st = levelStatus(L, ctx);
+        const here = q && q.level === L.id;
+        const k = here ? q.results.length : 0;
+        const d = k ? computeMastery(h) - computeMastery(h.slice(0, -k)) : null;
+        return `<div class="wordrow"${here ? ' style="background:var(--accent-wash)"' : ""}>
+          <span class="pair">
+            <b${here ? ' style="color:var(--accent)"' : ""}>${L.name}</b>
+            <span>${st.unlocked ? L.length : "locked"}</span>
+            ${wordBars(h, d || 0)}
+          </span>
+          <span class="delta">${pct(computeMastery(h))}%<br>
+            <span style="color:${deltaColor(d || 0)}">${d === null ? "&nbsp;" : signed(d)}</span></span>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+/* ===========================================================================
+   My words -- words you add yourself. Saved in stats (so Copy / Merge and
+   backups carry them), practised as one module, and routed by type into the
+   conjugation and sentence pools.
+   =========================================================================== */
+const WORD_TYPES = [
+  {id:"word",      name:"Vocab only", note:"Practised in My words and Mastery Check."},
+  {id:"noun",      name:"Noun",       note:"Also joins Possession: araba → arabam."},
+  {id:"verb",      name:"Verb",       note:"Also joins the three tenses. Enter the infinitive, like yüzmek."},
+  {id:"adjective", name:"Adjective",  note:"Also joins Feelings & jobs and “I am …” sentences: yorgun → yorgunum."},
+  {id:"place",     name:"Place",      note:"Also joins Nerelisin and “I am from …” sentences: İzmir → İzmirliyim."},
+];
+const TURKISH_LETTERS = ["ç", "ğ", "ı", "İ", "ö", "ş", "ü"];
+
+const myDraft = () => view.draft || (view.draft = {tr:"", en:"", type:"word"});
+const tidy = s => String(s || "").replace(/\s+/g, " ").trim();
+const sameWord = (a, b) => Grammar.lower(tidy(a.tr)) === Grammar.lower(tidy(b.tr))
+  && tidy(a.en).toLowerCase() === tidy(b.en).toLowerCase();
+
+function renderMyWords(){
+  const words = stats.custom_words;
+  const d = myDraft();
+  const editing = view.editWord !== null;
+  const type = WORD_TYPES.find(t => t.id === d.type) || WORD_TYPES[0];
+  const m = words.length ? moduleMastery(MY, VOCAB[MY].Main) : 0;
+
+  app.innerHTML = `
+    ${topbar("My words", "home")}
+    <div class="sheet stack">
+      <span class="eyebrow">${editing ? "Edit word" : "Add a word"}</span>
+      <label class="field">
+        <span class="note" style="margin:0">Türkçe</span>
+        <input class="search" id="w-tr" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="kedi, yüzmek, İzmir…" value="${esc(d.tr)}">
+      </label>
+      <div class="letters" role="group" aria-label="Turkish letters">
+        ${TURKISH_LETTERS.map(l => `<button type="button" data-act="letter" data-l="${l}">${l}</button>`).join("")}
+      </div>
+      <label class="field">
+        <span class="note" style="margin:0">English</span>
+        <input class="search" id="w-en" autocomplete="off" placeholder="cat, to swim, Izmir…" value="${esc(d.en)}">
+      </label>
+      <div class="field">
+        <span class="note" style="margin:0">Also practise it as</span>
+        <div class="chips" data-act="wtype">
+          ${WORD_TYPES.map(t => `<button data-type="${t.id}" aria-pressed="${d.type === t.id}">${t.name}</button>`).join("")}
+        </div>
+        <span class="note">${type.note}</span>
+      </div>
+      <div class="split">
+        ${editing ? `<button class="ghost" data-act="wcancel">Cancel</button>` : ""}
+        <button class="primary" data-act="wsave">${editing ? "Save changes" : "Add word"}</button>
+      </div>
+      ${editing ? `<button class="ghost" data-act="wdelete" style="color:var(--bad);border-color:var(--bad)">Delete this word</button>` : ""}
+    </div>
+
+    ${words.length ? `
+      <button class="primary" data-act="wpractice">Practise my ${words.length} word${words.length === 1 ? "" : "s"} · ${pct(m)}%</button>
+      <div class="rows">
+        ${words.map((w, i) => {
+          const wm = (computeMastery(historyOf(MY, w.en, w.tr, "en_to_tr"))
+                    + computeMastery(historyOf(MY, w.en, w.tr, "tr_to_en"))) / 2;
+          const t = WORD_TYPES.find(x => x.id === w.type) || WORD_TYPES[0];
+          return `<button class="row" data-act="wedit" data-i="${i}"${i === view.editWord ? ' style="background:var(--accent-wash)"' : ""}>
+            <span class="label">
+              <span class="name">${esc(w.tr)}</span>
+              <span class="sub">${esc(w.en)}${w.type && w.type !== "word" ? ` · ${t.name.toLowerCase()}` : ""}</span>
+              ${bar(wm)}
+            </span>
+            <span class="pct">${pct(wm)}%</span>
+            <span class="chev">›</span>
+          </button>`;
+        }).reverse().join("")}
+      </div>` : `<p class="note" style="text-align:center;margin:0">
+        Your words are saved with your progress, so <b>Copy stats.json</b> backs them up too.
+      </p>`}`;
+
+  for(const [id, key] of [["w-tr", "tr"], ["w-en", "en"]]){
+    const input = document.getElementById(id);
+    input.addEventListener("input", () => { myDraft()[key] = input.value; });
+    input.addEventListener("focus", () => { view.focusField = id; });
+  }
+}
+
+/* Types ç ğ ı İ ö ş ü into whichever field was last focused, at the caret. */
+function typeLetter(letter){
+  const input = document.getElementById(view.focusField || "w-tr");
+  if(!input) return;
+  const start = typeof input.selectionStart === "number" ? input.selectionStart : input.value.length;
+  const end = typeof input.selectionEnd === "number" ? input.selectionEnd : start;
+  input.value = input.value.slice(0, start) + letter + input.value.slice(end);
+  myDraft()[input.id === "w-en" ? "en" : "tr"] = input.value;
+  input.focus();
+  try{ input.setSelectionRange(start + 1, start + 1); }catch(e){}
+}
+
+function saveMyWord(){
+  const d = myDraft();
+  const word = {tr: tidy(d.tr), en: tidy(d.en), type: d.type || "word"};
+  if(!word.tr || !word.en) return toast("Fill in both the Turkish and the English");
+  if(!/[aeıioöuüâîû]/.test(Grammar.lower(word.tr))) return toast("That Turkish has no vowels — check the spelling");
+  if(word.type === "verb" && !/m[ae]k$/i.test(word.tr)) return toast("Enter verbs as the infinitive, ending in -mak or -mek");
+  const list = stats.custom_words;
+  const editing = view.editWord !== null;
+  if(list.some((w, i) => sameWord(w, word) && i !== view.editWord)) return toast("That word is already in My words");
+
+  if(editing){
+    const old = list[view.editWord];
+    // A corrected spelling keeps its history: move the stats entry to the new key.
+    const oldKey = wordKey(MY, old.en, old.tr), newKey = wordKey(MY, word.en, word.tr);
+    if(oldKey !== newKey && stats.words[oldKey]){
+      stats.words[newKey] = Object.assign(stats.words[oldKey], {english: word.en, turkish: word.tr});
+      delete stats.words[oldKey];
+    }
+    Object.assign(old, word);
+    toast(`Saved “${word.tr}”`);
+  }else{
+    list.push(Object.assign(word, {added: localISO()}));
+    toast(`Added “${word.tr}”`);
+  }
+  view.editWord = null;
+  view.draft = null;
+  refreshVocab();
+  saveStats();
+  render();
+}
+
+function editMyWord(i){
+  const w = stats.custom_words[i];
+  if(!w) return;
+  view.editWord = i;
+  view.draft = {tr:w.tr, en:w.en, type:w.type || "word"};
+  render();
+}
+
+function deleteMyWord(){
+  const w = stats.custom_words[view.editWord];
+  if(!w) return;
+  if(!confirm(`Delete “${w.tr}” from My words? Its practice history is kept in case you add it back.`)) return;
+  stats.custom_words.splice(view.editWord, 1);
+  view.editWord = null;
+  view.draft = null;
+  refreshVocab();
+  saveStats();
+  toast(`Deleted “${w.tr}”`);
   render();
 }
 
@@ -1479,22 +3427,31 @@ function render(){
   else if(s === "results") renderResults();
   else if(s === "progress") renderProgress();
   else if(s === "search") renderSearch();
+  else if(s === "mywords") renderMyWords();
+  else if(s === "csetup") renderConjSetup();
+  else if(s === "cquiz") renderConjQuiz();
+  else if(s === "cresults") renderConjResults();
+  else if(s === "ssetup") renderSyntaxSetup();
+  else if(s === "squiz") renderSyntaxQuiz();
+  else if(s === "sresults") renderSyntaxResults();
   else if(s === "data") renderData();
   window.scrollTo(0, 0);
 }
 
-function go(screen){ view.screen = screen; render(); }
+function go(screen){ Speech.stop(); view.screen = screen; render(); }
 
 function pickModule(cat, sub){
   view.mode = "module";
   view.cat = cat;
   view.module = moduleName(cat, sub);
   view.words = wordsOf(cat, sub);
-  if(view.count > view.words.length) view.count = view.words.length;
+  // Start from the last length you chose, trimmed to this module's size.
+  view.count = Math.min(prefs.count || 5, view.words.length);
   go("setup");
 }
 
 app.addEventListener("click", ev => {
+  Sound.unlock();                      // first tap anywhere readies audio on iOS
   const el = ev.target.closest("[data-act]");
   if(!el) return;
   const act = el.dataset.act;
@@ -1545,6 +3502,65 @@ app.addEventListener("click", ev => {
     const b = ev.target.closest("[data-t]");
     if(b){ view.threshold = prefs.threshold = +b.dataset.t; savePrefs(); render(); }
   }
+  else if(act === "qtype"){
+    const b = ev.target.closest("[data-q]");
+    if(b){ view.quizType = prefs.quizType = b.dataset.q; savePrefs(); render(); }
+  }
+  else if(act === "irregular"){
+    const b = ev.target.closest("[data-v]");
+    if(b){ prefs.markIrregular = b.dataset.v === "1"; savePrefs(); render(); }
+  }
+  else if(act === "mywords"){ view.editWord = null; view.draft = null; go("mywords"); }
+  else if(act === "wtype"){
+    const b = ev.target.closest("[data-type]");
+    if(b){ myDraft().type = b.dataset.type; render(); }
+  }
+  else if(act === "letter"){ typeLetter(el.dataset.l); }
+  else if(act === "wsave"){ saveMyWord(); }
+  else if(act === "wedit"){ editMyWord(+el.dataset.i); }
+  else if(act === "wcancel"){ view.editWord = null; view.draft = null; render(); }
+  else if(act === "wdelete"){ deleteMyWord(); }
+  else if(act === "wpractice"){ pickModule(MY, "Main"); }
+  else if(act === "wfromsearch"){
+    view.editWord = null;
+    view.draft = {tr: tidy(view.query), en:"", type:"word"};
+    go("mywords");
+  }
+  else if(act === "speak"){ Speech.speak(el.dataset.say); }
+  else if(act === "sfx"){
+    const b = ev.target.closest("[data-v]");
+    if(b){ prefs.sfx = b.dataset.v === "1"; savePrefs(); if(prefs.sfx) Sound.play("correct"); render(); }
+  }
+  else if(act === "read"){
+    const b = ev.target.closest("[data-v]");
+    if(b){ prefs.readAnswer = b.dataset.v === "1"; savePrefs(); render(); }
+  }
+  else if(act === "palette"){
+    const b = ev.target.closest("[data-p]");
+    if(b){ prefs.palette = b.dataset.p; savePrefs(); applyPalette(); render(); }
+  }
+  else if(act === "appmode"){
+    const b = ev.target.closest("[data-app]");
+    if(b){ view.app = prefs.app = b.dataset.app; savePrefs(); render(); }
+  }
+  else if(act === "cpick"){ view.conjCat = el.dataset.id; go("csetup"); }
+  else if(act === "ccount"){
+    const b = ev.target.closest("[data-n]");
+    if(b){ view.ccount = prefs.ccount = +b.dataset.n; savePrefs(); render(); }
+  }
+  else if(act === "cstart" || act === "cagain"){ startConj(); }
+  else if(act === "csetup"){ go("csetup"); }
+  else if(act === "canswer"){ answerConj(el.dataset.choice); }
+  else if(act === "cnext"){ nextConj(); }
+  else if(act === "slevel"){ view.synLevel = el.dataset.level; go("ssetup"); }
+  else if(act === "scount"){
+    const b = ev.target.closest("[data-n]");
+    if(b){ view.scount = prefs.scount = +b.dataset.n; savePrefs(); render(); }
+  }
+  else if(act === "sstart" || act === "sagain"){ startSyntax(); }
+  else if(act === "ssetup"){ go("ssetup"); }
+  else if(act === "stile"){ tapTile(+el.dataset.k); }
+  else if(act === "snext"){ nextSentence(); }
   else if(act === "copy"){
     const text = JSON.stringify(stats, null, 2);
     navigator.clipboard.writeText(text)
@@ -1556,21 +3572,35 @@ app.addEventListener("click", ev => {
   else if(act === "merge"){ importStats("merge"); }
   else if(act === "reset"){
     if(confirm("Erase all progress on this device? Copy stats.json first if you want a backup.")){
-      stats = emptyStats(); view.sitting = []; saveSitting(); saveStats(); go("home");
+      stats = emptyStats(); view.sitting = []; saveSitting(); refreshVocab(); saveStats(); go("home");
     }
   }
 });
 
-/* Number keys answer, Enter advances -- handy on a laptop, ignored on a phone. */
+/* Letter buttons mustn't steal focus from the field they type into. */
+app.addEventListener("pointerdown", ev => {
+  if(ev.target.closest('[data-act="letter"]')) ev.preventDefault();
+});
+
+/* Number keys answer (or pick the nth tile), Enter advances -- handy on a
+   laptop, ignored on a phone. In a listening quiz, R replays the word. */
 document.addEventListener("keydown", ev => {
-  if(view.screen !== "quiz" || !view.quiz) return;
-  const q = view.quiz;
-  if(q.picked === null){
-    const n = parseInt(ev.key, 10);
-    const cur = q.questions[q.i];
-    if(n >= 1 && n <= cur.choices.length) answerQuiz(cur.choices[n - 1]);
-  }else if(ev.key === "Enter" || ev.key === " "){
-    ev.preventDefault(); nextQuestion();
+  Sound.unlock();
+  const n = parseInt(ev.key, 10);
+  const advance = ev.key === "Enter" || ev.key === " ";
+  if(view.screen === "quiz" && view.quiz){
+    const q = view.quiz, cur = q.questions[q.i];
+    if(q.listen && ev.key === "r"){ Speech.speak(cur.tur); return; }
+    if(q.picked === null){ if(n >= 1 && n <= cur.choices.length) answerQuiz(cur.choices[n - 1]); }
+    else if(advance){ ev.preventDefault(); nextQuestion(); }
+  }else if(view.screen === "cquiz" && view.cquiz){
+    const q = view.cquiz, cur = q.questions[q.i];
+    if(q.picked === null){ if(n >= 1 && n <= cur.choices.length) answerConj(cur.choices[n - 1]); }
+    else if(advance){ ev.preventDefault(); nextConj(); }
+  }else if(view.screen === "squiz" && view.squiz){
+    const q = view.squiz, cur = q.questions[q.i];
+    if(!q.done){ if(n >= 1 && n <= cur.bank.length) tapTile(cur.bank[n - 1]); }
+    else if(advance){ ev.preventDefault(); nextSentence(); }
   }
 });
 

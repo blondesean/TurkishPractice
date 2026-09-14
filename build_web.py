@@ -1,18 +1,21 @@
-"""Inline vocab_turkish.txt into web/index.html.
+"""Inline vocab_turkish.txt and web/grammar.js into web/index.html.
 
 The web app is a single self-contained HTML file with no build system and no
 server -- the vocab lives inside it in a <script type="application/json"> block
 so the page works from file:// and offline. Run this after editing
-vocab_turkish.txt (or add_vocab.py) to refresh that block:
+vocab_turkish.txt (or add_vocab.py), web/grammar.js or web/sounds/ to refresh
+those blocks:
 
     py -3 build_web.py
 
-Only the data block is rewritten; the UI code in web/index.html is untouched.
+Only the vocab, grammar and sound blocks are rewritten; the UI code in web/index.html
+is untouched.
 
 Pass --fragment PATH to also write a <head>-less copy (used when publishing the
 page to a host that supplies its own document skeleton).
 """
 
+import base64
 import csv
 import json
 import os
@@ -24,7 +27,23 @@ VOCAB_FILE = os.path.join(BASE_DIR, "vocab_turkish.txt")
 WEB_FILE = os.path.join(BASE_DIR, "web", "index.html")
 
 START = '<script id="vocab-data" type="application/json">'
+GRAMMAR_FILE = os.path.join(BASE_DIR, "web", "grammar.js")
+GRAMMAR_START = '<script id="grammar">'
+# Answer sound effects, embedded as base64 so the page stays one file and plays
+# offline. A missing file just means that effect stays silent.
+SOUNDS = {
+    "correct": os.path.join(BASE_DIR, "web", "sounds", "correct.mp3"),
+    "wrong": os.path.join(BASE_DIR, "web", "sounds", "wrong.mp3"),
+}
+SOUND_START = '<script id="sound-data" type="application/json">'
 END = "</script>"
+
+
+def replace_block(html, start, payload):
+    """Swap the contents of the <script> that opens with `start`."""
+    i = html.index(start) + len(start)
+    j = html.index(END, i)
+    return html[:i] + payload + html[j:]
 
 
 def load_vocab():
@@ -62,10 +81,21 @@ def main():
     with open(WEB_FILE, "r", encoding="utf-8") as f:
         html = f.read()
 
-    i = html.index(START) + len(START)
-    j = html.index(END, i)
     payload = json.dumps(vocab, ensure_ascii=False, separators=(",", ":"))
-    html = html[:i] + payload + html[j:]
+    html = replace_block(html, START, payload)
+
+    with open(GRAMMAR_FILE, "r", encoding="utf-8") as f:
+        grammar = f.read()
+    if END in grammar:
+        sys.exit("web/grammar.js must not contain a closing script tag")
+    html = replace_block(html, GRAMMAR_START, "\n" + grammar + "\n")
+
+    sounds = {}
+    for name, sound_path in SOUNDS.items():
+        if os.path.exists(sound_path):
+            with open(sound_path, "rb") as f:
+                sounds[name] = base64.b64encode(f.read()).decode("ascii")
+    html = replace_block(html, SOUND_START, json.dumps(sounds))
 
     with open(WEB_FILE, "w", encoding="utf-8") as f:
         f.write(html)
