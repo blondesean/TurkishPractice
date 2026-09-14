@@ -240,12 +240,13 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
   border-radius:var(--r);box-shadow:var(--shadow)}
 
 /* --- home -------------------------------------------------------------- */
-.masthead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
-.masthead h1{font-family:var(--serif);font-size:34px;font-weight:600;margin:2px 0 0;
-  line-height:1;letter-spacing:-.02em}
-.overall{text-align:right;flex:none}
-.overall b{font-family:var(--mono);font-size:24px;font-weight:600;display:block;
-  line-height:1.1;color:var(--accent)}
+.masthead{display:flex;flex-direction:column;gap:2px}
+.masthead h1{font-family:var(--serif);font-size:34px;font-weight:600;margin:0;
+  line-height:1.05;letter-spacing:-.02em}
+/* Under the title rather than beside it, so a longer caption ("6 conjugations")
+   can't squeeze the title onto two lines. */
+.overall{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+.overall b{font-family:var(--mono);font-size:20px;font-weight:600;line-height:1.1;color:var(--accent)}
 
 .rows{display:flex;flex-direction:column;gap:1px;background:var(--line-soft);
   border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden}
@@ -1656,13 +1657,11 @@ function renderHome(){
 
   app.innerHTML = `
     <div class="masthead">
-      <div>
-        <div class="eyebrow">Türkçe pratik</div>
-        <h1>Turkish Practice</h1>
-      </div>
+      <div class="eyebrow">Türkçe pratik</div>
+      <h1>Turkish Practice</h1>
       <div class="overall">
         <b class="num">${pct(figure)}%</b>
-        <span class="eyebrow">${caption}</span>
+        <span class="eyebrow">mastery · ${caption}</span>
       </div>
     </div>
 
