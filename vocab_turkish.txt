@@ -778,3 +778,92 @@ Phrases	Wishes	Eid Mubarak	Bayramınız Mübarek Olsun
 Phrases	Wishes	Happy Eid	Hayırlı Bayramlar
 Phrases	Wishes	Jumuah Mubarakah	Cumanız Mübarek Olsun
 Phrases	Wishes	May Allah have mercy on his/her soul (when someone dies)	Allah rahmet eylesin
+More Verbs	Main	To eat	Yemek
+More Verbs	Main	To drink	İçmek
+More Verbs	Main	To sleep	Uyumak
+More Verbs	Main	To read	Okumak
+More Verbs	Main	To write	Yazmak
+More Verbs	Main	To speak	Konuşmak
+More Verbs	Main	To open	Açmak
+More Verbs	Main	To close	Kapatmak
+More Verbs	Main	To live	Yaşamak
+More Verbs	Main	To love / To like	Sevmek
+More Verbs	Main	To learn	Öğrenmek
+More Verbs	Main	To teach	Öğretmek
+More Verbs	Main	To sit	Oturmak
+More Verbs	Main	To get up	Kalkmak
+More Verbs	Main	To walk	Yürümek
+More Verbs	Main	To run	Koşmak
+More Verbs	Main	To play	Oynamak
+More Verbs	Main	To listen	Dinlemek
+More Verbs	Main	To watch	İzlemek
+More Verbs	Main	To start	Başlamak
+More Verbs	Main	To finish	Bitirmek
+More Verbs	Main	To bring	Getirmek
+More Verbs	Main	To enter	Girmek
+More Verbs	Main	To go out	Çıkmak
+More Verbs	Main	To come back	Dönmek
+More Verbs	Main	To forget	Unutmak
+More Verbs	Main	To remember	Hatırlamak
+More Verbs	Main	To pay	Ödemek
+More Verbs	Main	To cook	Pişirmek
+More Verbs	Main	To wash	Yıkamak
+More Verbs	Main	To wear	Giymek
+More Verbs	Main	To help	Yardım etmek
+More Verbs	Main	To sell	Satmak
+More Verbs	Main	To call / To look for	Aramak
+More Verbs	Main	To stay	Kalmak
+Adjectives	People	Young	Genç
+Adjectives	People	Old (people)	Yaşlı
+Adjectives	People	Beautiful	Güzel
+Adjectives	People	Handsome	Yakışıklı
+Adjectives	People	Tall	Uzun
+Adjectives	People	Short	Kısa
+Adjectives	People	Thin	Zayıf
+Adjectives	People	Fat	Şişman
+Adjectives	People	Rich	Zengin
+Adjectives	People	Poor	Fakir
+Adjectives	People	Sick	Hasta
+Adjectives	People	Hungry	Aç
+Adjectives	People	Thirsty	Susamış
+Adjectives	People	Busy	Meşgul
+Adjectives	People	Ready	Hazır
+Adjectives	People	Clever	Akıllı
+Adjectives	People	Hardworking	Çalışkan
+Adjectives	People	Lazy	Tembel
+Adjectives	People	Quiet	Sessiz
+Adjectives	People	Brave	Cesur
+Adjectives	People	Kind	Nazik
+Adjectives	People	Fine	İyi
+Adjectives	People	Unwell	Kötü
+Adjectives	Things	Big	Büyük
+Adjectives	Things	Small	Küçük
+Adjectives	Things	Good	İyi
+Adjectives	Things	Bad	Kötü
+Adjectives	Things	New	Yeni
+Adjectives	Things	Old (things)	Eski
+Adjectives	Things	Hot	Sıcak
+Adjectives	Things	Cold	Soğuk
+Adjectives	Things	Easy	Kolay
+Adjectives	Things	Difficult	Zor
+Adjectives	Things	Cheap	Ucuz
+Adjectives	Things	Expensive	Pahalı
+Adjectives	Things	Clean	Temiz
+Adjectives	Things	Dirty	Kirli
+Adjectives	Things	Open	Açık
+Adjectives	Things	Closed	Kapalı
+Adjectives	Things	Full	Dolu
+Adjectives	Things	Empty	Boş
+Adjectives	Things	Heavy	Ağır
+Adjectives	Things	Light (weight)	Hafif
+Adjectives	Things	Fast	Hızlı
+Adjectives	Things	Slow	Yavaş
+Adjectives	Things	Near	Yakın
+Adjectives	Things	Far	Uzak
+Adjectives	Things	Important	Önemli
+Adjectives	Things	Delicious	Lezzetli
+Adjectives	Things	Correct	Doğru
+Adjectives	Things	Wrong	Yanlış
+Adjectives	Things	Long	Uzun
+Adjectives	Things	A lot	Çok
+Adjectives	Things	A little	Az
