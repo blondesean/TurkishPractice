@@ -331,7 +331,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
 .choice{display:flex;align-items:center;gap:9px;padding:13px 11px;border-radius:12px;
   background:var(--surface);border:1px solid var(--line);text-align:left;font-size:15.5px;
   font-weight:500;min-height:64px;transition:border-color .12s, background .12s}
-.choice:hover:not(:disabled){border-color:var(--accent)}
+/* Hover only where there's a real pointer: on a phone the hover sticks to
+   wherever you tapped, and outlined the same spot on the next question. */
+@media (hover:hover){.choice:hover:not(:disabled){border-color:var(--accent)}}
 .choice .k{font-family:var(--mono);font-size:12px;color:var(--faint);flex:none;
   width:20px;height:20px;border-radius:5px;background:var(--sunken);display:grid;
   place-items:center;font-weight:500}
@@ -464,6 +466,8 @@ textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:13px;
 .grid .c{aspect-ratio:1;border-radius:4px;display:grid;place-items:center;font-family:var(--mono);
   font-size:9.5px;font-variant-numeric:tabular-nums}
 .grid .c.off{background:repeating-linear-gradient(45deg,var(--line) 0 1.5px,transparent 1.5px 5px)}
+.grid.pairs{grid-template-columns:40px repeat(4,1fr);gap:4px}
+.grid.pairs .c{aspect-ratio:auto;height:38px;font-size:11px}
 .grid .c.hit{box-shadow:inset 0 0 0 2px var(--accent)}
 
 .sentence-en{font-family:var(--serif);font-size:clamp(21px,5.6vw,28px);font-weight:600;
@@ -475,7 +479,7 @@ textarea{width:100%;min-height:120px;font-family:var(--mono);font-size:13px;
 .tile{display:inline-flex;align-items:center;min-height:46px;padding:10px 15px;border-radius:10px;
   background:var(--surface);border:1px solid var(--line);font-size:17px;font-weight:600;
   box-shadow:0 1px 0 var(--line)}
-button.tile:hover:not(:disabled){border-color:var(--accent)}
+@media (hover:hover){button.tile:hover:not(:disabled){border-color:var(--accent)}}
 button.tile:disabled{opacity:.5;cursor:default}
 .tile.spent{visibility:hidden}
 .line .tile{background:var(--accent-wash);border-color:transparent;box-shadow:none;color:var(--accent)}
@@ -514,7 +518,7 @@ const Grammar = (() => {
 const PERSONS = ["p1s", "p2s", "p3s", "p1p", "p2p", "p3p"];
 const PRONOUN = {p1s:"ben", p2s:"sen", p3s:"o", p1p:"biz", p2p:"siz", p3p:"onlar"};
 const GENITIVE = {p1s:"benim", p2s:"senin", p3s:"onun", p1p:"bizim", p2p:"sizin", p3p:"onların"};
-const PERSON_EN = {p1s:"I", p2s:"you", p3s:"he / she", p1p:"we", p2p:"you (plural)", p3p:"they"};
+const PERSON_EN = {p1s:"I", p2s:"you (singular)", p3s:"he / she", p1p:"we", p2p:"you (plural)", p3p:"they"};
 const SUBJECT_EN = {p1s:"I", p2s:"you", p3s:"he/she", p1p:"we", p2p:"you all", p3p:"they"};
 const BE_EN = {p1s:"am", p2s:"are", p3s:"is", p1p:"are", p2p:"are", p3p:"are"};
 const POSSESSIVE_EN = {p1s:"my", p2s:"your", p3s:"his/her", p1p:"our", p2p:"your", p3p:"their"};
@@ -777,24 +781,30 @@ const CATEGORIES = [
   {id:"nerelisin",  name:"Nerelisin",          en:"I am from…",
    rule:"-lı · -li · -lu · -lü, then “to be”",   example:["Bolivya", "Bolivyalıyım"],
    note:"This is the everyday “from X” form; some countries also have their own nationality word (Alman, Fransız, İngiliz).",
+   pairsWith:"a Countries module",
    source: m => m.startsWith("Countries/"), custom:"place", accept: acceptPlace, keepCase:true, form: nerelisin},
   {id:"feelings",   name:"Feelings & jobs",    en:"I am tired · a teacher · young",
    rule:"-(y)ım · -sın · — · -(y)ız · -sınız · -lar", example:["yorgun", "yorgunum"],
    note:"Occupations and adjectives for people share the same endings and fill in the vowels emotions lack (o, e, ö).",
+   pairsWith:"Emotions, Adjectives/People or Occupations",
    source: m => m === "Emotions" || m === "Occupations" || m === "Adjectives/People",
    custom:"adjective", accept: acceptFeeling, form: feelings},
   {id:"possession", name:"Possession",         en:"my mother, your hand",
    rule:"-(ı)m · -(ı)n · -(s)ı · -(ı)mız · -(ı)nız · -ları", example:["kulak", "kulağım"],
+   pairsWith:"a Family Members or Parts Of The Body module",
    source: m => m.startsWith("Family Members/") || m.startsWith("Parts Of The Body/"),
    custom:"noun", accept: acceptPossessed, form: possession},
   {id:"present",    name:"Present continuous", en:"I am going",
    rule:"-(ı)yor + -um · -sun · — · -uz · -sunuz · -lar", example:["gitmek", "gidiyorum"],
+   pairsWith:"Verbs or More Verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: present},
   {id:"future",     name:"Going to",           en:"I am going to go",
    rule:"-(y)acak · -(y)ecek, k → ğ before a vowel", example:["gitmek", "gideceğim"],
+   pairsWith:"Verbs or More Verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: future},
   {id:"past",       name:"Past",               en:"I went",
    rule:"-dı · -tı + -m · -n · — · -k · -nız · -lar", example:["gitmek", "gittim"],
+   pairsWith:"Verbs or More Verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: past},
 ];
 const CATEGORY = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
@@ -919,6 +929,9 @@ const SLOTS = {
   emotion:    {source: m => m === "Emotions" || m === "Adjectives/People",
                accept: e => acceptFeeling(e.tr), custom:"adjective"},
   family:     {source: m => m.startsWith("Family Members/"), accept: e => acceptPossessed(e.tr)},
+  // Everything Possession drills: family and body parts, plus your own nouns.
+  possessed:  {source: m => m.startsWith("Family Members/") || m.startsWith("Parts Of The Body/"),
+               accept: e => acceptPossessed(e.tr), custom:"noun"},
   verb:       {source: m => m === "Verbs" || m === "More Verbs", accept: e => !!INTRANSITIVE[e.tr]},
   objectVerb: {source: m => m === "Verbs" || m === "More Verbs", accept: e => !!TRANSITIVE[e.tr]},
   food:       {source: m => m.startsWith("Food/"),           accept: e => MASS_FOODS.has(e.en) && !/\s/.test(e.tr)},
@@ -1018,6 +1031,22 @@ const TEMPLATES = [
      const e = pick(c.words("emotion")), p = pick(PERSONS);
      return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${lowEn(e.en)}.`,
              tiles: [PRONOUN[p], feelings(e, p).text], orders: [[0, 1]]};
+   }},
+  {id:"job", level:"easy",
+   ready: c => c.words("occupation").length > 0 && c.has("feelings"),
+   build(c){
+     // Singular people only, so the English stays "a teacher" without plurals.
+     const j = pick(c.words("occupation")), p = pick(["p1s", "p2s", "p3s"]);
+     const job = lowEn(j.en);
+     return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${article(job)} ${job}.`,
+             tiles: [PRONOUN[p], feelings(j, p).text], orders: [[0, 1]]};
+   }},
+  {id:"mine", level:"easy",
+   ready: c => c.words("possessed").length > 0 && c.has("possession"),
+   build(c){
+     const f = pick(c.words("possessed")), p = ownerFor(f);
+     return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)}.`,
+             tiles: [GENITIVE[p], possession(f, p).text], orders: [[0, 1]]};
    }},
   {id:"doing", level:"easy",
    ready: c => tensedVerbs(c, "verb", INTRANSITIVE).length > 0,
@@ -1434,7 +1463,7 @@ const NUM_CHOICES = 6;   // six answers on screen, always -- three per thumb
 let stats = loadStats();
 let prefs = Object.assign({count:5, autoAdvance:true, threshold:0.8, app:"vocab", ccount:5, scount:5,
                            palette:"iznik", sfx:true, readAnswer:false, quizType:"text",
-                           markIrregular:true}, (() => {
+                           markIrregular:true, vowelGrid:"pairs"}, (() => {
   try{ return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }catch(e){ return {}; }
 })());
 function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); }catch(e){} }
@@ -1674,7 +1703,7 @@ function renderHome(){
 
     <div class="foot">
       <button data-act="search">Look up a word</button>
-      <button data-act="progress">Progress</button>
+      <button data-act="progress" data-filter="${mode === "conj" ? "c:*" : mode === "syntax" ? "s:*" : ""}">Progress</button>
       <button data-act="data">Data &amp; settings</button>
     </div>`;
 }
@@ -1759,17 +1788,15 @@ function renderCategory(){
     </div>`;
 }
 
-function thresholdField(label = "Draw from modules at or above"){
-  return `<div class="field">
-    <span class="eyebrow">${label}</span>
-    <div class="chips" data-act="threshold">
+/* The mastery bar chips, shown in Data & settings. */
+function thresholdField(){
+  return `<div class="chips" data-act="threshold">
       ${[0.9, 0.8, 0.6].map(t => {
         const n = qualifyingModules(t).length;
         return `<button data-t="${t}" aria-pressed="${view.threshold === t}">${pct(t)}%
           <span style="opacity:.6">· ${n}</span></button>`;
       }).join("")}
-    </div>
-  </div>`;
+    </div>`;
 }
 
 function renderSetup(){
@@ -1793,12 +1820,11 @@ function renderSetup(){
       .sort((a, b) => b.m - a.m)[0];
     app.innerHTML = `
       ${topbar(CHECK, "home")}
-      ${thresholdField()}
       <div class="sheet stack">
         <p class="note" style="margin:0">
           Nothing is at <b>${pct(view.threshold)}%</b> yet, so there's nothing to check.
           Your strongest module is <b>${esc(best.mod)}</b> at <b class="num">${pct(best.m)}%</b> —
-          keep going, or lower the bar above.
+          keep going, or lower the bar in Data &amp; settings.
         </p>
       </div>
       <p class="note" style="text-align:center;margin:0">
@@ -1814,7 +1840,6 @@ function renderSetup(){
       you've taken to ${pct(view.threshold)}% — <b class="num">${max}</b> words.
       Every answer counts as that word's newest result, so a module can lose its place here.
     </p>` : ""}
-    ${check ? thresholdField() : ""}
     <div class="sheet stack">
       <div class="field">
         <span class="eyebrow">Quiz type</span>
@@ -2019,7 +2044,9 @@ function lineChart(series, labels){
       if(v === null || v === undefined) return;
       const last = i === s.points.length - 1;
       if(!last && !s.markEvery && n > 14) return;
-      out += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${last ? 3.4 : 2.4}"
+      // Dots shrink as rounds pile up, so every round fits the phone-width chart.
+      const r = last ? 3.4 : n > 120 ? 1.1 : n > 60 ? 1.5 : n > 30 ? 1.9 : 2.4;
+      out += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${r}"
                fill="${dots[i] || s.color}"/>`;
     });
   }
@@ -2338,20 +2365,72 @@ function renderSearch(){
   if(!view.query) box.focus();
 }
 
-/* Progress across all vocabulary, or narrowed to one vocab module, one
-   conjugation or one sentence level. Filter values: "", "v:…", "c:…", "s:…". */
+/* One dot per round, coloured by group, over lifetime accuracy -- and, where
+   the rounds carry mastery snapshots, the overall mastery at that point: the
+   mean of each group's latest snapshot, with groups not yet practised at 0. */
+function roundsOverview(hist, groups, nameOf, title, overallNow){
+  if(!hist.length) return "";
+  const shown = hist, skipped = 0;
+  const colorOf = g => MODULE_COLORS[groups.indexOf(g) % MODULE_COLORS.length];
+  const latest = {};
+  hist.slice(0, skipped).forEach(r => { if(r.mastery != null) latest[r.module] = r.mastery; });
+  let cc = hist.slice(0, skipped).reduce((n, r) => n + r.score, 0);
+  let ct = hist.slice(0, skipped).reduce((n, r) => n + r.total, 0);
+  const acc = [], dots = [], scores = [], overall = [];
+  for(const r of shown){
+    cc += r.score; ct += r.total;
+    acc.push(ct ? cc / ct : 0);
+    scores.push(r.total ? r.score / r.total : 0);
+    dots.push(colorOf(r.module));
+    if(r.mastery != null) latest[r.module] = r.mastery;
+    overall.push(overallNow ? groups.reduce((t, g) => t + (latest[g] || 0), 0) / groups.length : null);
+  }
+  const used = groups.filter(g => shown.some(r => r.module === g));
+  const series = [{points:scores, color:"var(--line)", dots, noLine:true, markEvery:true},
+                  {points:acc, color:"var(--accent)"}];
+  if(overallNow) series.push({points:overall, color:"var(--gold)"});
+  return `<div class="sheet chart">
+    <h3>${esc(title)}</h3>
+    <p>Each dot is one round, coloured by ${overallNow ? "what you practised" : "module"}; the lines are lifetime
+      accuracy${overallNow ? " and overall mastery" : ""}, across all ${hist.length} round${hist.length === 1 ? "" : "s"}.</p>
+    ${lineChart(series, [`${shown.length} rounds ago`, "now"])}
+    <div class="legend">
+      <span><b style="background:var(--accent)"></b>Accuracy — ${pct(acc[acc.length - 1])}%</span>
+      ${overallNow ? `<span><b style="background:var(--gold)"></b>Overall mastery — ${pct(overallNow())}%</span>` : ""}
+      ${used.map(g => `<span><b style="background:${colorOf(g)};border-radius:50%"></b>${esc(nameOf(g))}</span>`).join("")}
+    </div>
+  </div>`;
+}
+const conjOverall = () => meanOf(Grammar.CATEGORIES.map(c => conjMastery(c.id)));
+const syntaxOverall = () => meanOf(Grammar.LEVELS.map(l => levelMastery(l.id)));
+const conjOverview = title => roundsOverview(stats.conjugation.session_history, Grammar.CATEGORIES.map(c => c.id),
+  id => (Grammar.CATEGORY[id] || {name:id}).name, title, conjOverall);
+const syntaxOverview = title => roundsOverview(stats.syntax.session_history, Grammar.LEVELS.map(l => l.id),
+  id => (Grammar.LEVELS.find(l => l.id === id) || {name:id}).name, title, syntaxOverall);
+
+/* Progress across everything in a mode, or narrowed to one vocab module, one
+   conjugation or one sentence level. Filter values: "", "v:<module>",
+   "c:*" / "c:<id>", "s:*" / "s:<level>". */
 function renderProgress(){
   const f = view.filter, kind = f.slice(0, 2), key = f.slice(2);
   const mods = [...new Set(stats.session_history.map(s => s.module))].sort();
   const conjs = Grammar.CATEGORIES.filter(c => stats.conjugation.session_history.some(s => s.module === c.id));
   const levels = Grammar.LEVELS.filter(l => stats.syntax.session_history.some(s => s.module === l.id));
 
-  let hist, name, now, extra;
-  if(kind === "c:" && Grammar.CATEGORY[key]){
+  let hist, name, now, extra, overview = null;
+  if(kind === "c:" && key === "*"){
+    hist = stats.conjugation.session_history; name = "All conjugations"; now = conjOverall();
+    overview = conjOverview("Every conjugation");
+    extra = conjRanking(null, null);
+  }else if(kind === "c:" && Grammar.CATEGORY[key]){
     hist = stats.conjugation.session_history.filter(s => s.module === key);
     name = Grammar.CATEGORY[key].name;
     now = conjMastery(key);
     extra = gridSheet(key, null, "Every ending") + conjRanking(null, null);
+  }else if(kind === "s:" && key === "*"){
+    hist = stats.syntax.session_history; name = "All sentences"; now = syntaxOverall();
+    overview = syntaxOverview("Every sentence level");
+    extra = levelsSheet(null);
   }else if(kind === "s:" && Grammar.LEVELS.some(l => l.id === key)){
     hist = stats.syntax.session_history.filter(s => s.module === key);
     name = `${Grammar.LEVELS.find(l => l.id === key).name} sentences`;
@@ -2363,9 +2442,8 @@ function renderProgress(){
     now = moduleMastery(key, moduleWordsFor(key));
     extra = rankingChart();
   }else{
-    hist = stats.session_history;
-    name = null;
-    now = overallMastery();
+    hist = stats.session_history; name = "All vocabulary"; now = overallMastery();
+    overview = roundsOverview(hist, mods, m => m, "Every vocabulary module", null);
     extra = rankingChart();
   }
 
@@ -2373,37 +2451,14 @@ function renderProgress(){
   if(!hist.length){
     body = `<div class="sheet chart"><h3>Nothing recorded yet</h3>
       <p>Finish a round and it shows up here.</p></div>`;
-  }else if(name){
-    body = accuracyChart(hist, `Lifetime accuracy in ${esc(name)} against its mastery at each round.`, now);
   }else{
-    const shown = hist.slice(-40);
-    let cc = 0, ct = 0;
-    const acc = [], dots = [], scores = [];
-    const colorOf = m => MODULE_COLORS[mods.indexOf(m) % MODULE_COLORS.length];
-    for(const s of shown){
-      cc += s.score; ct += s.total;
-      acc.push(ct ? cc / ct : 0);
-      scores.push(s.total ? s.score / s.total : 0);
-      dots.push(colorOf(s.module));
-    }
-    body = `
-      <div class="sheet chart">
-        <h3>Every vocabulary module</h3>
-        <p>Each dot is one round, coloured by module; the line is lifetime accuracy.${
-          hist.length > 40 ? ` Showing the last 40 of ${hist.length} rounds.` : ""}</p>
-        ${lineChart([{points:scores, color:"var(--line)", dots, noLine:true, markEvery:true},
-                     {points:acc, color:"var(--accent)"}], [`${shown.length} rounds ago`, "now"])}
-        <div class="legend">
-          ${mods.map(m => `<span><b style="background:${colorOf(m)}"></b>${esc(m)}</span>`).join("")}
-        </div>
-      </div>`;
-  }
-  if(hist.length){
+    body = overview !== null ? overview
+      : accuracyChart(hist, `Lifetime accuracy in ${esc(name)} against its mastery at each round.`, now);
     const questions = hist.reduce((n, s) => n + s.total, 0);
     const correct = hist.reduce((n, s) => n + s.score, 0);
     body += `
       <div class="sheet stack">
-        <span class="eyebrow">${esc(name || "All vocabulary")}</span>
+        <span class="eyebrow">${esc(name)}</span>
         <p class="note" style="margin:0">
           <b class="num">${hist.length}</b> rounds · <b class="num">${correct}/${questions}</b>
           questions right (<b class="num">${questions ? Math.round(correct / questions * 100) : 0}%</b>) ·
@@ -2418,10 +2473,18 @@ function renderProgress(){
     ${topbar("Progress", "home")}
     <div class="field">
       <select id="filter">
-        ${opt("", "All vocabulary")}
-        ${mods.length ? `<optgroup label="Vocabulary">${mods.map(m => opt("v:" + m, m)).join("")}</optgroup>` : ""}
-        ${conjs.length ? `<optgroup label="Conjugation">${conjs.map(c => opt("c:" + c.id, c.name)).join("")}</optgroup>` : ""}
-        ${levels.length ? `<optgroup label="Sentences">${levels.map(l => opt("s:" + l.id, l.name)).join("")}</optgroup>` : ""}
+        <optgroup label="Vocabulary">
+          ${opt("", "All vocabulary")}
+          ${mods.map(m => opt("v:" + m, m)).join("")}
+        </optgroup>
+        <optgroup label="Conjugation">
+          ${opt("c:*", "All conjugations")}
+          ${conjs.map(c => opt("c:" + c.id, c.name)).join("")}
+        </optgroup>
+        <optgroup label="Sentences">
+          ${opt("s:*", "All sentences")}
+          ${levels.map(l => opt("s:" + l.id, `${l.name} sentences`)).join("")}
+        </optgroup>
       </select>
     </div>
     ${body}
@@ -2471,6 +2534,15 @@ function renderData(){
 
     <div class="sheet stack">
       <div class="field">
+        <span class="eyebrow">What counts as mastered</span>
+        ${thresholdField()}
+        <p class="note" style="margin:0">Decides which modules Mastery Check draws from, and which vocab and
+          conjugations Sentences can use. The number beside each option is how many vocab modules qualify.</p>
+      </div>
+    </div>
+
+    <div class="sheet stack">
+      <div class="field">
         <span class="eyebrow">Color theme</span>
         <div class="swatches" data-act="palette">
           ${PALETTES.map(p => `<button class="swatch" data-p="${p.id}" aria-pressed="${prefs.palette === p.id}">
@@ -2499,6 +2571,15 @@ function renderData(){
         </div>
         <span class="note">An * means the word breaks that category's usual rule — yemek → yiyecek,
           gitmek → gidiyor, ağız → ağzım. Hide it to practise spotting them yourself.</span>
+      </div>
+      <div class="field">
+        <span class="eyebrow">Conjugation grid</span>
+        <div class="seg" data-act="vgrid">
+          <button data-v="pairs" aria-pressed="${prefs.vowelGrid !== "all"}">Vowel pairs</button>
+          <button data-v="all" aria-pressed="${prefs.vowelGrid === "all"}">All 8 vowels</button>
+        </div>
+        <span class="note">Pairs group a/ı, o/u, e/i and ö/ü, which always take the same ı-type ending
+          (kulağım, kızım). All 8 shows each vowel on its own. Only the display changes, not your mastery.</span>
       </div>
       <div class="field">
         <span class="eyebrow">Sound effects</span>
@@ -2631,9 +2712,12 @@ const signed = d => (d >= 0 ? "+" : "") + pct(d);
 const deltaColor = d => d > 0 ? "var(--good)" : d < 0 ? "var(--bad)" : "var(--faint)";
 
 const cellKey = (id, p, v) => `${id}|${p}|${v}`;
+/* Each stored answer counts twice when read, so a cell masters in half the
+   answers a vocab word needs -- the cells are close cousins, and 4 correct in a
+   row per cell made a category a slog. Storage stays one entry per answer. */
 function cellHistory(id, p, v){
   const c = stats.conjugation.cells[cellKey(id, p, v)];
-  return (c && c.history) || [];
+  return ((c && c.history) || []).flatMap(a => [a, a]);
 }
 /* Only vowels some word in the category ends in -- the rest can't be asked. */
 function conjVowels(id){
@@ -2648,7 +2732,7 @@ function conjMastery(id, minus){
   let total = 0;
   for(const p of PERSONS) for(const v of vs){
     const h = cellHistory(id, p, v), k = (minus && minus[cellKey(id, p, v)]) || 0;
-    total += computeMastery(k ? h.slice(0, -k) : h);
+    total += computeMastery(k ? h.slice(0, -2 * k) : h);    // doubled history
   }
   return total / (vs.length * PERSONS.length);
 }
@@ -2686,13 +2770,19 @@ const conjBase = (id, entry) => {
   return Grammar.CATEGORY[id].verb ? w.replace(/m[ae]k$/, "") : w;
 };
 
-/* Everything after the part a form shares with the dictionary word, in bold --
-   so softening (kulak → kulağım) is highlighted along with the ending. */
-function markEnding(form, base){
-  const f = Grammar.lower(form);
+/* How much of each button to drop: the stretch every choice shares with each
+   other and with the dictionary word. What's left is the ending, plus any
+   letter that changes -- kulak gives -ğım / -kım, gitmek gives -diyorum. */
+function sharedStem(forms, base){
+  const low = forms.map(f => Grammar.lower(f));
   let i = 0;
-  while(i < f.length && i < base.length && f[i] === base[i]) i++;
-  return `<span class="stem">${esc(form.slice(0, i))}</span><b>${esc(form.slice(i))}</b>`;
+  while(i < base.length && low.every(f => i < f.length && f[i] === base[i])) i++;
+  return i;
+}
+/* A form identical to the word (he/she is tired → yorgun) has no ending at all. */
+function markEnding(form, cut){
+  const end = form.slice(cut);
+  return end ? `<span class="stem">-</span><b>${esc(end)}</b>` : `<span class="stem">(no ending)</span>`;
 }
 
 function pips(total, results, current){
@@ -2728,7 +2818,10 @@ function conjHomeBody(){
     <p class="note" style="text-align:center;margin:0">
       Each category tracks all six persons against the eight harmony vowels
       (a ı · o u · e i · ö ü), so it only fills up once every ending is solid.
-    </p>`;
+    </p>
+    ${stats.conjugation.session_history.length ? `
+      ${conjOverview("Conjugation over time")}
+      <button class="ghost" data-act="progress" data-filter="c:*">All conjugation progress →</button>` : ""}`;
 }
 
 function renderConjSetup(){
@@ -2777,7 +2870,7 @@ function renderConjQuiz(){
   const q = view.cquiz, cur = q.questions[q.i], c = Grammar.CATEGORY[q.id];
   const answered = q.picked !== null;
   const right = answered && q.picked === cur.answer;
-  const base = conjBase(q.id, cur.entry);
+  const cut = sharedStem(cur.choices, conjBase(q.id, cur.entry));
   app.innerHTML = `
     <div class="topbar">
       <button class="back" data-act="home" aria-label="Quit this round">✕</button>
@@ -2798,7 +2891,7 @@ function renderConjQuiz(){
         let cls = "";
         if(answered) cls = t === cur.answer ? "right" : t === q.picked ? "wrong" : "dim";
         return `<button class="choice ${cls}" data-act="canswer" data-choice="${esc(t)}" ${answered ? "disabled" : ""}>
-          <span class="k">${i + 1}</span><span class="t">${markEnding(t, base)}</span>
+          <span class="k">${i + 1}</span><span class="t">${markEnding(t, cut)}</span>
         </button>`;
       }).join("")}
     </div>
@@ -2859,7 +2952,7 @@ function renderConjResults(){
       <span class="tick" style="color:${r.correct ? "var(--good)" : "var(--bad)"}">${r.correct ? "✓" : "✕"}</span>
       <span class="pair">
         <b>${esc(r.answer)}</b> <span>${esc(conjWord(q.id, r.entry))}${irregularMark(r.entry)} · ${PRONOUN[r.p]}</span>
-        <span class="from">${esc(PERSON_EN[r.p])} · vowel ${r.v}${r.correct ? "" : ` · you picked ${esc(r.picked)}`}</span>
+        <span class="from">${esc(PERSON_EN[r.p])} · vowel ${vowelLabel(r.v)}${r.correct ? "" : ` · you picked ${esc(r.picked)}`}</span>
         ${wordBars(h, d)}
       </span>
       <span class="delta">${pct(after)}%<br><span style="color:${deltaColor(d)}">${signed(d)}</span></span>
@@ -2896,32 +2989,42 @@ function renderConjResults(){
       conjMastery(q.id))}
     ${conjRanking(q.id, minus)}
 
-    <button class="ghost" data-act="progress">All progress over time →</button>`;
+    <button class="ghost" data-act="progress" data-filter="c:*">All conjugation progress →</button>`;
 }
 
-/* The 6 × 8 grid: persons down, harmony vowels across, shaded by mastery. */
+/* The grid: persons down, harmony vowels across, shaded by mastery. With
+   "pairs" (the default) the vowels that share a four-way ending are merged --
+   a ı, o u, e i, ö ü -- and each cell is the mean of its reachable vowels. */
+const VOWEL_PAIRS = [["a", "ı"], ["o", "u"], ["e", "i"], ["ö", "ü"]];
+const vowelLabel = v => prefs.vowelGrid === "all" ? v : VOWEL_PAIRS.find(pair => pair.includes(v)).join("/");
 function gridSheet(id, results, title){
   const have = new Set(conjVowels(id));
+  const paired = prefs.vowelGrid !== "all";
+  const cols = paired ? VOWEL_PAIRS : Grammar.VOWELS.map(v => [v]);
   const hit = new Set((results || []).map(r => r.p + r.v));
-  const gap = i => (i > 0 && i % 2 === 0) ? "<span></span>" : "";
-  let cells = "<span></span>" + Grammar.VOWELS.map((v, i) => gap(i) + `<span class="h">${v}</span>`).join("");
+  const gap = i => (!paired && i > 0 && i % 2 === 0) ? "<span></span>" : "";
+  let cells = "<span></span>" + cols.map((col, i) => gap(i) + `<span class="h">${col.join(" ")}</span>`).join("");
   for(const p of PERSONS){
     cells += `<span class="h who">${PRONOUN[p]}</span>`;
-    cells += Grammar.VOWELS.map((v, i) => {
-      if(!have.has(v)) return gap(i) + `<span class="c off" title="No words with ${v}"></span>`;
-      const m = computeMastery(cellHistory(id, p, v));
-      return gap(i) + `<span class="c${hit.has(p + v) ? " hit" : ""}" title="${PRONOUN[p]} · ${v} · ${pct(m)}%"
+    cells += cols.map((col, i) => {
+      const live = col.filter(v => have.has(v));
+      if(!live.length) return gap(i) + `<span class="c off" title="No words with ${col.join(" or ")}"></span>`;
+      const m = meanOf(live.map(v => computeMastery(cellHistory(id, p, v))));
+      const outlined = live.some(v => hit.has(p + v));
+      return gap(i) + `<span class="c${outlined ? " hit" : ""}" title="${PRONOUN[p]} · ${live.join("/")} · ${pct(m)}%"
         style="background:var(--sunken);background:color-mix(in srgb, var(--data) ${pct(m)}%, var(--sunken));color:${m >= 0.55 ? "var(--surface)" : "var(--muted)"}">${pct(m)}</span>`;
     }).join("");
   }
   return `<div class="sheet" style="overflow:hidden">
     <div class="chart" style="padding-bottom:10px">
       <h3>${esc(title)}</h3>
-      <p>Mastery for each person against the stem's last vowel, in harmony pairs.${
+      <p>Mastery for each person against the stem's last vowel${paired
+        ? ", grouped by the pairs that take the same ending" : ", in harmony pairs"}.${
         results ? " Outlined cells came up this round." : ""}${
-        have.size < 8 ? " Striped columns have no words in your vocab yet." : ""}</p>
+        cols.some(col => !col.some(v => have.has(v))) ? " Striped columns have no words in your vocab yet." : ""}
+        Switch between pairs and all eight vowels in Data &amp; settings.</p>
     </div>
-    <div class="grid">${cells}</div>
+    <div class="grid${paired ? " pairs" : ""}">${cells}</div>
   </div>`;
 }
 
@@ -2991,7 +3094,7 @@ function accuracyChart(hist, sub, now){
 const levelHistory = id => (stats.syntax.levels[id] && stats.syntax.levels[id].history) || [];
 const levelMastery = id => computeMastery(levelHistory(id));
 const LEVEL_HINT = {
-  easy:   "Master Countries with Nerelisin, Emotions with Feelings & jobs, or Verbs with a tense.",
+  easy:   "Master a conjugation together with the vocab it drills: Countries with Nerelisin, Emotions, Adjectives/People or Occupations with Feelings & jobs, Family Members or Body parts with Possession, or Verbs with a tense.",
   medium: "Needs Verbs with a tense plus Time/Days or Food, or Family Members with Possession plus Emotions or Occupations.",
   hard:   "Needs Countries with Nerelisin, Food and Time/Days with a tense, or Family Members with Possession and a tense.",
 };
@@ -3005,6 +3108,7 @@ function syntaxCtx(){
   return {
     modules: mods.size,
     categories: cats.size,
+    mastered: [...cats],
     words: slot => cache[slot] || (cache[slot] = SLOT_POOLS[slot].filter(e => mods.has(e.module))),
     has: id => cats.has(id),
     tenses: () => Grammar.TENSES.filter(t => cats.has(t)),
@@ -3017,9 +3121,16 @@ function levelStatus(level, ctx){
   const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
   if(ctx.modules < level.modules) needs.push(`${plural(level.modules, "vocab module")} (you have ${ctx.modules})`);
   if(ctx.categories < level.categories) needs.push(`${plural(level.categories, "conjugation")} (you have ${ctx.categories})`);
-  const reason = needs.length
+  let reason = needs.length
     ? `Needs ${needs.join(" and ")} at ${pct(view.threshold)}%.`
     : (ready.length ? "" : LEVEL_HINT[level.id]);
+  // Counts met but nothing to build: say what the mastered conjugations lack.
+  if(!needs.length && !ready.length && level.id === "easy" && ctx.mastered.length){
+    reason = "No sentence fits yet: " + ctx.mastered.map(id => {
+      const c = Grammar.CATEGORY[id];
+      return `${c.name} needs ${c.pairsWith} at ${pct(view.threshold)}%`;
+    }).join("; ") + ".";
+  }
   return {unlocked: !needs.length && ready.length > 0, ready, reason};
 }
 
@@ -3028,7 +3139,7 @@ const sentenceText = (s, order) => Grammar.cap(order.map(k => s.tiles[k]).join("
 /* Shuffle the tiles, but never into an order that's already correct. */
 function shuffledBank(s){
   const idx = s.tiles.map((_, k) => k);
-  const key = order => order.map(k => s.tiles[k]).join(" ");
+  const key = order => order.map(k => s.tiles[k]).join("|");
   const valid = new Set(s.orders.map(key));
   for(let t = 0; t < 30; t++){
     Grammar.shuffle(idx);
@@ -3040,11 +3151,10 @@ function shuffledBank(s){
 function syntaxHomeBody(){
   const ctx = syntaxCtx();
   return `
-    ${thresholdField("Counts as mastered at")}
     <p class="note" style="margin:0">
       At ${pct(view.threshold)}% you have <b class="num">${ctx.modules}</b> vocab
       module${ctx.modules === 1 ? "" : "s"} and <b class="num">${ctx.categories}</b>
-      conjugation${ctx.categories === 1 ? "" : "s"} mastered. Sentences are built only from those.
+      conjugation${ctx.categories === 1 ? "" : "s"} mastered. Sentences are built only from those. Change the bar in Data &amp; settings.
     </p>
     <div class="rows">
       ${Grammar.LEVELS.map(L => {
@@ -3061,7 +3171,10 @@ function syntaxHomeBody(){
           ? `<button class="row" data-act="slevel" data-level="${L.id}">${inner}<span class="chev">›</span></button>`
           : `<div class="row locked" aria-disabled="true">${inner}<span class="chev lock">Locked</span></div>`;
       }).join("")}
-    </div>`;
+    </div>
+    ${stats.syntax.session_history.length ? `
+      ${syntaxOverview("Sentences over time")}
+      <button class="ghost" data-act="progress" data-filter="s:*">All sentence progress →</button>` : ""}`;
 }
 
 function renderSyntaxSetup(){
@@ -3236,7 +3349,7 @@ function renderSyntaxResults(){
       levelMastery(q.level))}
     ${levelsSheet(q)}
 
-    <button class="ghost" data-act="progress">All progress over time →</button>`;
+    <button class="ghost" data-act="progress" data-filter="s:*">All sentence progress →</button>`;
 }
 
 function levelsSheet(q){
@@ -3490,7 +3603,7 @@ app.addEventListener("click", ev => {
   else if(act === "again"){ view.count = Math.min(view.count, view.words.length); startQuiz(); }
   else if(act === "setup"){ go("setup"); }
   else if(act === "data"){ go("data"); }
-  else if(act === "progress"){ go("progress"); }
+  else if(act === "progress"){ if(el.dataset.filter !== undefined) view.filter = el.dataset.filter; go("progress"); }
   else if(act === "search"){ go("search"); }
   else if(act === "checkstart"){
     view.mode = "check";
@@ -3504,6 +3617,10 @@ app.addEventListener("click", ev => {
   else if(act === "qtype"){
     const b = ev.target.closest("[data-q]");
     if(b){ view.quizType = prefs.quizType = b.dataset.q; savePrefs(); render(); }
+  }
+  else if(act === "vgrid"){
+    const b = ev.target.closest("[data-v]");
+    if(b){ prefs.vowelGrid = b.dataset.v; savePrefs(); render(); }
   }
   else if(act === "irregular"){
     const b = ev.target.closest("[data-v]");

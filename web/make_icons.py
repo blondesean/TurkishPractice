@@ -1,7 +1,7 @@
 """Generate the home-screen icons for the web app.
 
 Pure stdlib -- writes PNGs by hand (zlib + struct) so there's no dependency to
-install. Draws the crescent and star on İznik cobalt, matching the app's palette.
+install. Draws the crescent and star on Turkish flag red.
 Run once; re-run only if you want to change the icon.
 
     py -3 web/make_icons.py
@@ -14,7 +14,7 @@ import zlib
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-COBALT = (0x17, 0x53, 0x9B)
+GROUND = (0xE3, 0x0A, 0x17)   # Turkish flag red
 WHITE = (0xFF, 0xFF, 0xFF)
 SS = 3  # supersampling factor, for smooth edges
 
@@ -81,7 +81,7 @@ def render(size):
                     if (d_out <= outer_c[2] and d_in > inner_c[2]) or in_polygon(x, y, star):
                         hits += 1
             a = hits / (SS * SS)
-            row.append(tuple(round(COBALT[i] + (WHITE[i] - COBALT[i]) * a) for i in range(3)))
+            row.append(tuple(round(GROUND[i] + (WHITE[i] - GROUND[i]) * a) for i in range(3)))
         rows.append(row)
     return rows
 

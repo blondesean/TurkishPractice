@@ -19,7 +19,7 @@ const Grammar = (() => {
 const PERSONS = ["p1s", "p2s", "p3s", "p1p", "p2p", "p3p"];
 const PRONOUN = {p1s:"ben", p2s:"sen", p3s:"o", p1p:"biz", p2p:"siz", p3p:"onlar"};
 const GENITIVE = {p1s:"benim", p2s:"senin", p3s:"onun", p1p:"bizim", p2p:"sizin", p3p:"onların"};
-const PERSON_EN = {p1s:"I", p2s:"you", p3s:"he / she", p1p:"we", p2p:"you (plural)", p3p:"they"};
+const PERSON_EN = {p1s:"I", p2s:"you (singular)", p3s:"he / she", p1p:"we", p2p:"you (plural)", p3p:"they"};
 const SUBJECT_EN = {p1s:"I", p2s:"you", p3s:"he/she", p1p:"we", p2p:"you all", p3p:"they"};
 const BE_EN = {p1s:"am", p2s:"are", p3s:"is", p1p:"are", p2p:"are", p3p:"are"};
 const POSSESSIVE_EN = {p1s:"my", p2s:"your", p3s:"his/her", p1p:"our", p2p:"your", p3p:"their"};
@@ -282,24 +282,30 @@ const CATEGORIES = [
   {id:"nerelisin",  name:"Nerelisin",          en:"I am from…",
    rule:"-lı · -li · -lu · -lü, then “to be”",   example:["Bolivya", "Bolivyalıyım"],
    note:"This is the everyday “from X” form; some countries also have their own nationality word (Alman, Fransız, İngiliz).",
+   pairsWith:"a Countries module",
    source: m => m.startsWith("Countries/"), custom:"place", accept: acceptPlace, keepCase:true, form: nerelisin},
   {id:"feelings",   name:"Feelings & jobs",    en:"I am tired · a teacher · young",
    rule:"-(y)ım · -sın · — · -(y)ız · -sınız · -lar", example:["yorgun", "yorgunum"],
    note:"Occupations and adjectives for people share the same endings and fill in the vowels emotions lack (o, e, ö).",
+   pairsWith:"Emotions, Adjectives/People or Occupations",
    source: m => m === "Emotions" || m === "Occupations" || m === "Adjectives/People",
    custom:"adjective", accept: acceptFeeling, form: feelings},
   {id:"possession", name:"Possession",         en:"my mother, your hand",
    rule:"-(ı)m · -(ı)n · -(s)ı · -(ı)mız · -(ı)nız · -ları", example:["kulak", "kulağım"],
+   pairsWith:"a Family Members or Parts Of The Body module",
    source: m => m.startsWith("Family Members/") || m.startsWith("Parts Of The Body/"),
    custom:"noun", accept: acceptPossessed, form: possession},
   {id:"present",    name:"Present continuous", en:"I am going",
    rule:"-(ı)yor + -um · -sun · — · -uz · -sunuz · -lar", example:["gitmek", "gidiyorum"],
+   pairsWith:"Verbs or More Verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: present},
   {id:"future",     name:"Going to",           en:"I am going to go",
    rule:"-(y)acak · -(y)ecek, k → ğ before a vowel", example:["gitmek", "gideceğim"],
+   pairsWith:"Verbs or More Verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: future},
   {id:"past",       name:"Past",               en:"I went",
    rule:"-dı · -tı + -m · -n · — · -k · -nız · -lar", example:["gitmek", "gittim"],
+   pairsWith:"Verbs or More Verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: past},
 ];
 const CATEGORY = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
@@ -424,6 +430,9 @@ const SLOTS = {
   emotion:    {source: m => m === "Emotions" || m === "Adjectives/People",
                accept: e => acceptFeeling(e.tr), custom:"adjective"},
   family:     {source: m => m.startsWith("Family Members/"), accept: e => acceptPossessed(e.tr)},
+  // Everything Possession drills: family and body parts, plus your own nouns.
+  possessed:  {source: m => m.startsWith("Family Members/") || m.startsWith("Parts Of The Body/"),
+               accept: e => acceptPossessed(e.tr), custom:"noun"},
   verb:       {source: m => m === "Verbs" || m === "More Verbs", accept: e => !!INTRANSITIVE[e.tr]},
   objectVerb: {source: m => m === "Verbs" || m === "More Verbs", accept: e => !!TRANSITIVE[e.tr]},
   food:       {source: m => m.startsWith("Food/"),           accept: e => MASS_FOODS.has(e.en) && !/\s/.test(e.tr)},
@@ -523,6 +532,22 @@ const TEMPLATES = [
      const e = pick(c.words("emotion")), p = pick(PERSONS);
      return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${lowEn(e.en)}.`,
              tiles: [PRONOUN[p], feelings(e, p).text], orders: [[0, 1]]};
+   }},
+  {id:"job", level:"easy",
+   ready: c => c.words("occupation").length > 0 && c.has("feelings"),
+   build(c){
+     // Singular people only, so the English stays "a teacher" without plurals.
+     const j = pick(c.words("occupation")), p = pick(["p1s", "p2s", "p3s"]);
+     const job = lowEn(j.en);
+     return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${article(job)} ${job}.`,
+             tiles: [PRONOUN[p], feelings(j, p).text], orders: [[0, 1]]};
+   }},
+  {id:"mine", level:"easy",
+   ready: c => c.words("possessed").length > 0 && c.has("possession"),
+   build(c){
+     const f = pick(c.words("possessed")), p = ownerFor(f);
+     return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)}.`,
+             tiles: [GENITIVE[p], possession(f, p).text], orders: [[0, 1]]};
    }},
   {id:"doing", level:"easy",
    ready: c => tensedVerbs(c, "verb", INTRANSITIVE).length > 0,

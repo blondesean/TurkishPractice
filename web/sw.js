@@ -7,7 +7,7 @@
  *
  * Bump CACHE when you deploy and want old caches cleared.
  */
-const CACHE = "turkce-v1";
+const CACHE = "turkce-v2";
 const ASSETS = [
   "./", "./index.html", "./manifest.webmanifest",
   "./icon-180.png", "./icon-192.png", "./icon-512.png"
