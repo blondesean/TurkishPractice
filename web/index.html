@@ -1792,7 +1792,7 @@ const view = {
   threshold:prefs.threshold,   // Mastery Check floor, remembered between sittings
   dir:"en_to_tr", count:prefs.count,
   quiz:null, last:null, filter:"", query:"",
-  app:prefs.app,            // "vocab" | "conj" | "syntax"
+  app:["vocab", "conj", "syntax"].includes(prefs.app) ? prefs.app : "vocab",
   conjCat:null, ccount:prefs.ccount, cquiz:null, clast:null,
   synLevel:"easy", scount:prefs.scount, squiz:null, slast:null,
   quizType:prefs.quizType,  // "text" | "listen"
@@ -1865,10 +1865,6 @@ function renderHome(){
     figure = meanOf(Grammar.LEVELS.map(l => levelMastery(l.id)));
     caption = `${Grammar.LEVELS.length} levels`;
     body = syntaxHomeBody();
-  }else if(mode === "numbers"){
-    figure = numbersOverall();
-    caption = `${FIGURES.length} sets`;
-    body = numbersHomeBody();
   }else{
     figure = overallMastery();
     caption = `${Object.keys(VOCAB).reduce((n, c) => n + countWords(c), 0)} words`;
@@ -1886,7 +1882,7 @@ function renderHome(){
     </div>
 
     <div class="seg modes" data-act="appmode" role="group" aria-label="Practice mode">
-      ${[["vocab", "Vocabulary"], ["conj", "Conjugation"], ["syntax", "Sentences"], ["numbers", "Numbers"]].map(([id, name]) =>
+      ${[["vocab", "Vocabulary"], ["conj", "Conjugation"], ["syntax", "Sentences"]].map(([id, name]) =>
         `<button data-app="${id}" aria-pressed="${mode === id}">${name}</button>`).join("")}
     </div>
 
@@ -1894,7 +1890,7 @@ function renderHome(){
 
     <div class="foot">
       <button data-act="search">Look up a word</button>
-      <button data-act="progress" data-filter="${mode === "conj" ? "c:*" : mode === "syntax" ? "s:*" : mode === "numbers" ? "n:*" : ""}">Progress</button>
+      <button data-act="progress" data-filter="${mode === "conj" ? "c:*" : mode === "syntax" ? "s:*" : ""}">Progress</button>
       <button data-act="data">Data &amp; settings</button>
     </div>`;
 }
@@ -1938,6 +1934,18 @@ function vocabHomeBody(){
         <span class="pct">${mine ? pct(mineMastery) + "%" : "Add"}</span>
         <span class="chev">›</span>
       </button>
+      ${FIGURES.map(f => {
+        const fm = figureMastery(f.id);
+        return `<button class="row" data-act="npick" data-id="${f.id}">
+          <span class="label">
+            <span class="name">${esc(f.name)}</span>
+            <span class="sub">${esc(f.en)} · made up as you go</span>
+            ${bar(fm)}
+          </span>
+          <span class="pct">${pct(fm)}%</span>
+          <span class="chev">›</span>
+        </button>`;
+      }).join("")}
     </div>
 
     <div class="rows">
@@ -3693,30 +3701,6 @@ function selectBands(fid, n){
   return out;
 }
 
-function numbersHomeBody(){
-  return `
-    <div class="rows">
-      ${FIGURES.map(f => {
-        const m = figureMastery(f.id);
-        return `<button class="row" data-act="npick" data-id="${f.id}">
-          <span class="label">
-            <span class="name">${esc(f.name)}</span>
-            <span class="sub">${esc(f.en)} · ${f.bands.length} bands</span>
-            ${bar(m)}
-          </span>
-          <span class="pct">${pct(m)}%</span>
-          <span class="chev">›</span>
-        </button>`;
-      }).join("")}
-    </div>
-    <p class="note" style="text-align:center;margin:0">
-      Every question is made up on the spot from the rules, so these never repeat their way into memory.
-    </p>
-    ${stats.numbers.session_history.length ? `
-      ${numbersOverview("Numbers over time")}
-      <button class="ghost" data-act="progress" data-filter="n:*">All number progress →</button>` : ""}`;
-}
-
 function bandsSheet(fid, results, title){
   const f = figureOf(fid);
   const hit = new Set((results || []).map(r => r.cell));
@@ -3756,7 +3740,9 @@ function renderNumSetup(){
       </div>
     </div>
     <button class="primary" data-act="nstart">Start</button>
-    <p class="note" style="text-align:center;margin:0">The band you're weakest at comes up most often.</p>
+    <p class="note" style="text-align:center;margin:0">
+      The band you're weakest at comes up most often. These have their own score, separate from the word modules.
+    </p>
     ${bandsSheet(f.id, null, "Where you stand")}`;
 }
 
