@@ -1934,18 +1934,6 @@ function vocabHomeBody(){
         <span class="pct">${mine ? pct(mineMastery) + "%" : "Add"}</span>
         <span class="chev">›</span>
       </button>
-      ${FIGURES.map(f => {
-        const fm = figureMastery(f.id);
-        return `<button class="row" data-act="npick" data-id="${f.id}">
-          <span class="label">
-            <span class="name">${esc(f.name)}</span>
-            <span class="sub">${esc(f.en)} · made up as you go</span>
-            ${bar(fm)}
-          </span>
-          <span class="pct">${pct(fm)}%</span>
-          <span class="chev">›</span>
-        </button>`;
-      }).join("")}
     </div>
 
     <div class="rows">
@@ -1955,7 +1943,7 @@ function vocabHomeBody(){
         return `<button class="row" data-act="cat" data-cat="${esc(c)}">
           <span class="label">
             <span class="name">${esc(c)}</span>
-            <span class="sub">${countWords(c)} words${isFlat(c) ? "" : ` · ${subs} topics`}</span>
+            <span class="sub">${countWords(c)} words${isFlat(c) && !figuresIn(c).length ? "" : ` · ${subs + figuresIn(c).length} topics`}</span>
             ${bar(m)}
           </span>
           <span class="pct">${pct(m)}%</span>
@@ -1976,11 +1964,23 @@ function renderCategory(){
         const m = moduleMastery(module, words);
         return `<button class="row" data-act="pick" data-sub="${esc(s)}">
           <span class="label">
-            <span class="name">${esc(s)}</span>
+            <span class="name">${esc(s === "Main" ? "Vocabulary" : s)}</span>
             <span class="sub">${words.length} words</span>
             ${bar(m)}
           </span>
           <span class="pct">${pct(m)}%</span>
+          <span class="chev">›</span>
+        </button>`;
+      }).join("")}
+      ${figuresIn(cat).map(f => {
+        const fm = figureMastery(f.id);
+        return `<button class="row" data-act="npick" data-id="${f.id}">
+          <span class="label">
+            <span class="name">${esc(FIGURE_HOME[f.id].topic)}</span>
+            <span class="sub">${esc(f.en)} · made up as you go</span>
+            ${bar(fm)}
+          </span>
+          <span class="pct">${pct(fm)}%</span>
           <span class="chev">›</span>
         </button>`;
       }).join("")}
@@ -3667,6 +3667,10 @@ function levelsSheet(q){
    =========================================================================== */
 const FIGURES = Grammar.FIGURES;
 const figureOf = id => FIGURES.find(f => f.id === id) || FIGURES[0];
+/* They're ordinary vocabulary, so they sit as topics inside the categories
+   they belong to -- Numbers and Time -- rather than anywhere of their own. */
+const FIGURE_HOME = {numbers: {cat:"Numbers", topic:"Any number"}, clock: {cat:"Time", topic:"Clock time"}};
+const figuresIn = cat => FIGURES.filter(f => FIGURE_HOME[f.id].cat === cat);
 const bandKey = (fid, bid) => `${fid}|${bid}`;
 function bandHistory(fid, bid){
   const c = stats.numbers.cells[bandKey(fid, bid)];
@@ -3727,7 +3731,7 @@ function renderNumSetup(){
   const f = figureOf(view.figure);
   const sample = f.question(Grammar.pick(f.bands).id, NUM_CHOICES);
   app.innerHTML = `
-    ${topbar(f.name, "home")}
+    ${topbar(`${FIGURE_HOME[f.id].cat} · ${FIGURE_HOME[f.id].topic}`, "tocat")}
     <div class="sheet stack">
       <p class="note" style="margin:0"><b>${esc(f.en)}</b></p>
       <p class="note" style="margin:0">You'll see a figure — <b>${esc(sample.prompt)}</b> — and pick how it's said:
@@ -4166,7 +4170,7 @@ app.addEventListener("click", ev => {
   else if(act === "cat"){
     const cat = el.dataset.cat;
     if(!cat || !VOCAB[cat]) return;
-    if(isFlat(cat)) pickModule(cat, "Main");
+    if(isFlat(cat) && !figuresIn(cat).length) pickModule(cat, "Main");
     else { view.cat = cat; go("cat"); }
   }
   else if(act === "pick"){ pickModule(view.cat, el.dataset.sub); }
@@ -4251,7 +4255,11 @@ app.addEventListener("click", ev => {
     view.draft = {tr: tidy(view.query), en:"", type:"word", group: view.lastGroup || DEFAULT_GROUP};
     go("mywords");
   }
-  else if(act === "npick"){ view.figure = el.dataset.id; go("nsetup"); }
+  else if(act === "npick"){
+    view.figure = el.dataset.id;
+    view.cat = FIGURE_HOME[el.dataset.id].cat;
+    go("nsetup");
+  }
   else if(act === "ncount"){
     const b = ev.target.closest("[data-n]");
     if(b){ view.ncount = prefs.ncount = +b.dataset.n; savePrefs(); render(); }
