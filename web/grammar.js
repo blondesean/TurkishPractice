@@ -224,6 +224,42 @@ function present(entry, p, o = {}){
   return {text: head + text, vowel: real};
 }
 
+/* Negative present: stem + -mı/-mi/-mu/-mü + yor. No softening (the suffix
+   starts with a consonant) and no vowel drop, so gitmiyorum, okumuyorum. */
+function negative(entry, p, o = {}){
+  const head = lower(splitLast(entry.tr).head);
+  const st = verbStem(entry.tr);
+  const real = lastVowel(st);
+  // The positive form is the sharpest wrong answer there is.
+  if(o.noSoften) return {text: present(entry, p).text, vowel: real};
+  const base = head + st + "m" + four(o.forceVowel || real) + "yor";
+  const text = {
+    p1s: base + "um", p2s: base + "sun", p3s: base,
+    p1p: base + "uz", p2p: base + "sunuz", p3p: base + "lar",
+  }[p];
+  return {text, vowel: real};
+}
+
+/* Questions: mı / mi / mu / mü as its own word, carrying the personal ending.
+   yorgun musun? · güzel mi? · yorgunlar mı? */
+function question(entry, p, o = {}){
+  const {head, last} = splitLast(lower(entry.tr));
+  const real = nounVowel(last);
+  const v = o.forceVowel || nounVowel(last, o);
+  const u = four(v);
+  const q = "m" + u;
+  const space = o.noBuffer ? "" : " ";          // writing it joined is a common slip
+  const text = {
+    p1s: last + space + q + "y" + u + "m",
+    p2s: last + space + q + "s" + u + "n",
+    p3s: last + space + q,
+    p1p: last + space + q + "y" + u + "z",
+    p2p: last + space + q + "s" + u + "n" + u + "z",
+    p3p: last + "l" + two(v) + "r" + space + "m" + four(two(v)),
+  }[p];
+  return {text: head + text + "?", vowel: real};
+}
+
 /* Going to -(y)acak/-(y)ecek; k → ğ before -ım/-ız: gideceğim, gidecek. */
 function future(entry, p, o = {}){
   const head = lower(splitLast(entry.tr).head);
@@ -264,6 +300,115 @@ function past(entry, p, o = {}){
   return {text: head + text, vowel: real};
 }
 
+/* --- numbers and the clock ----------------------------------------------- *
+ * Generated rather than listed: the rules cover every number to 9999 and
+ * every time of day, which no word list could.
+ * ----------------------------------------------------------------------- */
+const UNITS = ["sıfır", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"];
+const TENS = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"];
+
+/* 100 is yüz and 1000 is bin -- never "bir yüz" or "bir bin". */
+function numberWord(n){
+  if(n < 10) return UNITS[n];
+  if(n < 100){
+    const t = Math.floor(n / 10), u = n % 10;
+    return TENS[t] + (u ? " " + UNITS[u] : "");
+  }
+  if(n < 1000){
+    const h = Math.floor(n / 100), r = n % 100;
+    return (h > 1 ? UNITS[h] + " " : "") + "yüz" + (r ? " " + numberWord(r) : "");
+  }
+  const th = Math.floor(n / 1000), r = n % 1000;
+  return (th > 1 ? numberWord(th) + " " : "") + "bin" + (r ? " " + numberWord(r) : "");
+}
+
+// The hour takes the accusative when minutes are past it, the dative when
+// they're still to come: üçü beş geçiyor, dörde beş var.
+const HOUR_ACC = {1:"biri", 2:"ikiyi", 3:"üçü", 4:"dördü", 5:"beşi", 6:"altıyı",
+                  7:"yediyi", 8:"sekizi", 9:"dokuzu", 10:"onu", 11:"on biri", 12:"on ikiyi"};
+const HOUR_DAT = {1:"bire", 2:"ikiye", 3:"üçe", 4:"dörde", 5:"beşe", 6:"altıya",
+                  7:"yediye", 8:"sekize", 9:"dokuza", 10:"ona", 11:"on bire", 12:"on ikiye"};
+const nextHour = h => h === 12 ? 1 : h + 1;
+
+function clockPhrase(h, m){
+  if(m === 0) return "saat " + numberWord(h);
+  if(m === 30) return numberWord(h) + " buçuk";
+  if(m === 15) return HOUR_ACC[h] + " çeyrek geçiyor";
+  if(m === 45) return HOUR_DAT[nextHour(h)] + " çeyrek var";
+  if(m < 30) return HOUR_ACC[h] + " " + numberWord(m) + " geçiyor";
+  return HOUR_DAT[nextHour(h)] + " " + numberWord(60 - m) + " var";
+}
+
+const clockFace = (h, m) => `${h}:${String(m).padStart(2, "0")}`;
+
+/* Bands of difficulty, tracked separately so mastery means "all of it". */
+const NUMBER_BANDS = [
+  {id:"units",     name:"1 – 9",       pick: () => 1 + Math.floor(Math.random() * 9)},
+  {id:"teens",     name:"10 – 19",     pick: () => 10 + Math.floor(Math.random() * 10)},
+  {id:"tens",      name:"20 – 99",     pick: () => 20 + Math.floor(Math.random() * 80)},
+  {id:"hundreds",  name:"100 – 999",   pick: () => 100 + Math.floor(Math.random() * 900)},
+  {id:"thousands", name:"1000 – 9999", pick: () => 1000 + Math.floor(Math.random() * 9000)},
+];
+const CLOCK_BANDS = [
+  {id:"oclock",  name:"o'clock",      pick: () => [hour(), 0]},
+  {id:"half",    name:"half past",    pick: () => [hour(), 30]},
+  {id:"quarter", name:"quarter past and to", pick: () => [hour(), pick([15, 45])]},
+  {id:"past",    name:"minutes past", pick: () => [hour(), pick([5, 10, 20, 25])]},
+  {id:"to",      name:"minutes to",   pick: () => [hour(), pick([35, 40, 50, 55])]},
+];
+const hour = () => 1 + Math.floor(Math.random() * 12);
+
+/* A question: the figure to read, the right words, and five wrong ones that
+   each break a different rule. */
+function numberQuestion(bandId, n = 6){
+  const band = NUMBER_BANDS.find(b => b.id === bandId) || NUMBER_BANDS[0];
+  const value = band.pick();
+  const answer = numberWord(value);
+  const wrong = new Set();
+  const add = v => { const w = typeof v === "number" ? numberWord(v) : v; if(w && w !== answer) wrong.add(w); };
+  if(value >= 100) add(("bir " + answer).replace("bir yüz", "bir yüz"));   // the "bir yüz" slip
+  if(value >= 1000) add(answer.replace(/^bin/, "bir bin"));
+  add(value + 1);
+  add(value - 1);
+  if(value >= 10) add(value + 10);
+  if(value >= 20) add(Math.floor(value / 10) * 10 + ((value % 10 + 1) % 10));
+  if(value >= 100) add(numberWord(value).replace(" yüz", " bin"));
+  add(shuffle(answer.split(" ")).join(" "));                               // right words, wrong order
+  while(wrong.size < n - 1) add(band.pick());
+  return {prompt: String(value), answer, cell: band.id,
+          choices: shuffle([answer, ...shuffle([...wrong]).slice(0, n - 1)])};
+}
+
+function clockQuestion(bandId, n = 6){
+  const band = CLOCK_BANDS.find(b => b.id === bandId) || CLOCK_BANDS[0];
+  const [h, m] = band.pick();
+  const answer = clockPhrase(h, m);
+  const wrong = new Set();
+  const add = w => { if(w && w !== answer) wrong.add(w); };
+  add(clockPhrase(nextHour(h), m));                       // an hour out
+  add(clockPhrase(h, m === 0 ? 30 : 0));
+  if(m && m !== 30){
+    add(answer.replace(" geçiyor", " var").replace(" var", " geçiyor"));   // past for to
+    add(clockPhrase(h, 60 - m));
+    // The hour in the wrong case: üçü for dörde and back again.
+    add(answer.replace(HOUR_ACC[h], HOUR_DAT[h]).replace(HOUR_DAT[nextHour(h)], HOUR_ACC[nextHour(h)]));
+  }
+  add(clockPhrase(h, m === 15 ? 45 : 15));
+  while(wrong.size < n - 1){
+    const [wh, wm] = pick(CLOCK_BANDS).pick();
+    add(clockPhrase(wh, wm));
+  }
+  return {prompt: clockFace(h, m), answer, cell: band.id,
+          choices: shuffle([answer, ...shuffle([...wrong]).slice(0, n - 1)])};
+}
+
+const FIGURES = [
+  {id:"numbers", name:"Numbers", en:"47 → kırk yedi", bands: NUMBER_BANDS, question: numberQuestion,
+   note:"100 is yüz and 1000 is bin on their own — never bir yüz or bir bin."},
+  {id:"clock",   name:"Clock time", en:"3:45 → dörde çeyrek var", bands: CLOCK_BANDS, question: clockQuestion,
+   note:"Minutes past take the hour in the accusative (üçü), minutes to take the next hour in the dative (dörde)."},
+];
+
 /* --- which vocab each form can use -------------------------------------- */
 const usable = tr => !/[\/_]|see below/i.test(tr) && lastVowel(tr) !== null;
 
@@ -282,31 +427,42 @@ const CATEGORIES = [
   {id:"nerelisin",  name:"Nerelisin",          en:"I am from…",
    rule:"-lı · -li · -lu · -lü, then “to be”",   example:["Bolivya", "Bolivyalıyım"],
    note:"This is the everyday “from X” form; some countries also have their own nationality word (Alman, Fransız, İngiliz).",
-   pairsWith:"a Countries module",
+   pairsWith:"some country words",
    source: m => m.startsWith("Countries/"), custom:"place", accept: acceptPlace, keepCase:true, form: nerelisin},
   {id:"feelings",   name:"Feelings & jobs",    en:"I am tired · a teacher · young",
    rule:"-(y)ım · -sın · — · -(y)ız · -sınız · -lar", example:["yorgun", "yorgunum"],
    note:"Occupations and adjectives for people share the same endings and fill in the vowels emotions lack (o, e, ö).",
-   pairsWith:"Emotions, Adjectives/People or Occupations",
+   pairsWith:"some emotion, adjective or job words",
    source: m => m === "Emotions" || m === "Occupations" || m === "Adjectives/People",
    custom:"adjective", accept: acceptFeeling, form: feelings},
   {id:"possession", name:"Possession",         en:"my mother, your hand",
    rule:"-(ı)m · -(ı)n · -(s)ı · -(ı)mız · -(ı)nız · -ları", example:["kulak", "kulağım"],
-   pairsWith:"a Family Members or Parts Of The Body module",
+   pairsWith:"some family or body words",
    source: m => m.startsWith("Family Members/") || m.startsWith("Parts Of The Body/"),
    custom:"noun", accept: acceptPossessed, form: possession},
   {id:"present",    name:"Present continuous", en:"I am going",
    rule:"-(ı)yor + -um · -sun · — · -uz · -sunuz · -lar", example:["gitmek", "gidiyorum"],
-   pairsWith:"Verbs or More Verbs",
+   pairsWith:"some verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: present},
   {id:"future",     name:"Going to",           en:"I am going to go",
    rule:"-(y)acak · -(y)ecek, k → ğ before a vowel", example:["gitmek", "gideceğim"],
-   pairsWith:"Verbs or More Verbs",
+   pairsWith:"some verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: future},
   {id:"past",       name:"Past",               en:"I went",
    rule:"-dı · -tı + -m · -n · — · -k · -nız · -lar", example:["gitmek", "gittim"],
-   pairsWith:"Verbs or More Verbs",
+   pairsWith:"some verbs",
    source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: past},
+  {id:"negative",   name:"Negative",           en:"I'm not going",
+   rule:"-mı · -mi · -mu · -mü before yor",      example:["gitmek", "gitmiyorum"],
+   note:"Nothing softens here, so gitmiyorum keeps its t.",
+   pairsWith:"some verbs",
+   source: m => m === "Verbs" || m === "More Verbs", custom:"verb", accept: acceptVerb, verb:true, form: negative},
+  {id:"question",   name:"Question",           en:"Are you tired?",
+   rule:"mı · mi · mu · mü, written as its own word", example:["yorgun", "yorgun musun?"],
+   note:"The ending rides on the question word: yorgun musun, kötü müsün.",
+   pairsWith:"some emotion, adjective or job words",
+   source: m => m === "Emotions" || m === "Occupations" || m === "Adjectives/People",
+   custom:"adjective", accept: acceptFeeling, form: question},
 ];
 const CATEGORY = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
 const TENSES = ["present", "future", "past"];
@@ -509,6 +665,11 @@ function objectOptions(ctx, timed, minFoods){
     .filter(o => o.foods.length >= minFoods);
 }
 const distinct = (list, k) => shuffle(list.slice()).slice(0, k);
+/* Extra wrong tiles for the bank: the same word in other persons, so the
+   ending has to be chosen too rather than handed over with the tile. */
+function personDecoys(form, entry, p, n = 2){
+  return shuffle(PERSONS.filter(q => q !== p)).slice(0, n).map(q => form(entry, q).text);
+}
 // Pair different people, not "you" with "you all".
 const personsExcept = p => PERSONS.filter(q => q[1] !== p[1]);
 // A spouse has one owner -- "our husband" isn't a sentence anyone says.
@@ -524,14 +685,16 @@ const TEMPLATES = [
    build(c){
      const place = pick(c.words("country")), p = pick(PERSONS);
      return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} from ${plainEn(place.en)}.`,
-             tiles: [PRONOUN[p], nerelisin(place, p).text], orders: [[0, 1]]};
+             tiles: [PRONOUN[p], nerelisin(place, p).text], orders: [[0, 1]],
+             decoys: personDecoys(nerelisin, place, p, 2)};
    }},
   {id:"feel", level:"easy",
    ready: c => c.words("emotion").length > 0 && c.has("feelings"),
    build(c){
      const e = pick(c.words("emotion")), p = pick(PERSONS);
      return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${lowEn(e.en)}.`,
-             tiles: [PRONOUN[p], feelings(e, p).text], orders: [[0, 1]]};
+             tiles: [PRONOUN[p], feelings(e, p).text], orders: [[0, 1]],
+             decoys: personDecoys(feelings, e, p, 2)};
    }},
   {id:"job", level:"easy",
    ready: c => c.words("occupation").length > 0 && c.has("feelings"),
@@ -540,21 +703,24 @@ const TEMPLATES = [
      const j = pick(c.words("occupation")), p = pick(["p1s", "p2s", "p3s"]);
      const job = lowEn(j.en);
      return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} ${article(job)} ${job}.`,
-             tiles: [PRONOUN[p], feelings(j, p).text], orders: [[0, 1]]};
+             tiles: [PRONOUN[p], feelings(j, p).text], orders: [[0, 1]],
+             decoys: personDecoys(feelings, j, p, 2)};
    }},
   {id:"mine", level:"easy",
    ready: c => c.words("possessed").length > 0 && c.has("possession"),
    build(c){
      const f = pick(c.words("possessed")), p = ownerFor(f);
      return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)}.`,
-             tiles: [GENITIVE[p], possession(f, p).text], orders: [[0, 1]]};
+             tiles: [GENITIVE[p], possession(f, p).text], orders: [[0, 1]],
+             decoys: personDecoys(possession, f, p, 2)};
    }},
   {id:"doing", level:"easy",
    ready: c => tensedVerbs(c, "verb", INTRANSITIVE).length > 0,
    build(c){
      const {v, tense, info} = pick(tensedVerbs(c, "verb", INTRANSITIVE)), p = pick(PERSONS);
      return {en: `${cap(SUBJECT_EN[p])} ${englishVerb(info, tense, p)}.`,
-             tiles: [PRONOUN[p], FORM_OF[tense](verbEntry(v), p).text], orders: [[0, 1]]};
+             tiles: [PRONOUN[p], FORM_OF[tense](verbEntry(v), p).text], orders: [[0, 1]],
+             decoys: personDecoys(FORM_OF[tense], verbEntry(v), p, 2)};
    }},
 
   {id:"when", level:"medium",
@@ -563,7 +729,8 @@ const TEMPLATES = [
      const {t, v, tense, info} = pick(timedVerbs(c, "verb", INTRANSITIVE)), p = pick(PERSONS);
      return {en: `${cap(TIME_WORDS[t.tr].en)} ${midSubject(p)} ${englishVerb(info, tense, p)}.`,
              tiles: [lower(t.tr), PRONOUN[p], FORM_OF[tense](verbEntry(v), p).text],
-             orders: [[0, 1, 2], [1, 0, 2]]};
+             orders: [[0, 1, 2], [1, 0, 2]],
+             decoys: personDecoys(FORM_OF[tense], verbEntry(v), p, 2)};
    }},
   {id:"object", level:"medium",
    ready: c => objectOptions(c, false, 1).length > 0,
@@ -572,14 +739,16 @@ const TEMPLATES = [
      const f = pick(foods), p = pick(PERSONS);
      return {en: `${cap(SUBJECT_EN[p])} ${englishVerb(info, tense, p)} ${lowEn(f.en)}.`,
              tiles: [PRONOUN[p], lower(f.tr), FORM_OF[tense](verbEntry(v), p).text],
-             orders: [[0, 1, 2]]};
+             orders: [[0, 1, 2]],
+             decoys: personDecoys(FORM_OF[tense], verbEntry(v), p, 2)};
    }},
   {id:"family-feel", level:"medium",
    ready: c => c.words("family").length > 0 && c.words("emotion").length > 0 && c.has("possession"),
    build(c){
      const f = pick(c.words("family")), e = pick(c.words("emotion")), p = ownerFor(f);
      return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)} is ${lowEn(e.en)}.`,
-             tiles: [GENITIVE[p], possession(f, p).text, lower(e.tr)], orders: [[0, 1, 2]]};
+             tiles: [GENITIVE[p], possession(f, p).text, lower(e.tr)], orders: [[0, 1, 2]],
+             decoys: personDecoys(possession, f, p, 2)};
    }},
   {id:"family-job", level:"medium",
    ready: c => c.words("family").length > 0 && c.words("occupation").length > 0 && c.has("possession"),
@@ -587,7 +756,8 @@ const TEMPLATES = [
      const f = pick(c.words("family")), j = pick(c.words("occupation")), p = ownerFor(f);
      const job = lowEn(j.en);
      return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)} is ${article(job)} ${job}.`,
-             tiles: [GENITIVE[p], possession(f, p).text, lower(j.tr)], orders: [[0, 1, 2]]};
+             tiles: [GENITIVE[p], possession(f, p).text, lower(j.tr)], orders: [[0, 1, 2]],
+             decoys: personDecoys(possession, f, p, 2)};
    }},
 
   {id:"two-places", level:"hard",
@@ -597,7 +767,8 @@ const TEMPLATES = [
      const p = pick(PERSONS), q = pick(personsExcept(p));
      return {en: `${cap(SUBJECT_EN[p])} ${BE_EN[p]} from ${plainEn(a.en)} and ${midSubject(q)} ${BE_EN[q]} from ${plainEn(b.en)}.`,
              tiles: [PRONOUN[p], nerelisin(a, p).text, "ve", PRONOUN[q], nerelisin(b, q).text],
-             orders: [[0, 1, 2, 3, 4], [3, 4, 2, 0, 1]]};
+             orders: [[0, 1, 2, 3, 4], [3, 4, 2, 0, 1]],
+             decoys: personDecoys(nerelisin, a, p, 1).concat(personDecoys(nerelisin, b, q, 1))};
    }},
   {id:"shopping", level:"hard",
    ready: c => objectOptions(c, true, 2).length > 0,
@@ -605,6 +776,7 @@ const TEMPLATES = [
      const {t, v, tense, info, foods} = pick(objectOptions(c, true, 2));
      const [f, g] = distinct(foods, 2), p = pick(PERSONS);
      return {en: `${cap(TIME_WORDS[t.tr].en)} ${midSubject(p)} ${englishVerb(info, tense, p)} ${lowEn(f.en)} and ${lowEn(g.en)}.`,
+             decoys: personDecoys(FORM_OF[tense], verbEntry(v), p, 2),
              tiles: [lower(t.tr), PRONOUN[p], lower(f.tr), "ve", lower(g.tr), FORM_OF[tense](verbEntry(v), p).text],
              orders: [[0, 1, 2, 3, 4, 5], [1, 0, 2, 3, 4, 5], [0, 1, 4, 3, 2, 5], [1, 0, 4, 3, 2, 5]]};
    }},
@@ -616,6 +788,7 @@ const TEMPLATES = [
      const [f, g] = distinct(c.words("family"), 2), p = ownerFor(f, g);
      const my = POSSESSIVE_EN[p];
      return {en: `${cap(TIME_WORDS[t.tr].en)} ${my} ${lowEn(f.en)} and ${my} ${lowEn(g.en)} ${englishVerb(info, tense, "p3p")}.`,
+             decoys: personDecoys(possession, f, p, 1).concat(personDecoys(FORM_OF[tense], verbEntry(v), "p3p", 1)),
              tiles: [lower(t.tr), possession(f, p).text, "ve", possession(g, p).text, FORM_OF[tense](verbEntry(v), "p3p").text],
              orders: [[0, 1, 2, 3, 4], [1, 2, 3, 0, 4], [0, 3, 2, 1, 4], [3, 2, 1, 0, 4]]};
    }},
@@ -626,6 +799,7 @@ const TEMPLATES = [
      const f = pick(c.words("family")), place = pick(c.words("country")), e = pick(c.words("emotion"));
      const p = ownerFor(f);
      return {en: `${cap(POSSESSIVE_EN[p])} ${lowEn(f.en)} is from ${plainEn(place.en)} and ${lowEn(e.en)}.`,
+             decoys: personDecoys(possession, f, p, 1).concat(personDecoys(nerelisin, place, "p3s", 1)),
              tiles: [GENITIVE[p], possession(f, p).text, nerelisin(place, "p3s").text, "ve", lower(e.tr)],
              orders: [[0, 1, 2, 3, 4], [0, 1, 4, 3, 2]]};
    }},
@@ -641,6 +815,7 @@ const LEVELS = [
 
 return {
   PERSONS, PRONOUN, GENITIVE, PERSON_EN, VOWELS, CATEGORIES, CATEGORY, TENSES,
+  FIGURES, numberWord, clockPhrase, clockFace,
   TEMPLATES, LEVELS, SLOTS,
   buildPools, buildSlotPools, isIrregular, choices, shuffle, pick, lower, cap,
   forms: {nerelisin, feelings, possession, present, future, past},

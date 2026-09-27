@@ -116,6 +116,34 @@ const EXPECTED = {
     "Ödemek": ["ödeyeceğim"],
     "İçmek": [, , "içecek"],
   },
+  negative: {
+    "Gitmek": ["gitmiyorum", "gitmiyorsun", "gitmiyor", "gitmiyoruz", "gitmiyorsunuz", "gitmiyorlar"],
+    "Yapmak": ["yapmıyorum"],
+    "Görmek": ["görmüyorum", , "görmüyor"],
+    "Okumak": ["okumuyorum"],
+    "Anlamak": [, , "anlamıyor"],
+    "Beklemek": ["beklemiyorum"],
+    "Yemek": ["yemiyorum", , "yemiyor"],
+    "Demek": [, , "demiyor"],
+    "Uyumak": ["uyumuyorum"],
+    "Yürümek": [, , "yürümüyor"],
+    "Ödemek": ["ödemiyorum"],
+    "Çalışmak": [, , , "çalışmıyoruz"],
+    "Oynamak": [, , , , , "oynamıyorlar"],
+  },
+  question: {
+    "Yorgun": ["yorgun muyum?", "yorgun musun?", "yorgun mu?", "yorgun muyuz?", "yorgun musunuz?", "yorgunlar mı?"],
+    "Mutlu": [, "mutlu musun?", "mutlu mu?"],
+    "Kötü": ["kötü müyüm?", "kötü müsün?", "kötü mü?", , , "kötüler mi?"],
+    "Sakin": ["sakin miyim?", "sakin misin?"],
+    "Kızgın": ["kızgın mıyım?", , "kızgın mı?"],
+    "Üzgün": [, "üzgün müsün?"],
+    "Öğretmen": [, "öğretmen misin?", "öğretmen mi?"],
+    "Doktor": [, "doktor musun?"],
+    "Şoför": [, , , , "şoför müsünüz?"],
+    "Diş hekimi": [, , "diş hekimi mi?"],
+    "Genç": [, "genç misin?", , , , "gençler mi?"],
+  },
   past: {
     "Gitmek": ["gittim", "gittin", "gitti", "gittik", "gittiniz", "gittiler"],
     "Yapmak": ["yaptım"],
@@ -148,6 +176,40 @@ for(const [cat, words] of Object.entries(EXPECTED)){
       checked++;
       if(got !== want){ failures++; console.log(`FAIL ${cat} ${tr} ${G.PERSONS[i]}: got ${got}, want ${want}`); }
     });
+  }
+}
+
+// Numbers and the clock, generated from rules.
+for(const [n, want] of [[0, "sıfır"], [7, "yedi"], [10, "on"], [11, "on bir"], [19, "on dokuz"],
+  [20, "yirmi"], [47, "kırk yedi"], [60, "altmış"], [99, "doksan dokuz"], [100, "yüz"], [101, "yüz bir"],
+  [200, "iki yüz"], [250, "iki yüz elli"], [999, "dokuz yüz doksan dokuz"], [1000, "bin"],
+  [1001, "bin bir"], [1500, "bin beş yüz"], [2000, "iki bin"], [3456, "üç bin dört yüz elli altı"]]){
+  checked++;
+  const got = G.numberWord(n);
+  if(got !== want){ failures++; console.log(`FAIL number ${n}: got ${got}, want ${want}`); }
+}
+for(const [h, m, want] of [[3, 0, "saat üç"], [1, 0, "saat bir"], [12, 0, "saat on iki"],
+  [3, 30, "üç buçuk"], [11, 30, "on bir buçuk"], [3, 15, "üçü çeyrek geçiyor"],
+  [4, 15, "dördü çeyrek geçiyor"], [6, 15, "altıyı çeyrek geçiyor"], [3, 45, "dörde çeyrek var"],
+  [12, 45, "bire çeyrek var"], [11, 45, "on ikiye çeyrek var"], [3, 5, "üçü beş geçiyor"],
+  [9, 20, "dokuzu yirmi geçiyor"], [3, 40, "dörde yirmi var"], [7, 55, "sekize beş var"],
+  [12, 35, "bire yirmi beş var"]]){
+  checked++;
+  const got = G.clockPhrase(h, m);
+  if(got !== want){ failures++; console.log(`FAIL clock ${G.clockFace(h, m)}: got ${got}, want ${want}`); }
+}
+// Every band: six distinct buttons, exactly one right.
+for(const f of G.FIGURES){
+  for(const band of f.bands){
+    for(let i = 0; i < 40; i++){
+      const q = f.question(band.id);
+      checked++;
+      if(q.choices.length !== 6 || new Set(q.choices).size !== 6
+         || q.choices.filter(c => c === q.answer).length !== 1 || q.cell !== band.id){
+        failures++; console.log(`FAIL ${f.id}/${band.id} choices for ${q.prompt}: ${q.choices.join(" | ")}`);
+        break;
+      }
+    }
   }
 }
 
